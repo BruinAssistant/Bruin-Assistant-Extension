@@ -1,0 +1,24 @@
+{
+    "name": "Bruin Assistant Extension",
+    "description": "Building a better UCLA experience.",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+          "matches": ["*://be.my.ucla.edu/*"],
+          "css": ["groupme.css"],
+          "run_at": "document_end"
+        },
+        {
+          "matches": ["*://be.my.ucla.edu/*"],
+          "js": ["groupme.js"],
+          "run_at": "document_end"
+        }
+    ],
+    "action": {
+        "default_popup": "settings.html"
+    }
+}
