@@ -1,0 +1,9 @@
+.groupme-btn {
+    width: 1rem;
+    height: 1rem;
+    float: right;
+}
+
+tr th:nth-child(2) {
+    width: 4rem;
+}

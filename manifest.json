@@ -20,5 +20,11 @@
     ],
     "action": {
         "default_popup": "settings.html"
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [ "assets/*" ],
+            "matches": ["*://be.my.ucla.edu/*"]
+        }
+    ]
 }
