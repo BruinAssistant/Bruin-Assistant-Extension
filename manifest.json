@@ -26,5 +26,11 @@
             "resources": [ "assets/*" ],
             "matches": ["*://be.my.ucla.edu/*"]
         }
+    ],
+    "permissions": [
+        "activeTab"
+    ],
+    "host_permissions": [
+        "https://class-planner-assistant.herokuapp.com/"
     ]
 }
