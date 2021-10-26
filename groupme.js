@@ -33,7 +33,9 @@ const observer = new MutationObserver((mutationsList, observer) => {
         }, 1000);
     }
 });
-observer.observe(document, config);
+// before: observing the entire doc, but change to observe only class section-header
+// because other program also manipulates document
+observer.observe(document.querySelector('.section-header'), config);
 
 function populateGroupMeLinks() {
     const classes = document.getElementsByClassName('courseItem')

@@ -22,4 +22,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             .catch(error => console.log('Error:', error));
         return true;
     }
+    if (request.contentScriptQuery == "getBruinwalkData") {
+        fetch(request.url)
+        .then(res => res.text())
+        .then(res => sendResponse(res))
+        .catch(error => console.log("Error: ", error))
+        return true;
+    }
 });

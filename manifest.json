@@ -14,7 +14,7 @@
         },
         {
           "matches": ["*://be.my.ucla.edu/*"],
-          "js": ["groupme.js"],
+          "js": ["groupme.js", "bruinwalk.js", "jquery-3.6.0.min.js"],
           "run_at": "document_end"
         }
     ],
@@ -31,6 +31,8 @@
         "activeTab"
     ],
     "host_permissions": [
-        "https://class-planner-assistant.herokuapp.com/"
+        "https://class-planner-assistant.herokuapp.com/",
+        "https://www.bruinwalk.com/",
+        "https://az.bruinwalk.com/"
     ]
 }
