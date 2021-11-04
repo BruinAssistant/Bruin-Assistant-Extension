@@ -14,8 +14,18 @@
         },
         {
           "matches": ["*://be.my.ucla.edu/*"],
-          "js": ["groupme.js", "bruinwalk.js", "jquery-3.6.0.min.js"],
+          "js": ["groupme.js"],
           "run_at": "document_end"
+        },
+        {
+            "matches": ["*://be.my.ucla.edu/*"],
+            "js": ["bruinwalk.js", "jquery-3.6.0.min.js", "bruinwalkPopup.js", "modaal.js", "chart.js"],
+            "run_at": "document_end"
+        },
+        {
+            "matches": ["*://be.my.ucla.edu/*"],
+            "css": ["modaal.css"],
+            "run_at": "document_end"
         }
     ],
     "action": {

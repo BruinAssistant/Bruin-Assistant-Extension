@@ -1,6 +1,6 @@
 findClassInst();
 // reuse observer from groupme.js
-observer.observe(document.querySelector('.hide-small'), config);
+// observer.observe(document.querySelector('.hide-small'), config);
 
 /**
  * Main function to seach instructor Bruinwalk information and display popup to be.my.ucla.edu class planner
@@ -29,10 +29,12 @@ function findClassInst(){
                 console.log("Attempt to find instructor ", allInstName[j]);
                 getSearchResult(fullCourseName, allInstName[j], (instUrl => {
                     if (instUrl != null){
-                        var bruinwalkLink = document.createElement('a');
-                        bruinwalkLink.href = instUrl;
-                        bruinwalkLink.innerText = "Redirect to bruinwalk";
-                        courseTable[7].appendChild(bruinwalkLink);
+                        // var bruinwalkLink = document.createElement('a');
+                        // bruinwalkLink.href = instUrl;
+                        // bruinwalkLink.innerText = "Redirect to bruinwalk";
+                        // courseTable[7].appendChild(bruinwalkLink);
+
+                        showPopup(instUrl, courseTable[7]);
                     }
                 }));
                 // createBruinwalkButton(instUrl);

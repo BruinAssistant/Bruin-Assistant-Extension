@@ -1,0 +1,144 @@
+<html>
+    <head>
+        <script src="jquery-3.6.0.min.js"></script>
+        <script src="chart.js"></script>
+        <script src="bootstrap.min.js"></script>
+        <link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="test.css">
+    </head>
+    <body>
+      <div class='test'>
+        <button href="modal.html" type="button" class="btn btn-primary modal-button">
+          Launch demo modal
+        </button>
+      </div>
+      <div class="modal fade text-center" id="exampleModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+
+      <script>
+        $('.modal-button').on('click', function(e){
+          e.preventDefault();
+          $('#exampleModal').modal('show').find('.modal-content').load($(this).attr('href'));
+        });
+        // console.log(document.getElementsByClassName('modal-body'));
+
+        $('#exampleModal').on('shown.bs.modal', function(e) {
+          var data = {
+            labels: [
+              '1',
+              '2',
+              '3',
+              '4',
+              '5'
+            ],
+  datasets: [{
+    label: 'My First Dataset',
+    data: [4.5,4.1,3,4.8,5],
+    fill: true,
+    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+    borderColor: 'rgb(255, 99, 132)',
+    pointBackgroundColor: 'rgb(255, 99, 132)',
+    pointBorderColor: '#fff',
+    pointHoverBackgroundColor: '#fff',
+    pointHoverBorderColor: 'rgb(255, 99, 132)'
+  }]
+          };
+
+          var options = {
+    elements: {
+      line: {
+        borderWidth: 3
+      }
+    },
+    scales: {
+        r: {
+            angleLines: {
+                display: false
+            },
+            suggestedMin: 0,
+            suggestedMax: 5
+        }
+    }
+
+  };
+
+            // scales: {
+            //   y: {
+            //     stacked: true,
+            //     grid: {
+            //       display: true,
+            //       color: "rgba(255,99,132,0.2)"
+            //     }
+            //   },
+            //   x: {
+            //     grid: {
+            //       display: false
+            //     }
+            //   }
+            // }
+          // };
+
+        new Chart('chart', {
+          type: 'radar',
+          options: options,
+          data: data
+        });
+      });
+
+        
+
+        // window.addEventListener('load', function() {
+
+        // $('.test').load("modal.html #exampleModal", function(){
+          // $('#exampleModal').modal();
+        
+//           console.log(document.getElementsByClassName('modal-body').item(0));
+          // document.getElementsByClassName('modal-body')[0].innerText = 'abc';
+//       })
+// })
+  // document.getElementsByClassName('modal-body').innerText = 'abc';
+        /*
+        var data = {
+  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+  datasets: [{
+    label: "Dataset #1",
+    backgroundColor: "rgba(255,99,132,0.2)",
+    borderColor: "rgba(255,99,132,1)",
+    borderWidth: 2,
+    hoverBackgroundColor: "rgba(255,99,132,0.4)",
+    hoverBorderColor: "rgba(255,99,132,1)",
+    data: [65, 59, 20, 81, 56, 55, 40],
+  }]
+};
+
+var options = {
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      stacked: true,
+      grid: {
+        display: true,
+        color: "rgba(255,99,132,0.2)"
+      }
+    },
+    x: {
+      grid: {
+        display: false
+      }
+    }
+  }
+};
+
+new Chart('chart', {
+  type: 'bar',
+  options: options,
+  data: data
+});
+*/
+      </script>
+    </body>
+</html>
