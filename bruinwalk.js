@@ -27,14 +27,27 @@ function findClassInst(){
             // ignore if it is empty string or '...' after split
             if(allInstName[j] != "..."){
                 console.log("Attempt to find instructor ", allInstName[j]);
-                getSearchResult(fullCourseName, allInstName[j], (instUrl => {
+                getSearchResult(fullCourseName, allInstName[j], ((instUrl) => {
                     if (instUrl != null){
                         // var bruinwalkLink = document.createElement('a');
                         // bruinwalkLink.href = instUrl;
                         // bruinwalkLink.innerText = "Redirect to bruinwalk";
                         // courseTable[7].appendChild(bruinwalkLink);
 
-                        showPopup(instUrl, courseTable[7]);
+                        // get bruinwalk html to process
+                        chrome.runtime.sendMessage({
+                            url: instUrl,
+                            contentScriptQuery: "getBruinwalkData",
+                        }, responseHTMLString => {
+                            var stringToHTML = function (str) {
+                                var parser = new DOMParser();
+                                var doc = parser.parseFromString(str, 'text/html');
+                                return doc;
+                            };
+                            var responseHTML = stringToHTML(responseHTMLString);
+                            showPopup(instUrl, courseTable[7], responseHTML);
+                        });
+
                     }
                 }));
                 // createBruinwalkButton(instUrl);
@@ -62,7 +75,7 @@ function getSearchResult(fullCourseName, instName, handler){
     , responseHTMLString => {
 
         // convert string to html
-        var instUrl = fetchInstBruinwalk(responseHTMLString, instNameArr);
+        const instUrl = fetchInstBruinwalk(responseHTMLString, instNameArr);
         // createBruinwalkButton(instUrl);
         console.log(instUrl);
         handler(instUrl);

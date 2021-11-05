@@ -19,12 +19,12 @@
         },
         {
             "matches": ["*://be.my.ucla.edu/*"],
-            "js": ["bruinwalk.js", "jquery-3.6.0.min.js", "bruinwalkPopup.js", "modaal.js", "chart.js"],
+            "js": ["bruinwalk.js", "jquery-3.6.0.min.js", "bruinwalkPopup.js", "bootstrap.min.js", "chart.js"],
             "run_at": "document_end"
         },
         {
             "matches": ["*://be.my.ucla.edu/*"],
-            "css": ["modaal.css"],
+            "css": ["bootstrap.min.css", "bruinwalk.css"],
             "run_at": "document_end"
         }
     ],
