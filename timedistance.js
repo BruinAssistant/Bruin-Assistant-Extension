@@ -135,10 +135,28 @@ function getClassBuildings() {
     return result;
 }
 
-// TODO: NEED TO HANDLE CASE WHERE BUILDING NAME HAS NUMBERS
-function extractBuilding(place){
-    // This regex expression will filter out any room numbers
-    let noNumbers = /[^0-9]+/;
-    // exec(place) will return a map with the first element being our result
-    return (noNumbers.exec(place)[0]).trim();
+function extractBuilding(place) {
+
+    // remove any trailing/leading whitespace
+    let trimmed_place = place.trim();
+
+    // handle special cases
+    let special_cases_prefixes = ["700 Westwood Plaza", "Lab School 1", "Medical Plaza 100", "Medical Plaza 200", "Medical Plaza 300", "1010 Westwood Center"];
+    for (const prefix in special_cases_prefixes) {
+        if (trimmed_place.startsWith(prefix)) {
+            return prefix;
+        }
+    }
+    
+    // if not special case, then general case
+    let words = trimmed_place.split(" "); // split into words
+    if (hasNumber(words.at(-1))) { // if the last word has any amount of numbers, we assume it's a room number (want to remove)
+        return words.slice(0,words.length - 1).join(" ").trim();
+    }
+    else // no modification needed
+        return trimmed_place;
+}
+
+function hasNumber(str) {
+    return /\d/.test(str);
 }
