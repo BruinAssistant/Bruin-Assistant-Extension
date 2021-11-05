@@ -68,7 +68,7 @@ function prepTimeDistance(){
     }   
 
     // TODO: SECURE API_KEY 
-    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=AIzaSyB2uDY7Us0k0pICc8mC0IkE-04SLDvLgII";
+    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=";
     
     chrome.runtime.sendMessage({
         url: map_url,
