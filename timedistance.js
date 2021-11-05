@@ -21,6 +21,8 @@ function populateTimeDistance(response, ordered_classes){
     console.log(ordered_classes);
 
     let td_matrix = response.rows;
+
+
 }
 
 
@@ -34,9 +36,13 @@ function initiateTimeDistance(){
     // Placeholder for now
     const coords = new Map([
         ["Boelter Hall", new Coord(34.06927673596064, -118.44314214158828)],
+        ["Geology Building B", new Coord(34.06938234016632, -118.44059000246695)],
+        ["Mathematical Sciences", new Coord(34.069975013570584, -118.443113302467)],
         ["Moore Hall", new Coord(34.070503088217514, -118.44262037580916)],
         ["Online", null],
+        ["Online - Recorded", null],
         ["Royce Hall", new Coord(34.072924325772995, -118.44218065821016)],
+        ["Young Hall", new Coord(34.06876052882566, -118.44152213130202)],
     ])
 
     let class_info = getClassBuildings();
@@ -53,6 +59,7 @@ function initiateTimeDistance(){
     let latStr = "";
     let lngStr = "";
     if(total_buildings > 0){
+        console.log(unique_buildings[0]);
         latStr = getLat(unique_buildings[0]); 
         lngStr = getLng(unique_buildings[0]);
         // %7C is '|' and %2C is ','
