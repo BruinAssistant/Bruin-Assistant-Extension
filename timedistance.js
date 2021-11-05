@@ -1,6 +1,8 @@
 // This will use the same observer from groupme.js
 observer.observe(document.querySelector('.centerColumn'), config);
 
+//var submitted = false;
+
 getClassBuildings();
 
 /* 
@@ -27,6 +29,18 @@ function getClassBuildings() {
         class_buildings.set(day[i],buildings);
         i++;
     }
+
+    /*if(!submitted){
+        let form = document.forms;
+        console.log(form);
+        form[0][40].value = "Aerospace Studies (AERO ST)";
+        form[0][41].value = "A - Leadership Laboratory";
+        form[0][42].disabled = false;
+        form[0].submit();
+        console.log(form);
+        submitted = true;
+    }*/
+
     console.log(class_buildings);
     return class_buildings;
 }

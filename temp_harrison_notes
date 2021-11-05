@@ -1,0 +1,6 @@
+Important Notes:
+- multiple background scripts can be added
+- should only set up one listener type across all background scripts
+	- use this one to receive message (for example), and then delegate the task accordingly
+- Message Passing: https://developer.chrome.com/docs/extensions/mv3/messaging/
+- PROPERLY USE AN ARROW FUNCTION >:(
