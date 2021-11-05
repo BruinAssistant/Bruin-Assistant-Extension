@@ -50,8 +50,9 @@ function initiateTimeDistance(){
     // Construct unique building coordinates by indexing into coordinate table
     let unique_buildings = [];
     for (let building of class_info.get("uniqueBuildings")){
-        if(building != "Online")
-            unique_buildings.push(coords.get(building));
+        let val = coords.get(building);
+        if(val != null) // only add if not null
+            unique_buildings.push(val);
     }
 
     let total_buildings = unique_buildings.length;
