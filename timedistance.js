@@ -186,14 +186,22 @@ function getLng(building){
 }
 
 // TODO: FINISH THIS POPULATION FUNCTION
-function populateTimeDistance(response, ordered_classes){
+function populateTimeDistance(response, parsed_class_info){
+    console.log("ENTERED POPULATE TIME DISTANCE");
     console.log(response);
-    console.log(ordered_classes);
+    console.log(parsed_class_info);
 
+    // extract relevant info from parsed webpage info
+    let ordered_classes = parsed_class_info.get("orderedClasses");
+    let unique_buildings = parsed_class_info.get("uniqueBuildings");
+
+    // extract relevant info (distance matrix) from DistanceMatrix API response
     let td_matrix = response.rows;
 
+    // get overall Class Planner HTML element for parsing/injection
     let class_plan_classes = document.getElementById("div_landing").getElementsByClassName("courseItem");
 
+    // iterate through each class_record
     for (let class_record of class_plan_classes) {
 
         // get class department and number (for class info lookups)
@@ -201,9 +209,53 @@ function populateTimeDistance(response, ordered_classes){
         let class_department = extractDepartmentFromClassRecord(class_name_record.item(0).innerText);
         let class_number = extractNumberFromClassRecord(class_name_record.item(1).innerText);
 
-        console.log(class_department + ", " + department_abbrev.get(class_department));
-        console.log(class_number);
+        //console.log(class_department + ", " + department_abbrev.get(class_department));
+        //console.log(class_number);
+
+        // lookup all previous and current class infos for all days
+        let class_infos = getAllCurAndPrevClassInfo(ordered_classes, department_abbrev.get(class_department), class_number);
+
+        // inject into corresponding HTML
+        // - inject header
+        // - resize/modify accordingly
+        // - for each section:
+        //     - determine and inject time/dist info
+        console.log(class_infos);
     }
+}
+
+function getAllCurAndPrevClassInfo(ordered_classes, class_department_abbrev, class_number) {
+
+    // init empty map (will map day --> array of [previous class's info, current class's info])
+    let results = new Map();
+
+    // iterate through each day
+    for (let [day, classes] of ordered_classes) {
+
+        // get current value for "day" inside of "results" map (if none, then init to empty array)
+        let res = results.has(day) ? results.get(day) : [];
+
+        // init previous class to null (handle if specified class lookup is the first in a day)
+        let prev_class_info = null;
+
+        // iterate through each class in a day
+        for (let cur_class_info of classes) {
+
+            // check if current class is our class of interest (need to push to results)
+            if (cur_class_info.name == (class_department_abbrev + " " + class_number)) {
+                res.push([prev_class_info, cur_class_info]);
+            }
+
+            // update previous_class to prepare for next iteration
+            prev_class_info = cur_class_info;
+        }
+
+        // add constructed array to final results map
+        results.set(day, res);
+    }
+
+    // finished, so return constructed map
+    return results;
 }
 
 function extractDepartmentFromClassRecord(str) {
@@ -502,7 +554,7 @@ function initiateTimeDistance(){
     }
 
     // TODO: REMOVE THIS TEMPORARY CALL
-    populateTimeDistance(distancematrix_api_response, class_info.get("orderedClasses"));
+    populateTimeDistance(distancematrix_api_response, class_info);
 
     // TODO: UNCOMMENT API CALL TO DISTANCEMATRIX
     /*chrome.runtime.sendMessage({
