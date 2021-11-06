@@ -190,7 +190,7 @@ function populateTimeDistance(response, ordered_classes){
     console.log(response);
     console.log(ordered_classes);
 
-    //let td_matrix = response.rows;
+    let td_matrix = response.rows;
 
     let class_plan_classes = document.getElementById("div_landing").getElementsByClassName("courseItem");
 
@@ -373,8 +373,136 @@ function initiateTimeDistance(){
     // TODO: SECURE API_KEY
     var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=";
 
+    // TODO: Remove this temporary global storage of distance matrix returned from invocaton of DistanceMatrix API for sample schedule
+    const distancematrix_api_response = {
+        "destination_addresses": [
+            "Knudsen Hall, 475 Portola Plaza, Los Angeles, CA 90095, USA",
+            "595 Charles E Young Dr E, Los Angeles, CA 90024, USA",
+            "607 Charles E Young Dr E, Los Angeles, CA 90095, USA"
+        ],
+        "origin_addresses": [
+            "Knudsen Hall, 475 Portola Plaza, Los Angeles, CA 90095, USA",
+            "595 Charles E Young Dr E, Los Angeles, CA 90024, USA",
+            "607 Charles E Young Dr E, Los Angeles, CA 90095, USA"
+        ],
+        "rows": [
+            {
+                "elements": [
+                    {
+                        "distance": {
+                            "text": "1 ft",
+                            "value": 0
+                        },
+                        "duration": {
+                            "text": "1 min",
+                            "value": 0
+                        },
+                        "status": "OK"
+                    },
+                    {
+                        "distance": {
+                            "text": "0.2 mi",
+                            "value": 258
+                        },
+                        "duration": {
+                            "text": "3 mins",
+                            "value": 178
+                        },
+                        "status": "OK"
+                    },
+                    {
+                        "distance": {
+                            "text": "0.2 mi",
+                            "value": 387
+                        },
+                        "duration": {
+                            "text": "4 mins",
+                            "value": 266
+                        },
+                        "status": "OK"
+                    }
+                ]
+            },
+            {
+                "elements": [
+                    {
+                        "distance": {
+                            "text": "0.2 mi",
+                            "value": 258
+                        },
+                        "duration": {
+                            "text": "3 mins",
+                            "value": 203
+                        },
+                        "status": "OK"
+                    },
+                    {
+                        "distance": {
+                            "text": "1 ft",
+                            "value": 0
+                        },
+                        "duration": {
+                            "text": "1 min",
+                            "value": 0
+                        },
+                        "status": "OK"
+                    },
+                    {
+                        "distance": {
+                            "text": "0.1 mi",
+                            "value": 178
+                        },
+                        "duration": {
+                            "text": "2 mins",
+                            "value": 124
+                        },
+                        "status": "OK"
+                    }
+                ]
+            },
+            {
+                "elements": [
+                    {
+                        "distance": {
+                            "text": "0.2 mi",
+                            "value": 387
+                        },
+                        "duration": {
+                            "text": "5 mins",
+                            "value": 303
+                        },
+                        "status": "OK"
+                    },
+                    {
+                        "distance": {
+                            "text": "0.1 mi",
+                            "value": 178
+                        },
+                        "duration": {
+                            "text": "2 mins",
+                            "value": 136
+                        },
+                        "status": "OK"
+                    },
+                    {
+                        "distance": {
+                            "text": "1 ft",
+                            "value": 0
+                        },
+                        "duration": {
+                            "text": "1 min",
+                            "value": 0
+                        },
+                        "status": "OK"
+                    }
+                ]
+            }
+        ],
+        "status": "OK"
+    }
+
     // TODO: REMOVE THIS TEMPORARY CALL
-    populateTimeDistance(null, class_info.get("orderedClasses"));
+    populateTimeDistance(distancematrix_api_response, class_info.get("orderedClasses"));
 
     // TODO: UNCOMMENT API CALL TO DISTANCEMATRIX
     /*chrome.runtime.sendMessage({
