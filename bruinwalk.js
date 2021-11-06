@@ -1,6 +1,7 @@
 findClassInst();
 // reuse observer from groupme.js
 // observer.observe(document.querySelector('.hide-small'), config);
+// observer.observe(document.querySelector('.courseItem'), config);
 
 /**
  * Main function to seach instructor Bruinwalk information and display popup to be.my.ucla.edu class planner
@@ -65,7 +66,7 @@ function getSearchResult(fullCourseName, instName, handler){
     const instNameArr = instName.split(/[ ,.]+/).slice(0,-1);
 
     // var url = "https://az.bruinwalk.com/search/?q=" + encodeURI(query) + "&category=all";
-    var url = "https://az.bruinwalk.com/classes/" + encodeURI(fullCourseName.toLowerCase());
+    var url = "https://www.bruinwalk.com/classes/" + encodeURI(fullCourseName.toLowerCase());
     
     chrome.runtime.sendMessage({
         url: url,
@@ -110,7 +111,7 @@ function fetchInstBruinwalk(responseHTMLString, instNameArr){
             bwInstDiv = profNames[i].parentNode;
             var instAndClassUrl = $(bwInstDiv).attr('href');
             // console.log(instAndClassUrl);
-            return "https://az.bruinwalk.com" + instAndClassUrl;
+            return "https://www.bruinwalk.com" + instAndClassUrl;
         }
         else {
 

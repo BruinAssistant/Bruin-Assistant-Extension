@@ -5,97 +5,151 @@ function showPopup(instUrl, instDiv, responseHTML) {
     // instDiv.appendChild(bruinwalkLink);
 
     var parts = instUrl.split("/");
-    var id = parts[parts.length-2];
+    const id = parts[parts.length-2];
     // console.log(id);
     var bruinwalkPopupButton = document.createElement('button');
     bruinwalkPopupButton.type = "button";
-    bruinwalkPopupButton.className = "btn btn-primary btn-sm modal-button";
-    bruinwalkPopupButton.setAttribute("data-toggle", "modal");
-    bruinwalkPopupButton.setAttribute("data-target", "#exampleModal"+id); // <-- change to a valid name?
+    bruinwalkPopupButton.className = "btn btn-primary btn-sm modal-button popup";
+    bruinwalkPopupButton.id = id;
+    // bruinwalkPopupButton.setAttribute("onclick", clickFunction());
+    // bruinwalkPopupButton.setAttribute("data-toggle", "modal");
+    // bruinwalkPopupButton.setAttribute("data-target", "#exampleModal"+id); // <-- change to a valid name?
     
     bruinwalkPopupButton.innerText = 'View Bruinwalk Review';
     instDiv.appendChild(bruinwalkPopupButton);
 
-    // var tempModalDiv = document.createElement('div');
-    // tempModalDiv.className = "modal fade text-center";
-    // tempModalDiv.id = "exampleModal";
-
-    // var modalDialog = document.createElement('div');
-    // modalDialog.className = "modal-dialog";
-
-    // var modalContent = document.createElement('div');
-    // modalDialog.className = "modal-content";
-
-    // modalDialog.appendChild(modalContent);
-    // tempModalDiv.appendChild(modalDialog);
-    // document.body.appendChild(tempModalDiv);
-    $('body').append(
-      '<div class="modal fade text-center" id="exampleModal'+id+'">\
-        <div class="modal-dialog">\
-          <div class="modal-content">\
-          <div class="modal-header">\
-    <h5 class="modal-title" id="exampleModalLabel">TITLE</h5>\
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">\
-    <span aria-hidden="true">&times;</span>\
-    </button>\
-</div>\
-<div class="modal-body">\
-    <div class="rating"></div>\
-    <div class="grade-distribution"></div>\
-    <div class="review"></div>\
-    <canvas id="chart"></canvas>\
-</div>\
-<div class="modal-footer">\
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>\
-</div>\
-          </div>\
-        </div>\
-      </div>'
-    );
-    // $('.modal-button').on('click', function(e){
-    //   e.preventDefault();
-    //   $('#exampleModal'+id).modal('show').find('.modal-content').load($(this).attr('href'));
-    // });
-
-    /* modaal library */
+    /*-----------prototype: bootstrap modal ----------*/
     /*
-    // modal container div
-    var containerDiv = document.createElement('div');
-    containerDiv.innerHTML = '\
-    <a href="#inline" class="inline">Show</a>;\
-    <div id="inline" style="display:none;"></div>';
-    instDiv.appendChild(containerDiv);
-    
-
-    var temp2 = document.createElement('div');
-    temp2.innerHTML = '\
-    <div>\
-        <canvas id="myChart'+instUrl+'" height="600" width="600"></canvas>\
-        <a href='+instUrl+'>Redirect to Bruinwalk</a>\
+    $('body').append('\
+      <!-- Modal -->\
+<div class="modal fade" id="exampleModal'+id+'" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">\
+  <div class="modal-dialog" role="document">\
+    <div class="modal-content">\
+      <div class="modal-header">\
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>\
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">\
+          <span aria-hidden="true">&times;</span>\
+        </button>\
+      </div>\
+      <div class="modal-body">\
+        <canvas id="bar-chart" width="800" height="450"></canvas>\
+        ...\
+      </div>\
+      <div class="modal-footer">\
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>\
+        <button type="button" class="btn btn-primary">Save changes</button>\
+      </div>\
     </div>\
-    ';
-    document.getElementById('inline').appendChild(temp2);
-    */
-    /*-------end modaal library test------*/
+  </div>\
+</div>\
+    ');
 
-    // $('.inline').modaal()
-    // */
+    new Chart(document.getElementById("bar-chart"), {
+      type: 'bar',
+      data: {
+        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+        datasets: [
+          {
+            label: "Population (millions)",
+            backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+            data: [2478,5267,734,784,433]
+          }
+        ]
+      },
+      options: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Predicted world population (millions) in 2050'
+        }
+      }
+  });
 
-    //------------retrieve div of ratings------------
+  */
+    
+  var popup = document.createElement('div');
+  popup.className = "popuptext";
+  popup.id = "myPopup"+id;
+  // popup.innerHTML = "POPUP!";
+  document.getElementById(id).appendChild(popup);
 
-    // console.log(responseHTML.getElementsByClassName('metric'));
-    // for(prof_ratings_div in responseHTML.getElementsByClassName('metric')){
-    //   console.log(prof_ratings_div);
-    // }
+  var state = 0; 
+
+  
+  bruinwalkPopupButton.onclick = function(){
+    var popupToggle = document.getElementById("myPopup"+id);
+    popupToggle.classList.toggle("show");
+    // console.log('should show now');
+  };
+
+// function clickFunction() {
+  // if (state == 0){
+  //   state = 1;
+  // }
+  // else{
+  //   state = 0;
+  //   var popup = document.getElementById("myPopup"+id);
+  //   popup.classList.toggle("show");
+  // }
+  // var popupToggle = document.getElementById("myPopup"+id);
+  // console.log(popup);
+  // console.log(document.getElementsByClassName('popup'))
+  // popupToggle.classList.toggle("show");
+// }
 
     // get professor metrics
     var prof_ratings_div = responseHTML.getElementsByClassName('metric');
+    var metrics = ['Overall','Easiness','Workload','Clarity','Helpfulness'];
+    var metrics_score = [];
     for (var i=0; i < prof_ratings_div.length; i++){
       // console.log(prof_ratings_div[i].innerText);
       var rating = document.createElement('div');
       rating.innerHTML = prof_ratings_div[i].innerText;
-      document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(rating);
+      // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(rating);
+
+      var numberPattern = /\d+.\d+/g;
+      metrics_score.push(parseFloat(rating.innerHTML.match(numberPattern)));
+
+      // return if there is not a number (score) for this professor
+      if(!(/\d/.test(rating.innerHTML))){
+        return;
+      }
+      popup.appendChild(rating);
     }
+
+    // create radar chart
+    var chartDiv = document.createElement('canvas');
+    chartDiv.id = 'chart'+id;
+    popup.appendChild(chartDiv);
+
+    var data = {
+      labels: metrics,
+      datasets:[{
+        label: 'professor A in class BBB-000',
+        data: metrics_score,
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        pointBackgroundColor: 'rgb(54, 162, 235)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgb(54, 162, 235)'
+      }]
+    };
+    var options = {
+        scale: {
+            min: 0,
+            max: 5,
+        }
+    }
+    
+    var radarChart = new Chart('chart'+id, {
+      type: 'radar',
+      data: data,
+      options: options
+    });
+
+
 
     // get professor review
     var profReviewDiv = responseHTML.getElementsByClassName('review')[0];
@@ -103,7 +157,8 @@ function showPopup(instUrl, instDiv, responseHTML) {
     review.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText
      + '\n' + profReviewDiv.getElementsByClassName('grade-received')[0].innerText
      + '\n' + profReviewDiv.getElementsByClassName('expand-area')[0].innerText;
-     document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(review);
+    //  document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(review);
+    popup.appendChild(review);
 
 
     var letterArray = ['A+', 'A', 'A-', 
@@ -125,10 +180,16 @@ function showPopup(instUrl, instDiv, responseHTML) {
       // gradeArray.append(grade);
       distribution.innerHTML += letterArray[i] + ': ' + grade + '<br>';
     }
-    document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(distribution);
+    // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(distribution);
+    popup.appendChild(distribution);
 
     var bruinwalkLink = document.createElement('a');
     bruinwalkLink.href = instUrl;
     bruinwalkLink.innerText = "Redirect to Bruinwalk";
-    document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(bruinwalkLink);
+    // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(bruinwalkLink);
+    popup.appendChild(bruinwalkLink);
+
+
+    // create chart:
+
 }

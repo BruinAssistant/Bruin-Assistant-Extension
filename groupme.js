@@ -16,12 +16,15 @@ function listener(mutationsList, observer) {
     if (windowURL.includes('be.my.ucla.edu')) {
         populateGroupMeLinks();
         resizeColumnWidths();
+        // findClassInst();
     }
 }
 const observer = new MutationObserver((mutationsList, observer) => {
     let trigger = false;
     for (const mutation of mutationsList) {
-        if (mutation.target.className !== "section-header") {
+        if ((mutation.target.className !== "section-header") 
+        && (mutation.target.className != 'courseItem')
+        ){
             trigger = true;
             break;
         }
@@ -35,7 +38,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
 });
 // before: observing the entire doc, but change to observe only class section-header
 // because other program also manipulates document
-observer.observe(document.querySelector('.section-header'), config);
+observer.observe(document, config);
 
 function populateGroupMeLinks() {
     const classes = document.getElementsByClassName('courseItem')
