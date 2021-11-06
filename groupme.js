@@ -120,7 +120,7 @@ function resizeColumnWidths() {
 
     for (const table of document.getElementsByClassName('coursetable')) {
         if (table.getElementsByTagName('th').length >= 2) {
-            table.getElementsByTagName('th')[1].style.width = "10%";
+            table.getElementsByTagName('th')[1].style.width = "8%";
         }
     }
 }
