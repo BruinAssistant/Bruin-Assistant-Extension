@@ -2,7 +2,7 @@
 observer.observe(document.querySelector('.centerColumn'), config);
 
 // TODO: Double check proper mappings
-let department_abbrev = new Map([
+const department_abbrev = new Map([
     ["Aerospace Studies", "AERO ST"],
     ["African American Studies", "AF AMER"],
     ["African Studies", "AFRC ST"],
@@ -195,8 +195,9 @@ function populateTimeDistance(response, ordered_classes){
     let class_plan_classes = document.getElementById("div_landing").getElementsByClassName("courseItem");
 
     for (let class_record of class_plan_classes) {
-        let class_name_record = class_record.getElementsByClassName("SubjectAreaName_ClassName").item(0).children;
 
+        // get class department and number (for class info lookups)
+        let class_name_record = class_record.getElementsByClassName("SubjectAreaName_ClassName").item(0).children;
         let class_department = extractDepartmentFromClassRecord(class_name_record.item(0).innerText);
         let class_number = extractNumberFromClassRecord(class_name_record.item(1).innerText);
 
@@ -261,7 +262,6 @@ function initiateTimeDistance(){
         ["Franz Hall", new Coord(34.06977549013749, -118.4412362866013)],
         ["Geffen Hall", new Coord(34.06440506221056, -118.44235545961538)],
         ["Geology Building", new Coord(34.06940011483661, -118.44055781543707)],
-        ["Geology Building B", new Coord(34.06938234016632, -118.44059000246695)],
         ["Gold Hall", new Coord(34.07372594871459, -118.4436591384509)],
         ["Gonda (Goldschmied) Neuroscience and Genetics Research Center", new Coord(34.06542486559988, -118.44723186883748)],
         ["Haines Hall", new Coord(34.07297623721399, -118.44115199519744)],
@@ -338,6 +338,9 @@ function initiateTimeDistance(){
         ["Young Research Library", new Coord(34.075075721540614, -118.44095101783246)]
     ])
 
+    // parse all class info from webpage
+    let class_info = getClassBuildings();
+
     // Construct unique building coordinates by indexing into coordinate table
     let unique_buildings = [];
     for (let building of class_info.get("uniqueBuildings")){
@@ -345,6 +348,8 @@ function initiateTimeDistance(){
         if(val != null) // only add if not null
             unique_buildings.push(val);
     }
+
+    console.log(unique_buildings);
 
     let total_buildings = unique_buildings.length;
     let str_coord = "";
