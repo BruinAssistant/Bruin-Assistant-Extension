@@ -29,8 +29,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         .catch(error => console.log("Error: ", error))
         return true;
     }
-    if (request.contentScriptQuery == "getTimeDistanceData"){
-        let matrix;
+    if (request.contentScriptQuery == "getTimeDistanceData") {
         fetch(request.url)
             .then(response => response.json())
             .then(response => sendResponse(response))
