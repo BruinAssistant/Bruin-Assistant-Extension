@@ -368,7 +368,6 @@ function populateTimeDistance(response, parsed_class_info) {
         // inject time/dist column into header at position TIME_DIST_COL_NUMBER
         let header = course_table.item(0);
         header.getElementsByTagName('th')[TIME_DIST_COL_IDX - 1].after(time_dist_col);
-
         // iterate through sections to inject all relevant class time/dist info
         for (let i = 1; i < course_table.length; i++) {
 
@@ -382,6 +381,98 @@ function populateTimeDistance(response, parsed_class_info) {
             section.firstElementChild.getElementsByTagName('td')[TIME_DIST_COL_IDX - 1].after(time_dist_data);
         }
     }
+}
+
+function cleanBlacklistedBuildings(buildings) {
+
+    for (let val of buildings)
+    {
+        if (buildings_blacklist.includes(val))
+            buildings.delete(val);
+    }
+
+    return buildings;
+}
+
+function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name) {
+
+    // init constants that will be used/referenced during formatting
+    const newline = "</br>";
+    const no_data = "N/A";
+    const unknown = "?";
+    const day_abbrev_map = new Map([
+        ['Monday','M'],
+        ['Tuesday','T'],
+        ['Wednesday','W'],
+        ['Thursday','R'],
+        ['Friday','F']
+    ]);
+
+    // init buffers/flags to be used during formatting
+    let buf = "";
+    let first_day_with_section = true;
+
+    // iterate through each day
+    for (let [day, class_info_pairs] of class_infos) {
+
+        // set flag for conditional formatting
+        let first_section_in_day = true;
+
+        // iterate through each class info pair
+        for (let [prev_class_info, cur_class_info] of class_info_pairs) {
+
+            // check if current class belongs to section of interest
+            if (cur_class_info.section != section_name)
+                continue;
+
+            // perform extra formatting if this is not the first day with section of interest
+            if (!first_day_with_section) {
+                buf += newline;
+            }
+
+            // ensure flag is set for any future additions
+            first_day_with_section = false;
+
+            // conditionally format depending on if this is the first class of this section today
+            if (first_section_in_day) {
+                buf += (day_abbrev_map.has(day) ? day_abbrev_map.get(day) : unknown) + ": ";
+                first_section_in_day = false;
+            }
+            else
+                buf += ", ";
+
+            // check if current class is first in the day (no previous class, no time/dist lookup needed)
+            if (prev_class_info == null) {
+                buf += (no_data + " (first class)");
+                continue;
+            }
+
+            // check if current class has a special or blacklisted location
+            if (buildings_no_location.includes(cur_class_info.building)) {
+                buf += (no_data + " (no physical location)");
+                continue;
+            }
+            else if (buildings_blacklist.includes(cur_class_info.building)) {
+                buf += (no_data + " (unknown exact location)");
+                continue;
+            }
+
+            // lookup distance and time based on locations
+            let prev_class_idx = buildings_idx.indexOf(prev_class_info.building);
+            let cur_class_idx = buildings_idx.indexOf(cur_class_info.building);
+
+            if (prev_class_idx == -1 || cur_class_idx == -1) {
+                // ERROR, but we'll handle gracefully instead of throwing an exception
+                buf += unknown;
+                continue;
+            }
+
+            let time_dist_info = td_matrix[prev_class_idx].elements[cur_class_idx];
+            buf += time_dist_info.distance.text + " (" + time_dist_info.duration.text + ")";
+        }
+    }
+
+    return buf != "" ? buf : (no_data + " (no days scheduled)");
 }
 
 function cleanBlacklistedBuildings(buildings) {
