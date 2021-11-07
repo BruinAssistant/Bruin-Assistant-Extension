@@ -171,6 +171,13 @@ const department_abbrev = new Map([
     ["Yiddish", "YIDDSH"],
 ]);
 
+// define blacklist for buildings
+const buildings_no_location = ["No facility", "No Location", "Online", "Online - Recorded"]
+const buildings_blacklist = buildings_no_location.concat(["Off campus"]);
+
+// specify which column number the new injected Time/Dist column should be
+const TIME_DIST_COL_IDX = 7;
+
 // prepTimeDistance();
 initiateTimeDistance();
 function test(response){
@@ -185,15 +192,11 @@ function getLng(building){
     return (building.lng).toString();
 }
 
-// TODO: FINISH THIS POPULATION FUNCTION
-function populateTimeDistance(response, parsed_class_info){
-    console.log("ENTERED POPULATE TIME DISTANCE");
-    console.log(response);
-    console.log(parsed_class_info);
+function populateTimeDistance(response, parsed_class_info) {
 
     // extract relevant info from parsed webpage info
     let ordered_classes = parsed_class_info.get("orderedClasses");
-    let unique_buildings = parsed_class_info.get("uniqueBuildings");
+    let unique_buildings = Array.from(cleanBlacklistedBuildings(parsed_class_info.get("uniqueBuildings")));
 
     // extract relevant info (distance matrix) from DistanceMatrix API response
     let td_matrix = response.rows;
@@ -209,19 +212,126 @@ function populateTimeDistance(response, parsed_class_info){
         let course_department = extractDepartmentFromClassRecord(course_nameinfo.item(0).innerText);
         let course_number = extractNumberFromClassRecord(course_nameinfo.item(1).innerText);
 
-        //console.log(class_department + ", " + department_abbrev.get(class_department));
-        //console.log(class_number);
-
         // lookup all previous and current class infos for all days
         let class_infos = getAllCurAndPrevClassInfo(ordered_classes, department_abbrev.get(course_department), course_number);
 
-        // inject into corresponding HTML
-        // - inject header
-        // - resize/modify accordingly
-        // - for each section:
-        //     - determine and inject all relevant class time/dist info
-        console.log(class_infos);
+        // get course table (holds header row, as well as all section rows)
+        let course_table = course.getElementsByClassName('coursetable').item(0).getElementsByTagName('tbody');
+
+        // init new "Distance From Previous Class" column for injection into header
+        let time_dist_col = document.createElement('th');
+        time_dist_col.style.width = "13%";
+        time_dist_col.innerHTML = "Dist<span class=\"hide-small\">ance From Previous Class</span>";
+
+        // inject time/dist column into header at position TIME_DIST_COL_NUMBER
+        let header = course_table.item(0);
+        header.getElementsByTagName('th')[TIME_DIST_COL_IDX - 1].after(time_dist_col);
+        
+        // iterate through sections to inject all relevant class time/dist info
+        for (let i = 1; i < course_table.length; i++) {
+
+            // determine which section we're currently injecting for
+            let section = course_table.item(i);
+            let section_name = section.firstElementChild.getElementsByClassName('section-header')[0].innerText;
+
+            // init new data element for "Distance From Previous Class" column
+            let time_dist_data = document.createElement('td');
+            time_dist_data.innerHTML = formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
+            section.firstElementChild.getElementsByTagName('td')[TIME_DIST_COL_IDX - 1].after(time_dist_data);
+        }
     }
+}
+
+function cleanBlacklistedBuildings(buildings) {
+
+    for (let val of buildings)
+    {
+        if (buildings_blacklist.includes(val))
+            buildings.delete(val);
+    }
+
+    return buildings;
+}
+
+function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name) {
+
+    // init constants that will be used/referenced during formatting
+    const newline = "</br>";
+    const no_data = "N/A";
+    const unknown = "?";
+    const day_abbrev_map = new Map([
+        ['Monday','M'],
+        ['Tuesday','T'],
+        ['Wednesday','W'],
+        ['Thursday','R'],
+        ['Friday','F']
+    ]);
+
+    // init buffers/flags to be used during formatting
+    let buf = "";
+    let first_day_with_section = true;
+
+    // iterate through each day
+    for (let [day, class_info_pairs] of class_infos) {
+
+        // set flag for conditional formatting
+        let first_section_in_day = true;
+
+        // iterate through each class info pair
+        for (let [prev_class_info, cur_class_info] of class_info_pairs) {
+
+            // check if current class belongs to section of interest
+            if (cur_class_info.section != section_name)
+                continue;
+
+            // perform extra formatting if this is not the first day with section of interest
+            if (!first_day_with_section) {
+                buf += newline;
+            }
+
+            // ensure flag is set for any future additions
+            first_day_with_section = false;
+
+            // conditionally format depending on if this is the first class of this section today
+            if (first_section_in_day) {
+                buf += (day_abbrev_map.has(day) ? day_abbrev_map.get(day) : unknown) + ": ";
+                first_section_in_day = false;
+            }
+            else
+                buf += ", ";
+
+            // check if current class is first in the day (no previous class, no time/dist lookup needed)
+            if (prev_class_info == null) {
+                buf += (no_data + " (first class)");
+                continue;
+            }
+
+            // check if current class has a special or blacklisted location
+            if (buildings_no_location.includes(cur_class_info.building)) {
+                buf += (no_data + " (no physical location)");
+                continue;
+            }
+            else if (buildings_blacklist.includes(cur_class_info.building)) {
+                buf += (no_data + " (unknown exact location)");
+                continue;
+            }
+
+            // lookup distance and time based on locations
+            let prev_class_idx = buildings_idx.indexOf(prev_class_info.building);
+            let cur_class_idx = buildings_idx.indexOf(cur_class_info.building);
+
+            if (prev_class_idx == -1 || cur_class_idx == -1) {
+                // ERROR, but we'll handle gracefully instead of throwing an exception
+                buf += unknown;
+                continue;
+            }
+
+            let time_dist_info = td_matrix[prev_class_idx].elements[cur_class_idx];
+            buf += time_dist_info.distance.text + " (" + time_dist_info.duration.text + ")";
+        }
+    }
+
+    return buf != "" ? buf : (no_data + " (no days scheduled)");
 }
 
 function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, course_number) {

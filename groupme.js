@@ -119,8 +119,10 @@ function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
 function resizeColumnWidths() {
 
     for (const table of document.getElementsByClassName('coursetable')) {
-        if (table.getElementsByTagName('th').length >= 2) {
-            table.getElementsByTagName('th')[1].style.width = "8%";
+        if (table.getElementsByTagName('th').length >= 6) {
+            table.getElementsByTagName('th')[1].style.width = "8%"; // Section
+            table.getElementsByTagName('th')[5].style.width = "13%"; // Time
+
         }
     }
 }
