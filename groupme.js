@@ -122,7 +122,6 @@ function resizeColumnWidths() {
         if (table.getElementsByTagName('th').length >= 6) {
             table.getElementsByTagName('th')[1].style.width = "8%"; // Section
             table.getElementsByTagName('th')[5].style.width = "13%"; // Time
-
         }
     }
 }
