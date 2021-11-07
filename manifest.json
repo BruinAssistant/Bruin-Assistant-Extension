@@ -28,9 +28,10 @@
         }
     ],
     "permissions": [
-        "activeTab"
+        "activeTab", "cookies"
     ],
     "host_permissions": [
+        "http://molasses.home.kg/", // Henry's backend test server
         "https://class-planner-assistant.herokuapp.com/",
         "https://www.bruinwalk.com/",
         "https://az.bruinwalk.com/"
