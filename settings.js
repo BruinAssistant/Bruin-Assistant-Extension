@@ -116,3 +116,7 @@ function getInvites(evt) {
 document.getElementById("auth-button").onclick = checkAuth;
 document.getElementById("get-friends").onclick = getFriends;
 document.getElementById("get-invites").onclick = getInvites;
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+})
