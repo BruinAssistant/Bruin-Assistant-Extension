@@ -5,9 +5,14 @@ function checkAuth(evt) {
   console.log("Checking auth!");
 
   // This route (after middleware) basically just returns if req.isAuthenticated()
-  fetch('http://molasses.home.kg:65529/protected-route')
-    .then(res => res.text())
-    .then(res => label.textContent = res)
+  fetch('https://class-planner-assistant-dev.herokuapp.com/protected-route')
+    .then(res => res.json())
+    .then(res => { 
+      label.textContent = res.msg;
+      if (res.code === 1) {
+        document.getElementsByTagName("form")[0].classList.add("show");
+      }
+    })
     .catch(err => {console.log("Error!", err); label.textContent = "" + err; return;});
 }
 
@@ -15,3 +20,7 @@ function checkAuth(evt) {
 // See: Content Security Policy:
 // https://stackoverflow.com/questions/13591983/onclick-or-inline-script-isnt-working-in-extension
 document.getElementById("auth-button").onclick = checkAuth;
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+})

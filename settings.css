@@ -1,1 +1,9 @@
 /* The pop up settings CSS  */
+.show {
+    display: inherit;
+}
+
+form {
+    display: none;
+}
+
