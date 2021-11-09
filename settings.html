@@ -10,22 +10,50 @@
     <link rel="stylesheet" href="settings.css">
 </head>
 <body>
-  <form action="http://molasses.home.kg:65529/login" method="POST">
-    <div>
-        <label>Username:</label>
-        <input type="text" name="username"/>
-    </div>
-    <div>
-        <label>Password:</label>
-        <input type="password" name="password"/>
-    </div>
-    <div>
-        <input type="submit" value="Log In"/>
-    </div>
-  </form>
+  <div name='probably should just embed backend/home or something'>
+    <form action="https://class-planner-assistant-dev.herokuapp.com/login" method="POST">
+      <div>
+          <label>Username:</label>
+          <input type="text" name="username"/>
+      </div>
+      <div>
+          <label>Password:</label>
+          <input type="password" name="password"/>
+      </div>
+      <div>
+          <input type="submit" value="Log In"/>
+      </div>
+    </form>
+  </div>
   <div>
-    <label id="auth">NA</label>
+    <form action="https://class-planner-assistant-dev.herokuapp.com/api/friends/invite" method="POST">
+      <div>
+          <label>Friend's Username:</label>
+          <input type="text" name="username"/>
+      </div>
+      <div>
+          <input type="submit" value="Invite"/>
+      </div>
+    </form>
+  </div>
+
+  <div>
+    <div>
+      <label>Friends:</label>
+      <ul id="friends-display">
+      </ul>
+    </div>
+    <div>
+      <label>Invites:</label>
+      <ul id="invites-display">
+      </ul>
+    </div>
+  </div>
+  <div>
+    <label id="display">NA</label>
     <button id="auth-button">Check Auth</button>
+    <button id="get-friends">Get Friends</button>
+    <button id="get-invites">Get Invites</button>
   </div>
   <script src="settings.js"></script>
 </body>
