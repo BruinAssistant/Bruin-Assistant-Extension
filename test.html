@@ -5,6 +5,19 @@
         <script src="bootstrap.min.js"></script>
         <link rel="stylesheet" href="bootstrap.min.css">
         <link rel="stylesheet" href="test.css">
+        <script>
+          fetch('https://www.bruinwalk.com/classes/com-sci-143/').then(function (response) {
+            // The API call was successful!
+            return response.text();
+          }).then(function (html) {
+            // This is the HTML from our response as a text string
+            console.log(html);
+          }).catch(function (err) {
+            // There was an error
+            console.warn('Something went wrong.', err);
+          });
+
+        </script>
     </head>
     <body>
    <h2>Popup</h2>

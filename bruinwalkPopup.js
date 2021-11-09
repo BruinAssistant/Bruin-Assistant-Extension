@@ -6,7 +6,8 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
     var parts = instUrl.split("/");
     const id = parts[parts.length-2];
-    // console.log(id);
+    const professorName = responseHTML.getElementsByClassName('professor-info')[0].innerText.trim();
+
     var bruinwalkPopupButton = document.createElement('button');
     bruinwalkPopupButton.type = "button";
     bruinwalkPopupButton.className = "btn btn-primary btn-sm modal-button popup";
@@ -107,25 +108,43 @@ function showPopup(instUrl, instDiv, responseHTML) {
       rating.innerHTML = prof_ratings_div[i].innerText;
       // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(rating);
 
-      var numberPattern = /\d+.\d+/g;
-      metrics_score.push(parseFloat(rating.innerHTML.match(numberPattern)));
-
       // return if there is not a number (score) for this professor
-      if(!(/\d/.test(rating.innerHTML))){
-        return;
+      if(!(/\d/.test(prof_ratings_div[i].innerText))){
+        metrics_score.push(prof_ratings_div[i].innerText)
       }
-      popup.appendChild(rating);
+      
+      var numberPattern = /\d+.\d+/g;
+      metrics_score.push(parseFloat(prof_ratings_div[i].innerText.match(numberPattern)));
+
+      // popup.appendChild(rating);
     }
+
+    var table = document.createElement('table');
+    table.className = "metricTable";
+    for(var i = 0; i < 5; i++){
+      var row = document.createElement('tr');
+      var metric = document.createElement('td');
+      metric.innerHTML = metrics[i];
+      row.appendChild(metric);
+
+      var score = document.createElement('td');
+      score.innerHTML = metrics_score[i];
+      row.appendChild(score);
+
+      table.appendChild(row);
+    }
+    popup.appendChild(table);
+    popup.appendChild(document.createElement("br"));
 
     // create radar chart
     var chartDiv = document.createElement('canvas');
-    chartDiv.id = 'chart'+id;
+    chartDiv.id = 'metricRadar'+id;
     popup.appendChild(chartDiv);
 
-    var data = {
+    var profMetricData = {
       labels: metrics,
       datasets:[{
-        label: 'professor A in class BBB-000',
+        label: 'Intructor '+professorName+' in Class '+id.toUpperCase(),
         data: metrics_score,
         fill: true,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -134,33 +153,34 @@ function showPopup(instUrl, instDiv, responseHTML) {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgb(54, 162, 235)'
-      }]
+      },{
+      label: '[FAKE DATA] Average of instructors in class '+id.toUpperCase(),
+      data: [3.0,3.0,3.0,3.0,3.0],
+      fill: true,
+      backgroundColor: 'rgba(227, 217, 105, 0.2)',
+      borderColor: 'rgba(227, 217, 105, 1)',
+      pointBackgroundColor: 'rgba(227, 217, 105, 1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(227, 217, 105, 1)'
+      }]  
     };
-    var options = {
+    var radarOptions = {
         scale: {
             min: 0,
             max: 5,
         }
     }
     
-    var radarChart = new Chart('chart'+id, {
+    var radarChart = new Chart('metricRadar'+id, {
       type: 'radar',
-      data: data,
-      options: options
+      data: profMetricData,
+      options: radarOptions
     });
 
 
 
-    // get professor review
-    var profReviewDiv = responseHTML.getElementsByClassName('review')[0];
-    var review = document.createElement('div');
-    review.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText
-     + '\n' + profReviewDiv.getElementsByClassName('grade-received')[0].innerText
-     + '\n' + profReviewDiv.getElementsByClassName('expand-area')[0].innerText;
-    //  document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(review);
-    popup.appendChild(review);
-
-
+    // create distribution
     var letterArray = ['A+', 'A', 'A-', 
     'B+', 'B', 'B-', 
     'C+', 'C', 'C-',
@@ -172,24 +192,146 @@ function showPopup(instUrl, instDiv, responseHTML) {
     for (var i=0; i<13; i++){
       // grade[i] = responseHTML.getElementsByClassName('tooltip left')[i].innerText;
       var grade = responseHTML.getElementsByClassName('bar-fill has-tip tip-left')[i].getAttribute('title');
-      // grade = grade.getAttribute('title'); <--- use regex instead
       if (grade == null){
         console.log("THIS PROFESSOR HASN'T TAUGHT AT UCLA YET");
         return;
       }
-      // gradeArray.append(grade);
+      gradeArray.push(parseFloat(grade));
       distribution.innerHTML += letterArray[i] + ': ' + grade + '<br>';
     }
     // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(distribution);
-    popup.appendChild(distribution);
+    // popup.appendChild(distribution);
+
+
+    // create chart
+    var chartDiv = document.createElement('canvas');
+    chartDiv.id = 'distributionBar'+id;
+    popup.appendChild(chartDiv);
+    popup.appendChild(document.createElement("br"));
+
+    //--------------testing getting average-------------
+    var metric_dict = {
+      'Overall':[],
+      'Easiness':[],
+      'Workload':[],
+      'Clarity':[],
+      'Helpfulness':[],
+    }
+    chrome.runtime.sendMessage({
+      url: "https://www.bruinwalk.com/classes/com-sci-143/",
+      contentScriptQuery: "getBruinwalkData",
+      }
+      , responseHTMLString => {
+        // console.log(responseHTMLString);
+        courseHtml = stringToHTML(responseHTMLString);
+        ratingCells = (courseHtml.getElementsByClassName('rating-cell'));
+        // console.log(ratingCells)
+
+        // filter out only the desired div
+        filteredRatingCells = []
+        for (var i = 0; i <ratingCells.length; i++){
+          if(ratingCells[i].width == "80px"){
+            filteredRatingCells.push(ratingCells[i]);
+          }
+        }
+        // console.log(filteredRatingCells);
+
+        for (var i=0; i<filteredRatingCells.length; i++){
+          // console.log(filteredRatingCells[i].innerText);
+          if (filteredRatingCells[i].innerText != null){
+            var text = filteredRatingCells[i].innerText;
+            text = text.split('\n')
+            if (text[1] != 'N/A'){
+              // console.log(text[1])
+            }
+          }
+        }
+        filteredRatingCells.forEach(cell => {
+          var text = cell.innerText.split('\n');
+          if(text[1] != 'N/A'){
+            metric_dict[text[2]].push(text[1]);
+          }
+        })
+
+        // console.log(metric_dict['Overall']);
+    })
+    
+
+    // get professor review
+    var profReviewDiv = responseHTML.getElementsByClassName('review')[0];
+
+    var reviewHeader = document.createElement('div');
+    reviewHeader.style.display = 'flex';
+    reviewHeader.style.justifyContent = 'space-around';
+
+    var termTaken = document.createElement('div');
+    termTaken.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n")[2];
+    if (profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n").length == 8){
+      var covid = document.createElement('div');
+      covid.innerText = 'COVID-19';
+      termTaken.appendChild(covid)
+    }
+    reviewHeader.appendChild(termTaken);
+
+    var gradeReceived = document.createElement('div');
+    var gradeReceived_text_splitted = profReviewDiv.getElementsByClassName('grade-received')[0].innerText.split('\n');
+    gradeReceived.innerText = gradeReceived_text_splitted[1] + " " + gradeReceived_text_splitted[2];
+    reviewHeader.appendChild(gradeReceived);
+    popup.appendChild(reviewHeader);
+
+    var review_comment = document.createElement('div');
+    review_comment.innerText = profReviewDiv.getElementsByClassName('expand-area')[0].innerText;
+    review_comment.className = "comment";
+    review_comment.style.textAlign = "left";
+    //  document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(review);
+    popup.appendChild(review_comment);
+    popup.appendChild(document.createElement("br"));
+
+    
+
+    var profDistributionData = {
+      // labels: letterArray,
+      labels: ['+','A','-',
+      '+','B','-',
+      '+','C','-',
+      '+','D','-',
+      '+','E','-','F'],
+      datasets:[{
+        label: 'Grade Distribution from ' + responseHTML.getElementById('term-selector').children.item(1).innerText,
+        data: gradeArray,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        borderWidth: 1
+      }]
+    };
+    var profDistributionOption = {
+      scales: {
+        y: {beginAtZero: true}
+      }
+    };
+
+    var distributionChart = new Chart('distributionBar'+id,{
+      type: 'bar',
+      data: profDistributionData,
+      options: profDistributionOption
+    });
+
+
 
     var bruinwalkLink = document.createElement('a');
     bruinwalkLink.href = instUrl;
-    bruinwalkLink.innerText = "Redirect to Bruinwalk";
+    bruinwalkLink.innerHTML = "Redirect to Bruinwalk";
     // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(bruinwalkLink);
     popup.appendChild(bruinwalkLink);
 
+}
 
-    // create chart:
 
+function findAverageMetrics(courseName){
+  var url = "https://www.bruinwalk.com/classes/" + courseName;
+  // fetch website
+
+
+  // check if there is next page or not. If yes, fetch again and store in array
+  // else, return average
 }
