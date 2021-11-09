@@ -8,10 +8,14 @@ function checkAuth(evt) {
   console.log("Checking auth!");
 
   // This route (after middleware) basically just returns if req.isAuthenticated()
-  // https://class-planner-assistant-dev.herokuapp.com/protected-route
   fetch(`${api}/authenticated`)
-    .then(res => res.text())
-    .then(res => display.textContent = res)
+    .then(res => res.json())
+    .then(res => {
+      display.textContent = res.msg;
+      if (res.code === 1) {
+        document.getElementsByTagName("form")[0].classList.add("show");
+      }
+    })
     .catch(err => {console.log("Error!", err); display.textContent = "" + err; return;});
 }
 
@@ -85,3 +89,7 @@ function getInvites(evt) {
 document.getElementById("auth-button").onclick = checkAuth;
 document.getElementById("get-friends").onclick = getFriends;
 document.getElementById("get-invites").onclick = getInvites;
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+})
