@@ -1,7 +1,4 @@
 findClassInst();
-// reuse observer from groupme.js
-// observer.observe(document.querySelector('.hide-small'), config);
-// observer.observe(document.querySelector('.courseItem'), config);
 
 /**
  * Main function to seach instructor Bruinwalk information and display popup to be.my.ucla.edu class planner
@@ -20,8 +17,7 @@ function findClassInst(){
 
         var fullCourseName = classDict[courseMajor] + '-' + courseNum;
 
-
-
+        // Divide a cell into multiple divs. Number of div depends on number of instructors in the class
         transformInstDiv(courseTable[7]);
 
 
@@ -30,29 +26,18 @@ function findClassInst(){
         
         
         var allInstName = instName.split(/\n/);
-        console.log(allInstName);
         for (let j = 0; j < allInstName.length; j++){
 
             // ignore if it is empty string or '...' after split
             if(allInstName[j] != "..."){
-                // console.log("Attempt to find instructor ", allInstName[j]);
                 getSearchResult(fullCourseName, allInstName[j], ((instUrl) => {
-                    /*if (instUrl != null){*/
-                        // var bruinwalkLink = document.createElement('a');
-                        // bruinwalkLink.href = instUrl;
-                        // bruinwalkLink.innerText = "Redirect to bruinwalk";
-                        // courseTable[7].appendChild(bruinwalkLink);
+                    /*if (instUrl != null){*/ // <---- need to rework to append 'N/A' button
 
                         // get bruinwalk html to process
                         chrome.runtime.sendMessage({
                             url: instUrl,
                             contentScriptQuery: "getBruinwalkData",
                         }, responseHTMLString => {
-                            // var stringToHTML = function (str) {
-                            //     var parser = new DOMParser();
-                            //     var doc = parser.parseFromString(str, 'text/html');
-                            //     return doc;
-                            // };
                             var responseHTML = stringToHTML(responseHTMLString);
                             // showPopup(instUrl, courseTable[7], responseHTML);
                             showPopup(instUrl, courseTable[7].getElementsByClassName('instructor-container')[j], responseHTML);
@@ -60,7 +45,6 @@ function findClassInst(){
 
                     /*}*/
                 }));
-                // createBruinwalkButton(instUrl);
             }
         }
     }
@@ -73,8 +57,6 @@ function findClassInst(){
  */
 function getSearchResult(fullCourseName, instName, handler){
     const instNameArr = instName.split(/[ ,.]+/).slice(0,-1);
-
-    // var url = "https://az.bruinwalk.com/search/?q=" + encodeURI(query) + "&category=all";
     var url = "https://www.bruinwalk.com/classes/" + encodeURI(fullCourseName.toLowerCase());
     
     chrome.runtime.sendMessage({
@@ -86,8 +68,6 @@ function getSearchResult(fullCourseName, instName, handler){
 
         // convert string to html
         const instUrl = fetchInstBruinwalk(responseHTMLString, instNameArr);
-        // createBruinwalkButton(instUrl);
-        // console.log(instUrl);
         handler(instUrl);
     }
     );
@@ -101,7 +81,6 @@ function getSearchResult(fullCourseName, instName, handler){
  */
 function fetchInstBruinwalk(responseHTMLString, instNameArr){
     var responseHTML = stringToHTML(responseHTMLString);
-    // console.log(responseHTML);
     profNames = responseHTML.getElementsByClassName('prof');
     for(let i = 0; i < profNames.length; i++){
         fullname = profNames[i].innerText.split(" ");
@@ -110,7 +89,6 @@ function fetchInstBruinwalk(responseHTMLString, instNameArr){
 
         // comparing to only last name (Not sure if first name is necessary)
         if (lastName == instNameArr[0]){
-            // console.log('found Prof!');
             bwInstDiv = profNames[i].parentNode;
             var instAndClassUrl = $(bwInstDiv).attr('href');
             return "https://www.bruinwalk.com" + instAndClassUrl;
@@ -121,13 +99,21 @@ function fetchInstBruinwalk(responseHTMLString, instNameArr){
     }
     return null;
 }
-
+/**
+ * turn string of html into html element
+ * @param str string of html
+ * @returns html element
+ */
 function stringToHTML(str){
     var parser = new DOMParser();
     var doc = parser.parseFromString(str, 'text/html');
     return doc;
 }
 
+/**
+ * Convert pure cell into a div for one instructor, so we can append button next to the instructor
+ * @param instDiv cell inside class planner that contains instructor name
+ */
 function transformInstDiv(instDiv){
     instName = instDiv.innerText.split('\n');
     instDiv.innerHTML = "";

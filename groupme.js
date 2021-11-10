@@ -11,21 +11,28 @@ const config = { subtree: true, childList: true };
 // this is called whenever DOM is modifies
 function listener(mutationsList, observer) {
     // run the script if it detects a class search page
-    console.log(mutationsList);
     const windowURL = `${window.location.href}`
     if (windowURL.includes('be.my.ucla.edu')) {
         populateGroupMeLinks();
         resizeColumnWidths();
-        // findClassInst();
     }
 }
+
+// DOM Nodes that should not trigger mutation callback for reload.
+const observerWhiteList = [
+    "inst-rating-title-div",
+    "inst-rating-content-div",
+    "hide-small",
+    "section-header",
+    "inst-rating-footer-div",
+];
+
 const observer = new MutationObserver((mutationsList, observer) => {
     let trigger = false;
     for (const mutation of mutationsList) {
-        if ((mutation.target.className !== "section-header") 
-        && (mutation.target.className != 'courseItem')
-        ){
+        if (!observerWhiteList.includes(mutation.target.className)) {
             trigger = true;
+            console.log("Mutation: ", mutation);
             break;
         }
     }
@@ -36,8 +43,6 @@ const observer = new MutationObserver((mutationsList, observer) => {
         }, 1000);
     }
 });
-// before: observing the entire doc, but change to observe only class section-header
-// because other program also manipulates document
 observer.observe(document, config);
 
 function populateGroupMeLinks() {
@@ -45,7 +50,6 @@ function populateGroupMeLinks() {
 
     for (const classSection of classes) {
         let classNameText = classSection.getElementsByClassName('SubjectAreaName_ClassName')[0].getElementsByTagName('p')[1].innerText;
-
         for (const section of classSection.getElementsByClassName('section-header')) {
             if (section.getElementsByTagName('a').length) {
                 let sectionName = section.getElementsByTagName('a')[0];
@@ -55,20 +59,32 @@ function populateGroupMeLinks() {
                     console.error("Cannot find section ID for " + sectionName.title);
                 }
                 const sectionID = sectionIDMatchResults[1];
-                const btn = document.createElement('a');
                 getGroupmeLink(sectionID, classNameText, sectionNameText, (groupmeLink) => {
-                    let prev = section.getElementsByClassName("groupme-btn");
-                    if (prev.length > 0) {
-                        prev[0].remove();
+                    for (let node of section.getElementsByClassName("qr-popup")) {
+                        node.remove();
                     }
-                    btn.className = "groupme-btn";
-                    btn.target = "_blank";
-                    btn.rel = "noopener noreferrer";
-                    btn.href = groupmeLink;
+
+                    let QRSpan = document.createElement('span');
+                    QRSpan.className = "qr-popuptext";
+                    let QR = document.createElement('img');
+                    QR.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + groupmeLink;
+                    QR.className = "qr-img"
+                    QRSpan.appendChild(QR);
+
+                    let QRPopup = document.createElement('a');
+                    QRPopup.target = "_blank";
+                    QRPopup.rel = "noopener noreferrer";
+                    QRPopup.href = groupmeLink;
+                    
+                    QRPopup.className = "qr-popup"
+
                     let btnImg = document.createElement('img');
                     btnImg.src = chrome.runtime.getURL("assets/groupme.png");
-                    btn.appendChild(btnImg);
-                    section.appendChild(btn);
+                    btnImg.className = "groupme-img"
+
+                    QRPopup.appendChild(btnImg);
+                    QRPopup.appendChild(QRSpan);
+                    section.appendChild(QRPopup);
                 });
             }
         }
@@ -104,7 +120,7 @@ function resizeColumnWidths() {
 
     for (const table of document.getElementsByClassName('coursetable')) {
         if (table.getElementsByTagName('th').length >= 2) {
-            table.getElementsByTagName('th')[1].style.width = "10%";
+            table.getElementsByTagName('th')[1].style.width = "8%";
         }
     }
 }
