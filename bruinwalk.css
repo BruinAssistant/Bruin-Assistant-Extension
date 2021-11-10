@@ -47,6 +47,7 @@
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
+    z-index: 999;
 }
   
   /* Add animation (fade in the popup) */
@@ -106,4 +107,36 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: #a8bbbf;
+}
+
+.covid{
+  border: 3px solid;
+  border-radius: 16px;
+  width: 80px;
+  border-color: rgb(227, 217, 105);
+  color: rgb(227, 217, 105);
+  text-align: center;
+}
+
+.bruinwalk-button{
+  background-color: rgb(2, 117, 216);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 40px;
+  height: 20px;
+}
+
+.bruinwalk-undefined{
+  background-color: rgb(216, 34, 2);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 40px;
+  height: 20px;
+}
+
+.instructor-container{
+  display: flex;
+  justify-content: space-between;
 }

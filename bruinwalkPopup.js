@@ -1,23 +1,29 @@
 function showPopup(instUrl, instDiv, responseHTML) {
-    // var bruinwalkLink = document.createElement('a');
-    // bruinwalkLink.href = instUrl;
-    // bruinwalkLink.innerText = "Redirect to popup";
-    // instDiv.appendChild(bruinwalkLink);
 
-    var parts = instUrl.split("/");
+    // create button
+    var bruinwalkPopupButton = document.createElement('button');
+    
+    if (instUrl == null || responseHTML == null){
+      bruinwalkPopupButton.className = "bruinwalk-undefined";
+      bruinwalkPopupButton.innerText = "N/A";
+      bruinwalkPopupButton.onclick = function() {};
+      instDiv.appendChild(bruinwalkPopupButton);
+      return;
+    }
+
+    const parts = instUrl.split("/");
     const id = parts[parts.length-2];
     const professorName = responseHTML.getElementsByClassName('professor-info')[0].innerText.trim();
+    const overallRating = responseHTML.getElementsByClassName('metric')[0].innerText.match(/\d+.\d+/g);
 
-    var bruinwalkPopupButton = document.createElement('button');
     bruinwalkPopupButton.type = "button";
-    bruinwalkPopupButton.className = "btn btn-primary btn-sm modal-button popup";
+    bruinwalkPopupButton.className = "popup bruinwalk-button";
     bruinwalkPopupButton.id = id;
-    // bruinwalkPopupButton.setAttribute("onclick", clickFunction());
-    // bruinwalkPopupButton.setAttribute("data-toggle", "modal");
-    // bruinwalkPopupButton.setAttribute("data-target", "#exampleModal"+id); // <-- change to a valid name?
-    
-    bruinwalkPopupButton.innerText = 'View Bruinwalk Review';
+    bruinwalkPopupButton.innerText = overallRating;
     instDiv.appendChild(bruinwalkPopupButton);
+
+    
+
 
     /*-----------prototype: bootstrap modal ----------*/
     /*
@@ -74,12 +80,21 @@ function showPopup(instUrl, instDiv, responseHTML) {
   // popup.innerHTML = "POPUP!";
   document.getElementById(id).appendChild(popup);
 
-  var state = 0; 
+  let state = 0; 
 
-  
+  bruinwalkPopupButton.onmouseover = function(){
+    if (state==0){
+      var popupToggle = document.getElementById("myPopup"+id);
+      popupToggle.classList.toggle("show");
+      state = 1;
+    }
+  }
   bruinwalkPopupButton.onclick = function(){
-    var popupToggle = document.getElementById("myPopup"+id);
-    popupToggle.classList.toggle("show");
+    if (state==1){
+      var popupToggle = document.getElementById("myPopup"+id);
+      popupToggle.classList.toggle("show");
+      state = 0;
+    }
     // console.log('should show now');
   };
 
@@ -268,6 +283,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
     termTaken.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n")[2];
     if (profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n").length == 8){
       var covid = document.createElement('div');
+      covid.className = 'covid';
       covid.innerText = 'COVID-19';
       termTaken.appendChild(covid)
     }
@@ -320,6 +336,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
     var bruinwalkLink = document.createElement('a');
     bruinwalkLink.href = instUrl;
+    bruinwalkLink.target = "_blank";
     bruinwalkLink.innerHTML = "Redirect to Bruinwalk";
     // document.getElementById("exampleModal"+id).getElementsByClassName('modal-body')[0].appendChild(bruinwalkLink);
     popup.appendChild(bruinwalkLink);
