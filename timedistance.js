@@ -302,6 +302,7 @@ const buildings_blacklist = buildings_no_location.concat(["Off campus"]);
 
 // specify which column number the new injected Time/Dist column should be
 const TIME_DIST_COL_IDX = 7;
+const API_KEY = null; // TODO: Secure API key in backend
 
 // prepTimeDistance();
 initiateTimeDistance();
@@ -324,7 +325,7 @@ function populateTimeDistance(response, parsed_class_info) {
     let unique_buildings = Array.from(cleanBlacklistedBuildings(parsed_class_info.get("uniqueBuildings")));
 
     // extract relevant info (distance matrix) from DistanceMatrix API response
-    let td_matrix = response.rows;
+    let td_matrix = (response != null) ? response.rows : null;
 
     // get overall Class Planner HTML element for parsing/injection
     let courses = document.getElementById("div_landing").getElementsByClassName("courseItem");
@@ -361,7 +362,7 @@ function populateTimeDistance(response, parsed_class_info) {
 
             // init new data element for "Distance From Previous Class" column
             let time_dist_data = document.createElement('td');
-            time_dist_data.innerHTML = formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
+            time_dist_data.innerHTML = (td_matrix == null) ? ("N/A (disabled)") : formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
             section.firstElementChild.getElementsByTagName('td')[TIME_DIST_COL_IDX - 1].after(time_dist_data);
         }
     }
@@ -536,149 +537,32 @@ function initiateTimeDistance() {
         }
     }
 
-    // TODO: SECURE API_KEY
-    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=";
+    // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
+    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + API_KEY;
 
-    // TODO: Remove this temporary global storage of distance matrix returned from invocaton of DistanceMatrix API for sample schedule
-    const distancematrix_api_response = {
-        "destination_addresses": [
-            "Knudsen Hall, 475 Portola Plaza, Los Angeles, CA 90095, USA",
-            "595 Charles E Young Dr E, Los Angeles, CA 90024, USA",
-            "607 Charles E Young Dr E, Los Angeles, CA 90095, USA"
-        ],
-        "origin_addresses": [
-            "Knudsen Hall, 475 Portola Plaza, Los Angeles, CA 90095, USA",
-            "595 Charles E Young Dr E, Los Angeles, CA 90024, USA",
-            "607 Charles E Young Dr E, Los Angeles, CA 90095, USA"
-        ],
-        "rows": [
-            {
-                "elements": [
-                    {
-                        "distance": {
-                            "text": "1 ft",
-                            "value": 0
-                        },
-                        "duration": {
-                            "text": "1 min",
-                            "value": 0
-                        },
-                        "status": "OK"
-                    },
-                    {
-                        "distance": {
-                            "text": "0.2 mi",
-                            "value": 258
-                        },
-                        "duration": {
-                            "text": "3 mins",
-                            "value": 178
-                        },
-                        "status": "OK"
-                    },
-                    {
-                        "distance": {
-                            "text": "0.2 mi",
-                            "value": 387
-                        },
-                        "duration": {
-                            "text": "4 mins",
-                            "value": 266
-                        },
-                        "status": "OK"
-                    }
-                ]
-            },
-            {
-                "elements": [
-                    {
-                        "distance": {
-                            "text": "0.2 mi",
-                            "value": 258
-                        },
-                        "duration": {
-                            "text": "3 mins",
-                            "value": 203
-                        },
-                        "status": "OK"
-                    },
-                    {
-                        "distance": {
-                            "text": "1 ft",
-                            "value": 0
-                        },
-                        "duration": {
-                            "text": "1 min",
-                            "value": 0
-                        },
-                        "status": "OK"
-                    },
-                    {
-                        "distance": {
-                            "text": "0.1 mi",
-                            "value": 178
-                        },
-                        "duration": {
-                            "text": "2 mins",
-                            "value": 124
-                        },
-                        "status": "OK"
-                    }
-                ]
-            },
-            {
-                "elements": [
-                    {
-                        "distance": {
-                            "text": "0.2 mi",
-                            "value": 387
-                        },
-                        "duration": {
-                            "text": "5 mins",
-                            "value": 303
-                        },
-                        "status": "OK"
-                    },
-                    {
-                        "distance": {
-                            "text": "0.1 mi",
-                            "value": 178
-                        },
-                        "duration": {
-                            "text": "2 mins",
-                            "value": 136
-                        },
-                        "status": "OK"
-                    },
-                    {
-                        "distance": {
-                            "text": "1 ft",
-                            "value": 0
-                        },
-                        "duration": {
-                            "text": "1 min",
-                            "value": 0
-                        },
-                        "status": "OK"
-                    }
-                ]
+    // Compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development)
+    chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
+
+        // Check if we're in "Developer" mode
+        if (dev_mode) {
+
+            console.log("Peforming Distance Matrix API call... (developer mode ENABLED)");
+
+            // Perform API call
+            chrome.runtime.sendMessage({
+                url: map_url,
+                contentScriptQuery: "getTimeDistanceData"
             }
-        ],
-        "status": "OK"
-    }
-
-    // TODO: REMOVE THIS TEMPORARY CALL
-    populateTimeDistance(distancematrix_api_response, class_info);
-
-    // TODO: UNCOMMENT API CALL TO DISTANCEMATRIX
-    /*chrome.runtime.sendMessage({
-        url: map_url,
-        contentScriptQuery: "getTimeDistanceData"
-    }
-        , response => {
-            populateTimeDistance(response, class_info.get("orderedClasses"));
+                , response => {
+                    populateTimeDistance(response, class_info);
+                }
+            );
         }
-    );*/
+        else { // Don't perform API call, and inject placeholder (i.e. "N/A (disabled)")
+            console.log("Avoiding Distance Matrix API call (developer mode DISABLED)");
+            populateTimeDistance(null, class_info);
+        }
+    })
 
 }
 /*

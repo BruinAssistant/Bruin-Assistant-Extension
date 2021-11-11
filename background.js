@@ -1,3 +1,10 @@
+let dev_mode = false;
+
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.sync.set({ "dev_mode" : dev_mode });
+    console.log('Default developer setting set to ' + dev_mode);
+});
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {  
     console.log("Sending request " + request)  
     if (request.contentScriptQuery == "getdata") {
