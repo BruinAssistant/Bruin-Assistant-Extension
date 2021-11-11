@@ -324,8 +324,24 @@ function populateTimeDistance(response, parsed_class_info) {
     let ordered_classes = parsed_class_info.get("orderedClasses");
     let unique_buildings = Array.from(cleanBlacklistedBuildings(parsed_class_info.get("uniqueBuildings")));
 
+    // check if offnominal response given (disabled or denied request)
+    let response_disabled = (response == null);
+    let response_denied = (!response_disabled && response.status == "REQUEST_DENIED");
+    let offnominal_response = response_disabled || response_denied;
+
+    if (response_denied)
+        console.log("Request denied. Reason: " + response.error_message);
+
     // extract relevant info (distance matrix) from DistanceMatrix API response
-    let td_matrix = (response != null) ? response.rows : null;
+    let td_matrix = (!offnominal_response) ? response.rows : null;
+
+    // prepare for offnominal HTML injection (if needed)
+    let offnominal_innerhtml;
+
+    if (response_disabled)
+        offnominal_innerhtml = "N/A (disabled)";
+    else if (response_denied)
+        offnominal_innerhtml = "N/A (denied)";
 
     // get overall Class Planner HTML element for parsing/injection
     let courses = document.getElementById("div_landing").getElementsByClassName("courseItem");
@@ -362,7 +378,7 @@ function populateTimeDistance(response, parsed_class_info) {
 
             // init new data element for "Distance From Previous Class" column
             let time_dist_data = document.createElement('td');
-            time_dist_data.innerHTML = (td_matrix == null) ? ("N/A (disabled)") : formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
+            time_dist_data.innerHTML = (offnominal_response) ? offnominal_innerhtml : formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
             section.firstElementChild.getElementsByTagName('td')[TIME_DIST_COL_IDX - 1].after(time_dist_data);
         }
     }
