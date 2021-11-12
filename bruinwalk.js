@@ -140,3 +140,5 @@ function transformInstDiv(instDiv){
         instDiv.appendChild(container);
     }
 }
+
+//module.exports = fetchInstBruinwalk; // uses for unit test. Otherwise, vanilla js won't recognize
