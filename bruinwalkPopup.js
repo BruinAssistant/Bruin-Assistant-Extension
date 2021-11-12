@@ -15,7 +15,7 @@
 function showPopup(instUrl, instDiv, responseHTML) {
 
   // -------------- create button ----------------
-  var bruinwalkPopupButton = document.createElement('button');
+  let bruinwalkPopupButton = document.createElement('button');
   // console.log(instUrl);
 
   // create 'N/A' button for professor whose review is not on bruinwalk
@@ -60,24 +60,24 @@ function showPopup(instUrl, instDiv, responseHTML) {
   let state = 0;
   bruinwalkPopupButton.onmouseover = function () {
     if (state == 0) {
-      var popupToggle = document.getElementById("myPopup" + id);
+      let popupToggle = document.getElementById("myPopup" + id);
       popupToggle.classList.toggle("show");
       state = 1;
     }
   }
   bruinwalkPopupButton.onclick = function () {
     if (state == 1) {
-      var popupToggle = document.getElementById("myPopup" + id);
+      let popupToggle = document.getElementById("myPopup" + id);
       popupToggle.classList.toggle("show");
       state = 0;
     }
   };
 
   // ------------- add psuedo close popup (X mark)------------
-  var titleDiv = document.createElement('div');
+  let titleDiv = document.createElement('div');
   titleDiv.className = 'bwalk-popup-title-div';
   titleDiv.innerHTML = id.toUpperCase();
-  var closeX = document.createElement('div');
+  let closeX = document.createElement('div');
   closeX.innerText = "X";
   closeX.className = "bwalk-popup-title-close";
   titleDiv.appendChild(closeX);
@@ -85,18 +85,18 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
 
   // ------------ get professor metrics ----------------
-  var prof_ratings_div = responseHTML.getElementsByClassName('metric');
-  var metrics = ['Overall', 'Easiness', 'Workload', 'Clarity', 'Helpfulness'];
-  var metrics_score = [];
-  for (var i = 0; i < prof_ratings_div.length; i++) {
-    var rating = document.createElement('div');
+  let prof_ratings_div = responseHTML.getElementsByClassName('metric');
+  let metrics = ['Overall', 'Easiness', 'Workload', 'Clarity', 'Helpfulness'];
+  let metrics_score = [];
+  for (let i = 0; i < prof_ratings_div.length; i++) {
+    let rating = document.createElement('div');
     rating.innerHTML = prof_ratings_div[i].innerText;
 
     // still push an 'N/A' to array. Might remove later
     if (!(/\d/.test(prof_ratings_div[i].innerText))) {
       metrics_score.push(prof_ratings_div[i].innerText)
     }
-    var numberPattern = /\d+.\d+/g;
+    let numberPattern = /\d+.\d+/g;
     metrics_score.push(parseFloat(prof_ratings_div[i].innerText.match(numberPattern)));
   }
 
@@ -104,12 +104,12 @@ function showPopup(instUrl, instDiv, responseHTML) {
   let table = document.createElement('table');
   table.className = "metricTable";
   for (let i = 0; i < 5; i++) {
-    var row = document.createElement('tr');
-    var metric = document.createElement('td');
+    let row = document.createElement('tr');
+    let metric = document.createElement('td');
     metric.innerHTML = metrics[i];
     row.appendChild(metric);
 
-    var score = document.createElement('td');
+    let score = document.createElement('td');
     score.innerHTML = metrics_score[i];
     row.appendChild(score);
 
@@ -119,12 +119,12 @@ function showPopup(instUrl, instDiv, responseHTML) {
   popup.appendChild(document.createElement("br"));
 
   // ------------- create radar chart for 5 metrics---------------
-  var chartDiv = document.createElement('canvas');
+  let chartDiv = document.createElement('canvas');
   chartDiv.className = "bruinwalk-radar-canvas";
   chartDiv.id = 'metricRadar' + id;
   popup.appendChild(chartDiv);
 
-  var profMetricData = {
+  let profMetricData = {
     labels: metrics,
     datasets: [{
       label: 'Intructor ' + professorName + ' in Class ' + id.toUpperCase(),
@@ -148,14 +148,14 @@ function showPopup(instUrl, instDiv, responseHTML) {
       pointHoverBorderColor: 'rgba(227, 217, 105, 1)'
     }]
   };
-  var radarOptions = {
+  let radarOptions = {
     scale: {
       min: 0,
       max: 5,
     }
   }
 
-  var radarChart = new Chart('metricRadar' + id, {
+  let radarChart = new Chart('metricRadar' + id, {
     type: 'radar',
     data: profMetricData,
     options: radarOptions
@@ -173,10 +173,10 @@ function showPopup(instUrl, instDiv, responseHTML) {
     popup.appendChild(noDistDiv);
     popup.appendChild(document.createElement("br"));
   } else {
-    var gradeArray = [];
+    let gradeArray = [];
     // NOTE: only get the most recent year
-    for (var i = 0; i < 13; i++) {
-      var grade = responseHTML.getElementsByClassName('bar-fill has-tip tip-left')[i].getAttribute('title');
+    for (let i = 0; i < 13; i++) {
+      let grade = responseHTML.getElementsByClassName('bar-fill has-tip tip-left')[i].getAttribute('title');
       if (grade == null) {
         console.log("THIS PROFESSOR HASN'T TAUGHT AT UCLA YET");
         return;
@@ -186,12 +186,12 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
 
     // ---------- create distribution chart ---------------
-    var chartDiv = document.createElement('canvas');
+    let chartDiv = document.createElement('canvas');
     chartDiv.id = 'distributionBar' + id;
     popup.appendChild(chartDiv);
     popup.appendChild(document.createElement("br"));
 
-    var profDistributionData = {
+    let profDistributionData = {
       labels: ['+', 'A', '-',
         '+', 'B', '-',
         '+', 'C', '-',
@@ -206,7 +206,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
         borderWidth: 1
       }]
     };
-    var profDistributionOption = {
+    let profDistributionOption = {
       scales: {
         y: {
           beginAtZero: true
@@ -214,14 +214,14 @@ function showPopup(instUrl, instDiv, responseHTML) {
       }
     };
 
-    var distributionChart = new Chart('distributionBar' + id, {
+    let distributionChart = new Chart('distributionBar' + id, {
       type: 'bar',
       data: profDistributionData,
       options: profDistributionOption
     });
 
     // ------------- [Unfinished] Try to get average metrics across the class-------------
-    var metric_dict = {
+    let metric_dict = {
       'Overall': [],
       'Easiness': [],
       'Workload': [],
@@ -237,15 +237,15 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
       // filter out only the desired div
       filteredRatingCells = []
-      for (var i = 0; i < ratingCells.length; i++) {
+      for (let i = 0; i < ratingCells.length; i++) {
         if (ratingCells[i].width == "80px") {
           filteredRatingCells.push(ratingCells[i]);
         }
       }
 
-      for (var i = 0; i < filteredRatingCells.length; i++) {
+      for (let i = 0; i < filteredRatingCells.length; i++) {
         if (filteredRatingCells[i].innerText != null) {
-          var text = filteredRatingCells[i].innerText;
+          let text = filteredRatingCells[i].innerText;
           text = text.split('\n')
           if (text[1] != 'N/A') {
             // console.log(text[1])
@@ -253,7 +253,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
         }
       }
       filteredRatingCells.forEach(cell => {
-        var text = cell.innerText.split('\n');
+        let text = cell.innerText.split('\n');
         if (text[1] != 'N/A') {
           metric_dict[text[2]].push(text[1]);
         }
@@ -266,33 +266,33 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
   // case: no student review yet
   if (responseHTML.getElementsByClassName('reviews row')[0].getElementsByClassName('bruinwalk-card')[0].innerText.includes("No reviews for")) {
-    var noReviewDiv = document.createElement('div').innerText("No review yet");
+    let noReviewDiv = document.createElement('div').innerText("No review yet");
     popup.appendChild(noReviewDiv);
     popup.appendChild(document.createElement('br'));
   } else {
-    var profReviewDiv = responseHTML.getElementsByClassName('review')[0];
+    let profReviewDiv = responseHTML.getElementsByClassName('review')[0];
 
-    var reviewHeader = document.createElement('div');
+    let reviewHeader = document.createElement('div');
     reviewHeader.style.display = 'flex';
     reviewHeader.style.justifyContent = 'space-around';
 
-    var termTaken = document.createElement('div');
+    let termTaken = document.createElement('div');
     termTaken.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n")[2];
     if (profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n").length == 8) {
-      var covid = document.createElement('div');
+      let covid = document.createElement('div');
       covid.className = 'covid';
       covid.innerText = 'COVID-19';
       termTaken.appendChild(covid)
     }
     reviewHeader.appendChild(termTaken);
 
-    var gradeReceived = document.createElement('div');
-    var gradeReceived_text_splitted = profReviewDiv.getElementsByClassName('grade-received')[0].innerText.split('\n');
+    let gradeReceived = document.createElement('div');
+    let gradeReceived_text_splitted = profReviewDiv.getElementsByClassName('grade-received')[0].innerText.split('\n');
     gradeReceived.innerText = gradeReceived_text_splitted[1] + " " + gradeReceived_text_splitted[2];
     reviewHeader.appendChild(gradeReceived);
     popup.appendChild(reviewHeader);
 
-    var review_comment = document.createElement('div');
+    let review_comment = document.createElement('div');
     review_comment.innerText = profReviewDiv.getElementsByClassName('expand-area')[0].innerText;
     review_comment.className = "comment";
     review_comment.style.textAlign = "left";
@@ -302,7 +302,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
   }
 
   //------------ attach bruinwalk link-----------------
-  var bruinwalkLink = document.createElement('a');
+  let bruinwalkLink = document.createElement('a');
   bruinwalkLink.className = "view-on-bwalk-a"
   bruinwalkLink.href = instUrl;
   bruinwalkLink.target = "_blank";
@@ -312,7 +312,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
 // ----------- NOT FINISH -----------------
 function findAverageMetrics(courseName) {
-  var url = "https://www.bruinwalk.com/classes/" + courseName;
+  let url = "https://www.bruinwalk.com/classes/" + courseName;
   // fetch website
 
 
