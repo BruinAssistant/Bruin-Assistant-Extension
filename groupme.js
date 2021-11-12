@@ -1,49 +1,10 @@
-// responds to classes in classplan
-
-let timeout = null
+/**
+ * @file A content script that handles the injection of GroupMe invite links for classes at UCLA. 
+ */
 const backendurl = "https://class-planner-assistant.herokuapp.com";
 
 populateGroupMeLinks();
 resizeColumnWidths();
-
-const config = { subtree: true, childList: true };
-
-// this is called whenever DOM is modifies
-function listener(mutationsList, observer) {
-    // run the script if it detects a class search page
-    const windowURL = `${window.location.href}`
-    if (windowURL.includes('be.my.ucla.edu')) {
-        populateGroupMeLinks();
-        resizeColumnWidths();
-    }
-}
-
-// DOM Nodes that should not trigger mutation callback for reload.
-const observerWhiteList = [
-    "inst-rating-title-div",
-    "inst-rating-content-div",
-    "hide-small",
-    "section-header",
-    "inst-rating-footer-div"
-];
-
-const observer = new MutationObserver((mutationsList, observer) => {
-    let trigger = false;
-    for (const mutation of mutationsList) {
-        if (!observerWhiteList.includes(mutation.target.className)) {
-            trigger = true;
-            console.log("Mutation: ", mutation);
-            break;
-        }
-    }
-    if (trigger) {
-        if (timeout) clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            listener(mutationsList, observer);
-        }, 1000);
-    }
-});
-observer.observe(document, config);
 
 function populateGroupMeLinks() {
     const classes = document.getElementsByClassName('courseItem')
@@ -110,7 +71,6 @@ function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
         console.log(response)
         if (response != undefined && response != "") {
             handler(response);
-            // btn.href = response;
         }
     });
 }
