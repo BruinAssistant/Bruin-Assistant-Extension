@@ -24,7 +24,7 @@
     top: 50px;
     left: 77vw;
     width: 400px;
-    height: 90vh;
+    max-height: 90vh;
     margin-left: -80px;
     overflow-y: scroll !important;
     box-shadow: 0 0 10px rgb(147, 169, 190);
@@ -87,7 +87,7 @@
 }
 .comment{
   white-space: normal;
-  height: 100px;
+  max-height: 100px;
   overflow-y: auto;
   padding: 3px;
 }
@@ -139,4 +139,8 @@
 .instructor-container{
   display: flex;
   justify-content: space-between;
+}
+
+.close{
+  margin-left: 0px;
 }

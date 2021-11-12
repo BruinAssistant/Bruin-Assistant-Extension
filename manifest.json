@@ -19,7 +19,7 @@
         },
         {
             "matches": ["*://be.my.ucla.edu/*"],
-            "js": ["bruinwalk.js", "jquery-3.6.0.min.js", "bruinwalkPopup.js", "chart.js"],
+            "js": ["bruinwalk.js", "bruinwalkPopup.js", "chart.js"],
             "run_at": "document_end"
         },
         {

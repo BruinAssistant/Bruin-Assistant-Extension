@@ -1,5 +1,4 @@
 findClassInst();
-
 /**
  * Main function to seach instructor Bruinwalk information and display popup to be.my.ucla.edu class planner
  */
@@ -39,6 +38,7 @@ function findClassInst(){
                             contentScriptQuery: "getBruinwalkData",
                         }, responseHTMLString => {
                             var responseHTML = stringToHTML(responseHTMLString);
+                            console.log(instUrl);
                             // showPopup(instUrl, courseTable[7], responseHTML);
                             showPopup(instUrl, courseTable[7].getElementsByClassName('instructor-container')[j], responseHTML);
                         });
@@ -51,8 +51,8 @@ function findClassInst(){
 }
 /**
  * populate bruinwalk url of a class, then fetch url of professor and class who teaches the param class
- * @param fullCourseName course name formatted as "ABBREVIATION-CLASSNUMBER"
- * @param instName instructor name formatted as "LAST, INITITAL_FIRST. INITIAL_MID."
+ * @param {string} fullCourseName course name formatted as "ABBREVIATION-CLASSNUMBER"
+ * @param {string} instName instructor name formatted as "LAST, INITITAL_FIRST. INITIAL_MID."
  * @param handler callback function to create bruinwalk button on class planner
  */
 function getSearchResult(fullCourseName, instName, handler){
@@ -75,9 +75,9 @@ function getSearchResult(fullCourseName, instName, handler){
 
 /**
  * get instructor bruinwalk url if they teach the class
- * @param responseHTMLString text version of a class' bruinwalk page
- * @param instNameArr list of instructors in a particular class from class planner
- * @return url of instructor and the class that user is taking. Otherwise, null
+ * @param {string} responseHTMLString text version of a class' bruinwalk page
+ * @param {String[]} instNameArr list of instructors in a particular class from class planner
+ * @return {string} url of instructor and the class that user is taking. Otherwise, null
  */
 function fetchInstBruinwalk(responseHTMLString, instNameArr){
     var responseHTML = stringToHTML(responseHTMLString);
@@ -89,20 +89,22 @@ function fetchInstBruinwalk(responseHTMLString, instNameArr){
 
         // comparing to only last name (Not sure if first name is necessary)
         if (lastName == instNameArr[0]){
-            bwInstDiv = profNames[i].parentNode;
-            var instAndClassUrl = $(bwInstDiv).attr('href');
+            let bwInstDiv = profNames[i].parentNode;
+            let instAndClassUrl = bwInstDiv.getAttribute("href");
             return "https://www.bruinwalk.com" + instAndClassUrl;
         }
         else {
 
         }
     }
-    return null;
+    return "No Professor Found";
 }
+
+
 /**
  * turn string of html into html element
- * @param str string of html
- * @returns html element
+ * @param {string} str string of html
+ * @returns {HTMLCollection} html element
  */
 function stringToHTML(str){
     var parser = new DOMParser();
@@ -112,7 +114,7 @@ function stringToHTML(str){
 
 /**
  * Convert pure cell into a div for one instructor, so we can append button next to the instructor
- * @param instDiv cell inside class planner that contains instructor name
+ * @param {HTMLCollection} instDiv cell inside class planner that contains instructor name
  */
 function transformInstDiv(instDiv){
     instName = instDiv.innerText.split('\n');

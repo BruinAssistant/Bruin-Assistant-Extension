@@ -1,13 +1,21 @@
+/**
+ * 
+ * @param {string} instUrl Bruinwalk url of instructor who teaches the class
+ * @param {HTMLCollection} instDiv HTML div element of instructor cell from class planner
+ * @param {HTMLCollection} responseHTML HTML of bruinwalk page of instructor who teaches the class
+ * @returns 
+ */
+
 function showPopup(instUrl, instDiv, responseHTML) {
 
   // -------------- create button ----------------
   var bruinwalkPopupButton = document.createElement('button');
   
-  // attempt to create 'N/A' button for professor whose review is not on bruinwalk
+  // create 'N/A' button for professor whose review is not on bruinwalk
   if (instUrl == null || responseHTML == null){
     bruinwalkPopupButton.className = "bruinwalk-undefined";
     bruinwalkPopupButton.innerText = "N/A";
-    bruinwalkPopupButton.onclick = function() {};
+    bruinwalkPopupButton.onclick = null;
     instDiv.appendChild(bruinwalkPopupButton);
     return;
   }
@@ -15,6 +23,16 @@ function showPopup(instUrl, instDiv, responseHTML) {
   const parts = instUrl.split("/");
   const id = parts[parts.length-2];
   const professorName = responseHTML.getElementsByClassName('professor-info')[0].innerText.trim();
+
+  // show 'N/A' button to professor who has not received student metric score review
+  if (responseHTML.getElementsByClassName('metric')[0] == null){
+    console.log('no metric review yet');
+    bruinwalkPopupButton.className = "bruinwalk-undefined";
+    bruinwalkPopupButton.innerText = "N/A";
+    // note: clicking N/A refresh the page somehow
+    instDiv.appendChild(bruinwalkPopupButton);
+    return;
+  }
   const overallRating = responseHTML.getElementsByClassName('metric')[0].innerText.match(/\d+.\d+/g);
 
   bruinwalkPopupButton.type = "button";
@@ -47,6 +65,12 @@ function showPopup(instUrl, instDiv, responseHTML) {
       state = 0;
     }
   };
+
+  // ------------- add psuedo close popup (X mark)------------
+  var closeX = document.createElement('div');
+  closeX.innerText="X";
+  closeX.className = "close";
+  popup.appendChild(closeX);
 
 
   // ------------ get professor metrics ----------------
@@ -128,71 +152,77 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
 
   // -------------- fetch distribution data --------------
-  var letterArray = ['A+', 'A', 'A-', 
-  'B+', 'B', 'B-', 
-  'C+', 'C', 'C-',
-  'D+', 'D', 'D-', 
-  'E+', 'E', 'E-', 'F']
-  var gradeArray = [];
-  // NOTE: only get the most recent year
-  for (var i=0; i<13; i++){
-    var grade = responseHTML.getElementsByClassName('bar-fill has-tip tip-left')[i].getAttribute('title');
-    if (grade == null){
-      console.log("THIS PROFESSOR HASN'T TAUGHT AT UCLA YET");
-      return;
-    }
-    gradeArray.push(parseFloat(grade));
+
+  // case: no distribution yet:
+  if (responseHTML.getElementsByClassName('distribution bruinwalk-card row')[0].innerText == "\n\nNo grades are available.\n"){
+    console.log("no distribution yet");
+    let noDistDiv = document.createElement('div');
+    noDistDiv.innerText = "Grade distribution is not available";
+    popup.appendChild(noDistDiv);
+    popup.appendChild(document.createElement("br"));
   }
 
-
-  // ---------- create distribution chart ---------------
-  var chartDiv = document.createElement('canvas');
-  chartDiv.id = 'distributionBar'+id;
-  popup.appendChild(chartDiv);
-  popup.appendChild(document.createElement("br"));
-
-  var profDistributionData = {
-    labels: ['+','A','-',
-    '+','B','-',
-    '+','C','-',
-    '+','D','-',
-    '+','E','-','F'],
-    datasets:[{
-      label: 'Grade Distribution from ' + responseHTML.getElementById('term-selector').children.item(1).innerText,
-      data: gradeArray,
-      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-      borderColor: 'rgb(54, 162, 235)',
-      borderWidth: 1
-    }]
-  };
-  var profDistributionOption = {
-    scales: {
-      y: {beginAtZero: true}
+  else{
+    var gradeArray = [];
+    // NOTE: only get the most recent year
+    for (var i=0; i<13; i++){
+      var grade = responseHTML.getElementsByClassName('bar-fill has-tip tip-left')[i].getAttribute('title');
+      if (grade == null){
+        console.log("THIS PROFESSOR HASN'T TAUGHT AT UCLA YET");
+        return;
+      }
+      gradeArray.push(parseFloat(grade));
     }
-  };
-
-  var distributionChart = new Chart('distributionBar'+id,{
-    type: 'bar',
-    data: profDistributionData,
-    options: profDistributionOption
-  });
-
-  // ------------- [Unfinished] Try to get average metrics across the class-------------
-  var metric_dict = {
-    'Overall':[],
-    'Easiness':[],
-    'Workload':[],
-    'Clarity':[],
-    'Helpfulness':[],
-  }
-  chrome.runtime.sendMessage({
-    url: "https://www.bruinwalk.com/classes/com-sci-130/",
-    contentScriptQuery: "getBruinwalkData",
+    
+    
+    // ---------- create distribution chart ---------------
+    var chartDiv = document.createElement('canvas');
+    chartDiv.id = 'distributionBar'+id;
+    popup.appendChild(chartDiv);
+    popup.appendChild(document.createElement("br"));
+    
+    var profDistributionData = {
+      labels: ['+','A','-',
+      '+','B','-',
+      '+','C','-',
+      '+','D','-',
+      '+','E','-','F'],
+      datasets:[{
+        label: 'Grade Distribution from ' + responseHTML.getElementById('term-selector').children.item(1).innerText,
+        data: gradeArray,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgb(54, 162, 235)',
+        borderWidth: 1
+      }]
+    };
+    var profDistributionOption = {
+      scales: {
+        y: {beginAtZero: true}
+      }
+    };
+    
+    var distributionChart = new Chart('distributionBar'+id,{
+      type: 'bar',
+      data: profDistributionData,
+      options: profDistributionOption
+    });
+    
+    // ------------- [Unfinished] Try to get average metrics across the class-------------
+    var metric_dict = {
+      'Overall':[],
+      'Easiness':[],
+      'Workload':[],
+      'Clarity':[],
+      'Helpfulness':[],
+    }
+    chrome.runtime.sendMessage({
+      url: "https://www.bruinwalk.com/classes/com-sci-130/",
+      contentScriptQuery: "getBruinwalkData",
     }
     , responseHTMLString => {
       courseHtml = stringToHTML(responseHTMLString);
       ratingCells = (courseHtml.getElementsByClassName('rating-cell'));
-
+      
       // filter out only the desired div
       filteredRatingCells = []
       for (var i = 0; i <ratingCells.length; i++){
@@ -200,7 +230,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
           filteredRatingCells.push(ratingCells[i]);
         }
       }
-
+      
       for (var i=0; i<filteredRatingCells.length; i++){
         if (filteredRatingCells[i].innerText != null){
           var text = filteredRatingCells[i].innerText;
@@ -216,54 +246,64 @@ function showPopup(instUrl, instDiv, responseHTML) {
           metric_dict[text[2]].push(text[1]);
         }
       })
-  })
-  
-
-  // --------------- get student comment ---------------------
-  var profReviewDiv = responseHTML.getElementsByClassName('review')[0];
-
-  var reviewHeader = document.createElement('div');
-  reviewHeader.style.display = 'flex';
-  reviewHeader.style.justifyContent = 'space-around';
-
-  var termTaken = document.createElement('div');
-  termTaken.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n")[2];
-  if (profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n").length == 8){
-    var covid = document.createElement('div');
-    covid.className = 'covid';
-    covid.innerText = 'COVID-19';
-    termTaken.appendChild(covid)
+    })
   }
-  reviewHeader.appendChild(termTaken);
+    
+    
+  // --------------- get student comment ---------------------
 
-  var gradeReceived = document.createElement('div');
-  var gradeReceived_text_splitted = profReviewDiv.getElementsByClassName('grade-received')[0].innerText.split('\n');
-  gradeReceived.innerText = gradeReceived_text_splitted[1] + " " + gradeReceived_text_splitted[2];
-  reviewHeader.appendChild(gradeReceived);
-  popup.appendChild(reviewHeader);
-
-  var review_comment = document.createElement('div');
-  review_comment.innerText = profReviewDiv.getElementsByClassName('expand-area')[0].innerText;
-  review_comment.className = "comment";
-  review_comment.style.textAlign = "left";
-
-  popup.appendChild(review_comment);
-  popup.appendChild(document.createElement("br"));
-
-  //------------ attach bruinwalk link-----------------
-  var bruinwalkLink = document.createElement('a');
-  bruinwalkLink.href = instUrl;
-  bruinwalkLink.target = "_blank";
-  bruinwalkLink.innerHTML = "Redirect to Bruinwalk";
-  popup.appendChild(bruinwalkLink);
+  // case: no student review yet
+  if(responseHTML.getElementsByClassName('reviews row')[0].getElementsByClassName('bruinwalk-card')[0].innerText.includes("No reviews for")){
+    var noReviewDiv = document.createElement('div').innerText("No review yet");
+    popup.appendChild(noReviewDiv);
+    popup.appendChild(document.createElement('br'));
+  }
+  else{
+    var profReviewDiv = responseHTML.getElementsByClassName('review')[0];
+    
+    var reviewHeader = document.createElement('div');
+    reviewHeader.style.display = 'flex';
+    reviewHeader.style.justifyContent = 'space-around';
+    
+    var termTaken = document.createElement('div');
+    termTaken.innerText = profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n")[2];
+    if (profReviewDiv.getElementsByClassName('term-taken')[0].innerText.split("\n").length == 8){
+      var covid = document.createElement('div');
+      covid.className = 'covid';
+      covid.innerText = 'COVID-19';
+      termTaken.appendChild(covid)
+    }
+    reviewHeader.appendChild(termTaken);
+    
+    var gradeReceived = document.createElement('div');
+    var gradeReceived_text_splitted = profReviewDiv.getElementsByClassName('grade-received')[0].innerText.split('\n');
+    gradeReceived.innerText = gradeReceived_text_splitted[1] + " " + gradeReceived_text_splitted[2];
+    reviewHeader.appendChild(gradeReceived);
+    popup.appendChild(reviewHeader);
+    
+    var review_comment = document.createElement('div');
+    review_comment.innerText = profReviewDiv.getElementsByClassName('expand-area')[0].innerText;
+    review_comment.className = "comment";
+    review_comment.style.textAlign = "left";
+    
+    popup.appendChild(review_comment);
+    popup.appendChild(document.createElement("br"));
+  }
+    
+    //------------ attach bruinwalk link-----------------
+    var bruinwalkLink = document.createElement('a');
+    bruinwalkLink.href = instUrl;
+    bruinwalkLink.target = "_blank";
+    bruinwalkLink.innerHTML = "Redirect to Bruinwalk";
+    popup.appendChild(bruinwalkLink);
 }
-
-// ----------- NOT FINISH -----------------
-function findAverageMetrics(courseName){
-  var url = "https://www.bruinwalk.com/classes/" + courseName;
-  // fetch website
-
-
-  // check if there is next page or not. If yes, fetch again and store in array
-  // else, return average
-}
+  
+  // ----------- NOT FINISH -----------------
+  function findAverageMetrics(courseName){
+    var url = "https://www.bruinwalk.com/classes/" + courseName;
+    // fetch website
+    
+    
+    // check if there is next page or not. If yes, fetch again and store in array
+    // else, return average
+  }

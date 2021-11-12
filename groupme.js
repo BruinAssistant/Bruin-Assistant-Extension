@@ -15,6 +15,8 @@ function listener(mutationsList, observer) {
     if (windowURL.includes('be.my.ucla.edu')) {
         populateGroupMeLinks();
         resizeColumnWidths();
+        findClassInst();
+        // findSearchClassInst();
     }
 }
 
@@ -25,6 +27,10 @@ const observerWhiteList = [
     "hide-small",
     "section-header",
     "inst-rating-footer-div",
+    "instructor-container",
+    "popup bruinwalk-button",
+    "js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths js no-flexbox flexbox-legacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths",
+    "popuptext"
 ];
 
 const observer = new MutationObserver((mutationsList, observer) => {
@@ -33,6 +39,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
         if (!observerWhiteList.includes(mutation.target.className)) {
             trigger = true;
             console.log("Mutation: ", mutation);
+            console.log(mutation.target.className);
             break;
         }
     }
