@@ -8,6 +8,10 @@
  * @author Eldon Ngo (eldon3141)
  */
 
+// NOTE: Uses same observer from groupme.js
+// TODO: Refactor this into separate Observer module, formalizing the following of
+// the Observer design pattern.
+observer.observe(document.querySelector('.centerColumn'), config);
 
 /**
  * Specifies the column index that the newly-injected time/distance column
@@ -385,20 +389,42 @@ const buildings_no_location = ["No facility", "No Location", "Online", "Online -
  */
 const buildings_blacklist = buildings_no_location.concat(["Off campus"]);
 
-// TODO: Finish JavaDoc documentation for remaining internal functions and API.
+
 /**
+ * Getter function for Latitude in Coord object. Returns typecasted Number to 
+ * string to prepare for Distance Matrix API call.
  * 
- * @param {*} building 
- * @returns 
+ * @param {Coord} building
+ * @returns {String}
  */
 function getLat(building){
     return (building.lat).toString();
 }
 
+
+/**
+ * Getter function for Longitude in Coord object. Returns typecasted Number to 
+ * string to prepare for Distance Matrix API call.
+ * 
+ * @param {Coord} building
+ * @returns {String}
+ */
 function getLng(building){
     return (building.lng).toString();
 }
 
+
+/**
+ * Handles Distance Matrix API call response, performing direct injection of
+ * relevant information into user's Class Plan. Utilizes helper function
+ * `formatTimeDistData()` to format the injected data accordingly.
+ * 
+ * @param {Map<String, Object>} response - Response given from Distance Matrix API call
+ * @param {Map<String, Object>} parsed_class_info - Class information representing user's schedule, parsed from user's Class Planner
+ * @return void
+ * 
+ * @see {@link formatTimeDistData} for helper formatting function.
+ */
 function populateTimeDistance(response, parsed_class_info) {
 
     // extract relevant info from parsed webpage info
@@ -466,6 +492,15 @@ function populateTimeDistance(response, parsed_class_info) {
     }
 }
 
+
+/**
+ * Removes blacklisted buildings according to global constant from list.
+ * 
+ * @param {Array<string>} buildings
+ * @return {Array<string>}
+ * 
+ * @see {@link buildings_blacklist} for global blacklisted buildings.
+ */
 function cleanBlacklistedBuildings(buildings) {
 
     for (let val of buildings)
@@ -477,6 +512,18 @@ function cleanBlacklistedBuildings(buildings) {
     return buildings;
 }
 
+
+/**
+ * Extract relevant information from Distance Matrix and format accordingly to prepare for injection.
+ * 
+ * @param {Array<Array<Object>>} td_matrix - Distance Matrix of locations returned by Distance Matrix API call.
+ * @param {Array<String>} buildings_idx - Array of building names, representing the indices corresponding to each building into `td_matrix`.
+ * @param {Map<String,Array<Array<classInfo>>>} class_infos - Contains all applicable `classInfo` structs for classes for the corresponding section referenced by `section_name`.
+ * @param {String} section_name - Name of section to format for.
+ * @returns {String}
+ * 
+ * @see {@link classInfo}
+ */
 function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name) {
 
     // init constants that will be used/referenced during formatting
@@ -558,98 +605,19 @@ function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name)
     return buf != "" ? buf : (no_data + " (no days scheduled)");
 }
 
-function cleanBlacklistedBuildings(buildings) {
 
-    for (let val of buildings)
-    {
-        if (buildings_blacklist.includes(val))
-            buildings.delete(val);
-    }
-
-    return buildings;
-}
-
-function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name) {
-
-    // init constants that will be used/referenced during formatting
-    const newline = "</br>";
-    const no_data = "N/A";
-    const unknown = "?";
-    const day_abbrev_map = new Map([
-        ['Monday','M'],
-        ['Tuesday','T'],
-        ['Wednesday','W'],
-        ['Thursday','R'],
-        ['Friday','F']
-    ]);
-
-    // init buffers/flags to be used during formatting
-    let buf = "";
-    let first_day_with_section = true;
-
-    // iterate through each day
-    for (let [day, class_info_pairs] of class_infos) {
-
-        // set flag for conditional formatting
-        let first_section_in_day = true;
-
-        // iterate through each class info pair
-        for (let [prev_class_info, cur_class_info] of class_info_pairs) {
-
-            // check if current class belongs to section of interest
-            if (cur_class_info.section != section_name)
-                continue;
-
-            // perform extra formatting if this is not the first day with section of interest
-            if (!first_day_with_section) {
-                buf += newline;
-            }
-
-            // ensure flag is set for any future additions
-            first_day_with_section = false;
-
-            // conditionally format depending on if this is the first class of this section today
-            if (first_section_in_day) {
-                buf += (day_abbrev_map.has(day) ? day_abbrev_map.get(day) : unknown) + ": ";
-                first_section_in_day = false;
-            }
-            else
-                buf += ", ";
-
-            // check if current class is first in the day (no previous class, no time/dist lookup needed)
-            if (prev_class_info == null) {
-                buf += (no_data + " (first class)");
-                continue;
-            }
-
-            // check if current class has a special or blacklisted location
-            if (buildings_no_location.includes(cur_class_info.building)) {
-                buf += (no_data + " (no physical location)");
-                continue;
-            }
-            else if (buildings_blacklist.includes(cur_class_info.building)) {
-                buf += (no_data + " (unknown exact location)");
-                continue;
-            }
-
-            // lookup distance and time based on locations
-            let prev_class_idx = buildings_idx.indexOf(prev_class_info.building);
-            let cur_class_idx = buildings_idx.indexOf(cur_class_info.building);
-
-            if (prev_class_idx == -1 || cur_class_idx == -1) {
-                // ERROR, but we'll handle gracefully instead of throwing an exception
-                buf += unknown;
-                continue;
-            }
-
-            let time_dist_info = td_matrix[prev_class_idx].elements[cur_class_idx];
-            buf += time_dist_info.distance.text + " (" + time_dist_info.duration.text + ")";
-        }
-    }
-
-    return buf != "" ? buf : (no_data + " (no days scheduled)");
-}
-
+/**
+ * Extracts all `classInfo` structs from parsed class information corresponding
+ * to a specified course. Additionally includes all `classInfo` structs that
+ * correspond to classes immediately preceding classes of interest, as these
+ * are also of interest due to our desire to support the time/distance
+ * estimation between classes.
+ * 
+ * @param {Map<String,Array<classInfo>>} ordered_classes - All `classInfo` structs parsed from student's Class Planner, representing a schedule.
+ * @param {String} course_department_abbrev - Abbreviation of course's department.
+ * @param {String} course_number - Course's number.
+ * @returns {Map<String,Array<Array<classInfo>>>}
+ */
 function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, course_number) {
 
     // init empty map (will map day --> array of [previous class's info, current class's info])
@@ -684,14 +652,44 @@ function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, co
     return results;
 }
 
+
+/**
+ * Helper function to extract only portion of string corresponding to a
+ * class's department, removing all course number information.
+ * 
+ * @param {String} str - Class Record string, containing course number and its department and its number.
+ * @returns {String}
+ */
 function extractDepartmentFromClassRecord(str) {
     return /(?<=:).*/.exec(str)[0].trim();
 }
 
+
+/**
+ * Helper function to extract only portion of string corresponding to a
+ * class's number, removing all course department information.
+ * 
+ * @param {String} str - Class Record string, containing course number and its department and its number.
+ * @returns {String}
+ */
 function extractNumberFromClassRecord(str) {
     return /^[^-]+/.exec(str)[0].trim();
 }
 
+
+/**
+ * Entry point to `timedistance` module, managing all means of computing/estimating time and distance
+ * between classes in a user's schedule, as well as injecting this computed data into the user's Class Plan.
+ * 
+ * Performs call to Distance Matrix API, and routes to other internal handling functions in `timedistance`
+ * module.
+ * 
+ * Currently executed directly by extension's background script.
+ * 
+ * @returns void
+ * 
+ * @todo Move Distance Matrix API call to backend, and replace internal corresponding code to backend API call.
+ */
 function initiateTimeDistance() {
 
     // parse all class info from webpage
@@ -755,23 +753,38 @@ function initiateTimeDistance() {
 
 }
 
-/*
-    This return a 2-element array.
 
-    TODO: UPDATE THIS COMMENT
-    1st element: A mapping from day of week to an ordered list
-    of buildings that the student must visit for that day.
+/**
+ * classInfo: Holds all relevant information for a specific section's class.
+ * 
+ * @constructor
+ * @param {String} name - Corresponding course name for class
+ * @param {String} section - Section name/type (i.e. "Lab 1A" or "Lec 2")
+ * @param {String} building - Building and/or location of class
+ * 
+ * @todo Rename to reflect original design to distinguish between class, section, and course.
+ */
+function classInfo(name, section, building) {
+    this.name = name;
+    this.section = section;
+    this.building = building;
+};
 
-    2nd element: A set of all distinct buildings students
-    will visit.
-*/
+
+/**
+ * Performs parsing of user's Class Planner, constructing a schedule represented
+ * by various mappings of `classInfo` structs.
+ * 
+ * @returns {Map<String, Object>} 1st element: A mapping from
+ * day of week to an ordered list
+ * of buildings that the student must visit for that day.
+ * 2nd element: A set of all distinct buildings students
+ * will visit.
+ * 
+ * @todo Rename various data structures to utilize term "schedule".
+ */
 function getClassBuildings() {
     const result = new Map();
-    function classInfo(name, section, building){
-        this.name = name;
-        this.section = section;
-        this.building = building;
-    };
     const ordered_classes = new Map();
     const week_boxes = document.getElementsByClassName('timebox');
     const day = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -803,6 +816,14 @@ function getClassBuildings() {
     return result;
 }
 
+
+/**
+ * Helper function for extracting only building from class location string,
+ * removing any notion of room number.
+ * 
+ * @param {String} place
+ * @returns {String}
+ */
 function extractBuilding(place) {
 
     // remove any trailing/leading whitespace
@@ -825,9 +846,18 @@ function extractBuilding(place) {
         return trimmed_place;
 }
 
+
+/**
+ * Helper function for determining if there is a number present in the input
+ * string.
+ * 
+ * @param {String} str 
+ * @returns {Boolean}
+ */
 function hasNumber(str) {
     return /\d/.test(str);
 }
+
 
 // Kick-off time/distance computation and injection
 initiateTimeDistance();
