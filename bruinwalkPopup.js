@@ -11,7 +11,6 @@
  * @param {string} instUrl Bruinwalk url of instructor who teaches the class
  * @param {HTMLCollection} instDiv HTML div element of instructor cell from class planner
  * @param {HTMLCollection} responseHTML HTML of bruinwalk page of instructor who teaches the class
- * @returns 
  */
 function showPopup(instUrl, instDiv, responseHTML) {
 
