@@ -2,7 +2,8 @@
 observer.observe(document.querySelector('.centerColumn'), config);
 
 // TODO: Double check proper mappings
-let department_abbrev = new Map([
+// define lookup table of department --> department abbreviation
+const department_abbrev = new Map([
     ["Aerospace Studies", "AERO ST"],
     ["African American Studies", "AF AMER"],
     ["African Studies", "AFRC ST"],
@@ -171,6 +172,138 @@ let department_abbrev = new Map([
     ["Yiddish", "YIDDSH"],
 ]);
 
+// define Coord object (for use in coords lookup table)
+function Coord(lat, lng) {
+    this.lat = lat;
+    this.lng = lng;
+}
+
+// TODO: Change to addresses
+// define lookup table of building names --> coords
+const coords = new Map([
+    ["700 Westwood Plaza", new Coord(34.06693695833717, -118.4448437749579)],
+    ["1010 Westwood Center", new Coord(34.062367842236796, -118.44505990379362)],
+    ["Ackerman Union", new Coord(34.07061783552888, -118.44420560194396)],
+    ["Biomedical Sciences Research Building", new Coord(34.067354619343014, -118.44130557310837)],
+    ["Boelter Hall", new Coord(34.06927673596064, -118.44314214158828)],
+    ["Botany Building", new Coord(34.06699323253283, -118.44108758660148)],
+    ["Boyer Hall", new Coord(34.06830107967037, -118.441655901944)],
+    ["Bradley Hall", new Coord(34.069892812200564, -118.44907931543702)],
+    ["Brain Mapping Center", new Coord(34.067009858138334, -118.44440165961545)],
+    ["Brain Research Institute", new Coord(34.06753326915666, -118.44471388475186)],
+    ["Broad Art Center", new Coord(34.07605382686575, -118.44096471543688)],
+    ["Bunche Hall", new Coord(34.0744671641443, -118.44011757310827)],
+    ["California NanoSystems Institute", new Coord(34.06819835504753, -118.4428800000944)],
+    ["Campbell Hall", new Coord(34.073822757539055, -118.4412273000944)],
+    ["Canyon Point", new Coord(34.07359230559998, -118.45103385961517)],
+    ["Carnesale Commons", new Coord(34.07207665724031, -118.44949300009435)],
+    ["Center for the Health Sciences", new Coord(34.066275558678655, -118.44207574612233)],
+    ["Collins Center for Executive Education", new Coord(34.07370883986546, -118.44463836331438)],
+    ["Cornell Hall", new Coord(34.07417213061734, -118.44339498845082)],
+    ["Covel Commons", new Coord(34.073219454243, -118.44995204427262)],
+    ["De Neve Plaza Commons Building", new Coord(34.07098143697784, -118.4501300866013)],
+    ["Dentistry, School of", new Coord(34.066540396446705, -118.44199143077967)],
+    ["Dodd Hall", new Coord(34.072770972418695, -118.43939211543696)],
+    ["Downtown Center", new Coord(34.05911359159337, -118.2803091846574)],
+    ["East Melnitz Hall", new Coord(34.076635172087215, -118.43942248845094)],
+    ["Education and Information Studies Building", new Coord(34.070569076115106, -118.44254134427271)],
+    ["Engineering I", new Coord(34.068769401762815, -118.44447121947147)],
+    ["Engineering IV", new Coord(34.06924376871353, -118.44432790739828)],
+    ["Engineering V", new Coord(34.06970012685327, -118.44368661543703)],
+    ["Engineering VI", new Coord(34.06965066498041, -118.4437638546126)],
+    ["Entrepreneurs Hall", new Coord(34.07382109198659, -118.44336680009432)],
+    ["Factor Health Sciences Building", new Coord(34.06698642840647, -118.44360184420151)],
+    ["Fernald Center", new Coord(34.07655532586608, -118.44284347762654)],
+    ["Field", new Coord(34.07240146934583, -118.44685180194392)],
+    ["Fowler Museum at UCLA", new Coord(34.073131132692396, -118.44305491543702)],
+    ["Franz Hall", new Coord(34.06977549013749, -118.4412362866013)],
+    ["Geffen Hall", new Coord(34.06440506221056, -118.44235545961538)],
+    ["Geology Building", new Coord(34.06940011483661, -118.44055781543707)],
+    ["Gold Hall", new Coord(34.07372594871459, -118.4436591384509)],
+    ["Gonda (Goldschmied) Neuroscience and Genetics Research Center", new Coord(34.06542486559988, -118.44723186883748)],
+    ["Haines Hall", new Coord(34.07297623721399, -118.44115199519744)],
+    ["Hammer Museum", new Coord(34.0597166547792, -118.44368375961538)],
+    ["Hedrick Hall", new Coord(34.07341887984911, -118.45221587495782)],
+    ["Hershey Hall", new Coord(34.06679355101938, -118.43985150194395)],
+    ["Hitch Residential Suites", new Coord(34.07373197909357, -118.45371793077958)],
+    ["Humanities Building", new Coord(34.07171419871093, -118.44127964602781)],
+    ["James West Center", new Coord(34.070471235944105, -118.4451430866012)],
+    ["Jules Stein Eye Institute", new Coord(34.06491686384691, -118.44398277310833)],
+    ["Kaufman Hall", new Coord(34.073965503578236, -118.4442240496137)],
+    ["Kerckhoff Hall", new Coord(34.07063259934642, -118.44355748660129)],
+    ["Kinsey Science Teaching Pavilion", new Coord(34.07034386178524, -118.44136834427258)],
+    ["Knudsen Hall", new Coord(34.07079328618486, -118.44107564427274)],
+    ["Korn Convocation Hall", new Coord(34.07387991317846, -118.44312533077957)],
+    ["La Kretz Garden Pavilion", new Coord(34.06676203301789, -118.44153223077969)],
+    ["La Kretz Hall", new Coord(34.06775504340902, -118.44269563077962)],
+    ["Lab School 1", new Coord(34.075359640735805, -118.4441230019438)],
+    ["Law Building", new Coord(34.072834670162216, -118.43873265775424)],
+    ["Life Sciences", new Coord(34.06757981884672, -118.44040524427275)],
+    ["Lu Valle Commons", new Coord(34.073789718271776, -118.43941739214993)],
+    ["MacDonald Medical Research Laboratories", new Coord(34.06733974481398, -118.44427897310828)],
+    ["Macgowan Hall", new Coord(34.07610364667738, -118.43967057310815)],
+    ["Macgowan Hall East", new Coord(34.07593367869698, -118.43966751516949)],
+    ["Marion Anderson Hall", new Coord(34.0740785960199, -118.44295632818209)],
+    ["Marion Davies Children's Center", new Coord(34.065421750246415, -118.44198989084667)],
+    ["Mathematical Sciences", new Coord(34.07079353192487, -118.44094973984707)],
+    ["Medical Plaza 100", new Coord(34.06564738635145, -118.44574927495792)],
+    ["Medical Plaza 200", new Coord(34.06506957561769, -118.44681577920316)],
+    ["Medical Plaza 300", new Coord(34.06458524972706, -118.44606383077969)],
+    ["Melnitz Hall", new Coord(34.07661101235114, -118.44000980194392)],
+    ["Molecular Sciences Building", new Coord(34.06821968915325, -118.44086534677987)],
+    ["Moore Hall", new Coord(34.070494834778856, -118.44261903752619)],
+    ["Morton Medical Building", new Coord(34.06523159728839, -118.44547863742048)],
+    ["Murphy Hall", new Coord(34.07201228637565, -118.43860514242309)],
+    ["Neuroscience Research Building", new Coord(34.06765723088129, -118.44358820194387)],
+    ["No facility", null],
+    ["No Location", null],
+    ["Northwest Campus Auditorium", new Coord(34.0721306088205, -118.45047378660131)],
+    ["Off campus", null],
+    ["Online", null],
+    ["Online - Recorded", null],
+    ["Orthopaedic Hospital Research Center", new Coord(34.0675689815136, -118.44120280194402)],
+    ["Ostin Music Center", new Coord(34.07046696146252, -118.44027788660142)],
+    ["Perloff Hall", new Coord(34.07366736615829, -118.44024534612211)],
+    ["Physics and Astronomy Building", new Coord(34.07084656284753, -118.44158000194393)],
+    ["Portola Plaza Building", new Coord(34.0703763955532, -118.44184409797171)],
+    ["Powell Library Building", new Coord(34.07170168372432, -118.44215751471553)],
+    ["Pritzker Hall", new Coord(34.06979737917609, -118.44075760316845)],
+    ["Public Affairs Building", new Coord(34.074316015804875, -118.4385481962411)],
+    ["Public Health, School of", new Coord(34.06700817053388, -118.44333609454576)],
+    ["Reed Neurological Research Center", new Coord(34.06640504609998, -118.44443114666824)],
+    ["Renee and David Kaplan Hall", new Coord(34.07131425924011, -118.441118715437)],
+    ["Rieber Hall", new Coord(34.071877196473764, -118.45159800379358)],
+    ["Rolfe Hall", new Coord(34.07395050481058, -118.44204757310818)],
+    ["Rosenfeld Library", new Coord(34.074146617522885, -118.44345567310828)],
+    ["Royce Hall", new Coord(34.072924325772995, -118.44218065821016)],
+    ["Schoenberg Music Building", new Coord(34.07116180085136, -118.44047522468482)],
+    ["Sculpture Garden", new Coord(34.07523978110291, -118.43986747521654)],
+    ["Semel Institute for Neuroscience and HumanBehavior", new Coord(34.06596987154504, -118.4448672866014)],
+    ["Slichter Hall", new Coord(34.06934527816948, -118.4404310270805)],
+    ["Sproul Hall", new Coord(34.07214633465558, -118.44958042892998)],
+    ["Strathmore Building", new Coord(34.06832776766664, -118.4452304951975)],
+    ["Student Activities Center", new Coord(34.07169768711251, -118.44412921728663)],
+    ["Terasaki Life Sciences Building", new Coord(34.06735914419834, -118.43988990433964)],
+    ["UCLA Lab School, Seeds Campus", new Coord(34.07537041450641, -118.44410268434461)],
+    ["Ueberroth Building", new Coord(34.06420631417785, -118.44689975776575)],
+    ["Vatche and Tamar Manoukian Medical Building", new Coord(34.06571249653149, -118.445824201944)],
+    ["Wendy and Leonard Goldberg Medical Building", new Coord(34.06468576168065, -118.44608585961541)],
+    ["West Medical", new Coord(34.0605666089195, -118.44778532706898)],
+    ["William Andrews Clark Memorial Library", new Coord(34.033745869528914, -118.31448379285351)],
+    ["Wooden Recreation and Sports Center", new Coord(34.07127162866979, -118.44570073946167)],
+    ["Young Hall", new Coord(34.06876052882566, -118.44152213130202)],
+    ["Young Research Library", new Coord(34.075075721540614, -118.44095101783246)]
+]);
+
+
+// define blacklist for buildings
+const buildings_no_location = ["No facility", "No Location", "Online", "Online - Recorded"]
+const buildings_blacklist = buildings_no_location.concat(["Off campus"]);
+
+// specify which column number the new injected Time/Dist column should be
+const TIME_DIST_COL_IDX = 7;
+const API_KEY = null; // TODO: Secure API key in backend
+
 // prepTimeDistance();
 initiateTimeDistance();
 function test(response){
@@ -185,24 +318,196 @@ function getLng(building){
     return (building.lng).toString();
 }
 
-// TODO: FINISH THIS POPULATION FUNCTION
-function populateTimeDistance(response, ordered_classes){
-    console.log(response);
-    console.log(ordered_classes);
+function populateTimeDistance(response, parsed_class_info) {
 
-    //let td_matrix = response.rows;
+    // extract relevant info from parsed webpage info
+    let ordered_classes = parsed_class_info.get("orderedClasses");
+    let unique_buildings = Array.from(cleanBlacklistedBuildings(parsed_class_info.get("uniqueBuildings")));
 
-    let class_plan_classes = document.getElementById("div_landing").getElementsByClassName("courseItem");
+    // check if offnominal response given (disabled or denied request)
+    let response_disabled = (response == null);
+    let response_denied = (!response_disabled && response.status == "REQUEST_DENIED");
+    let offnominal_response = response_disabled || response_denied;
 
-    for (let class_record of class_plan_classes) {
-        let class_name_record = class_record.getElementsByClassName("SubjectAreaName_ClassName").item(0).children;
+    if (response_denied)
+        console.log("Request denied. Reason: " + response.error_message);
 
-        let class_department = extractDepartmentFromClassRecord(class_name_record.item(0).innerText);
-        let class_number = extractNumberFromClassRecord(class_name_record.item(1).innerText);
+    // extract relevant info (distance matrix) from DistanceMatrix API response
+    let td_matrix = (!offnominal_response) ? response.rows : null;
 
-        console.log(class_department + ", " + department_abbrev.get(class_department));
-        console.log(class_number);
+    // prepare for offnominal HTML injection (if needed)
+    let offnominal_innerhtml;
+
+    if (response_disabled)
+        offnominal_innerhtml = "N/A (disabled)";
+    else if (response_denied)
+        offnominal_innerhtml = "N/A (denied)";
+
+    // get overall Class Planner HTML element for parsing/injection
+    let courses = document.getElementById("div_landing").getElementsByClassName("courseItem");
+
+    // iterate through each course
+    for (let course of courses) {
+
+        // get class department and number (for class info lookups)
+        let course_nameinfo = course.getElementsByClassName("SubjectAreaName_ClassName").item(0).children;
+        let course_department = extractDepartmentFromClassRecord(course_nameinfo.item(0).innerText);
+        let course_number = extractNumberFromClassRecord(course_nameinfo.item(1).innerText);
+
+        // lookup all previous and current class infos for all days
+        let class_infos = getAllCurAndPrevClassInfo(ordered_classes, department_abbrev.get(course_department), course_number);
+
+        // get course table (holds header row, as well as all section rows)
+        let course_table = course.getElementsByClassName('coursetable').item(0).getElementsByTagName('tbody');
+
+        // init new "Distance From Previous Class" column for injection into header
+        let time_dist_col = document.createElement('th');
+        time_dist_col.style.width = "13%";
+        time_dist_col.innerHTML = "Dist<span class=\"hide-small\">ance From Previous Class</span>";
+
+        // inject time/dist column into header at position TIME_DIST_COL_NUMBER
+        let header = course_table.item(0);
+        header.getElementsByTagName('th')[TIME_DIST_COL_IDX - 1].after(time_dist_col);
+
+        // iterate through sections to inject all relevant class time/dist info
+        for (let i = 1; i < course_table.length; i++) {
+
+            // determine which section we're currently injecting for
+            let section = course_table.item(i);
+            let section_name = section.firstElementChild.getElementsByClassName('section-header')[0].innerText;
+
+            // init new data element for "Distance From Previous Class" column
+            let time_dist_data = document.createElement('td');
+            time_dist_data.innerHTML = (offnominal_response) ? offnominal_innerhtml : formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
+            section.firstElementChild.getElementsByTagName('td')[TIME_DIST_COL_IDX - 1].after(time_dist_data);
+        }
     }
+}
+
+function cleanBlacklistedBuildings(buildings) {
+
+    for (let val of buildings)
+    {
+        if (buildings_blacklist.includes(val))
+            buildings.delete(val);
+    }
+
+    return buildings;
+}
+
+function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name) {
+
+    // init constants that will be used/referenced during formatting
+    const newline = "</br>";
+    const no_data = "N/A";
+    const unknown = "?";
+    const day_abbrev_map = new Map([
+        ['Monday','M'],
+        ['Tuesday','T'],
+        ['Wednesday','W'],
+        ['Thursday','R'],
+        ['Friday','F']
+    ]);
+
+    // init buffers/flags to be used during formatting
+    let buf = "";
+    let first_day_with_section = true;
+
+    // iterate through each day
+    for (let [day, class_info_pairs] of class_infos) {
+
+        // set flag for conditional formatting
+        let first_section_in_day = true;
+
+        // iterate through each class info pair
+        for (let [prev_class_info, cur_class_info] of class_info_pairs) {
+
+            // check if current class belongs to section of interest
+            if (cur_class_info.section != section_name)
+                continue;
+
+            // perform extra formatting if this is not the first day with section of interest
+            if (!first_day_with_section) {
+                buf += newline;
+            }
+
+            // ensure flag is set for any future additions
+            first_day_with_section = false;
+
+            // conditionally format depending on if this is the first class of this section today
+            if (first_section_in_day) {
+                buf += (day_abbrev_map.has(day) ? day_abbrev_map.get(day) : unknown) + ": ";
+                first_section_in_day = false;
+            }
+            else
+                buf += ", ";
+
+            // check if current class is first in the day (no previous class, no time/dist lookup needed)
+            if (prev_class_info == null) {
+                buf += (no_data + " (first class)");
+                continue;
+            }
+
+            // check if current class has a special or blacklisted location
+            if (buildings_no_location.includes(cur_class_info.building)) {
+                buf += (no_data + " (no physical location)");
+                continue;
+            }
+            else if (buildings_blacklist.includes(cur_class_info.building)) {
+                buf += (no_data + " (unknown exact location)");
+                continue;
+            }
+
+            // lookup distance and time based on locations
+            let prev_class_idx = buildings_idx.indexOf(prev_class_info.building);
+            let cur_class_idx = buildings_idx.indexOf(cur_class_info.building);
+
+            if (prev_class_idx == -1 || cur_class_idx == -1) {
+                // ERROR, but we'll handle gracefully instead of throwing an exception
+                buf += unknown;
+                continue;
+            }
+
+            let time_dist_info = td_matrix[prev_class_idx].elements[cur_class_idx];
+            buf += time_dist_info.distance.text + " (" + time_dist_info.duration.text + ")";
+        }
+    }
+
+    return buf != "" ? buf : (no_data + " (no days scheduled)");
+}
+
+function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, course_number) {
+
+    // init empty map (will map day --> array of [previous class's info, current class's info])
+    let results = new Map();
+
+    // iterate through each day
+    for (let [day, classes] of ordered_classes) {
+
+        // get current value for "day" inside of "results" map (if none, then init to empty array)
+        let res = results.has(day) ? results.get(day) : [];
+
+        // init previous class to null (handle if specified class lookup is the first in a day)
+        let prev_class_info = null;
+
+        // iterate through each class in a day
+        for (let cur_class_info of classes) {
+
+            // check if current class is our class of interest (need to push to results)
+            if (cur_class_info.name == (course_department_abbrev + " " + course_number)) {
+                res.push([prev_class_info, cur_class_info]);
+            }
+
+            // update previous_class to prepare for next iteration
+            prev_class_info = cur_class_info;
+        }
+
+        // add constructed array to final results map
+        results.set(day, res);
+    }
+
+    // finished, so return constructed map
+    return results;
 }
 
 function extractDepartmentFromClassRecord(str) {
@@ -214,129 +519,10 @@ function extractNumberFromClassRecord(str) {
 }
 
 
-function initiateTimeDistance(){
-    function Coord(lat, lng){
-        this.lat = lat;
-        this.lng = lng;
-    }
+function initiateTimeDistance() {
 
-    // Populated table of building names --> coordinates
-    // Placeholder for now
-    const coords = new Map([
-        ["700 Westwood Plaza", new Coord(34.06693695833717, -118.4448437749579)],
-        ["1010 Westwood Center", new Coord(34.062367842236796, -118.44505990379362)],
-        ["Ackerman Union", new Coord(34.07061783552888, -118.44420560194396)],
-        ["Biomedical Sciences Research Building", new Coord(34.067354619343014, -118.44130557310837)],
-        ["Boelter Hall", new Coord(34.06927673596064, -118.44314214158828)],
-        ["Botany Building", new Coord(34.06699323253283, -118.44108758660148)],
-        ["Boyer Hall", new Coord(34.06830107967037, -118.441655901944)],
-        ["Bradley Hall", new Coord(34.069892812200564, -118.44907931543702)],
-        ["Brain Mapping Center", new Coord(34.067009858138334, -118.44440165961545)],
-        ["Brain Research Institute", new Coord(34.06753326915666, -118.44471388475186)],
-        ["Broad Art Center", new Coord(34.07605382686575, -118.44096471543688)],
-        ["Bunche Hall", new Coord(34.0744671641443, -118.44011757310827)],
-        ["California NanoSystems Institute", new Coord(34.06819835504753, -118.4428800000944)],
-        ["Campbell Hall", new Coord(34.073822757539055, -118.4412273000944)],
-        ["Canyon Point", new Coord(34.07359230559998, -118.45103385961517)],
-        ["Carnesale Commons", new Coord(34.07207665724031, -118.44949300009435)],
-        ["Center for the Health Sciences", new Coord(34.066275558678655, -118.44207574612233)],
-        ["Collins Center for Executive Education", new Coord(34.07370883986546, -118.44463836331438)],
-        ["Cornell Hall", new Coord(34.07417213061734, -118.44339498845082)],
-        ["Covel Commons", new Coord(34.073219454243, -118.44995204427262)],
-        ["De Neve Plaza Commons Building", new Coord(34.07098143697784, -118.4501300866013)],
-        ["Dentistry, School of", new Coord(34.066540396446705, -118.44199143077967)],
-        ["Dodd Hall", new Coord(34.072770972418695, -118.43939211543696)],
-        ["Downtown Center", new Coord(34.05911359159337, -118.2803091846574)],
-        ["East Melnitz Hall", new Coord(34.076635172087215, -118.43942248845094)],
-        ["Education and Information Studies Building", new Coord(34.070569076115106, -118.44254134427271)],
-        ["Engineering I", new Coord(34.068769401762815, -118.44447121947147)],
-        ["Engineering IV", new Coord(34.06924376871353, -118.44432790739828)],
-        ["Engineering V", new Coord(34.06970012685327, -118.44368661543703)],
-        ["Engineering VI", new Coord(34.06965066498041, -118.4437638546126)],
-        ["Entrepreneurs Hall", new Coord(34.07382109198659, -118.44336680009432)],
-        ["Factor Health Sciences Building", new Coord(34.06698642840647, -118.44360184420151)],
-        ["Fernald Center", new Coord(34.07655532586608, -118.44284347762654)],
-        ["Field", new Coord(34.07240146934583, -118.44685180194392)],
-        ["Fowler Museum at UCLA", new Coord(34.073131132692396, -118.44305491543702)],
-        ["Franz Hall", new Coord(34.06977549013749, -118.4412362866013)],
-        ["Geffen Hall", new Coord(34.06440506221056, -118.44235545961538)],
-        ["Geology Building", new Coord(34.06940011483661, -118.44055781543707)],
-        ["Geology Building B", new Coord(34.06938234016632, -118.44059000246695)],
-        ["Gold Hall", new Coord(34.07372594871459, -118.4436591384509)],
-        ["Gonda (Goldschmied) Neuroscience and Genetics Research Center", new Coord(34.06542486559988, -118.44723186883748)],
-        ["Haines Hall", new Coord(34.07297623721399, -118.44115199519744)],
-        ["Hammer Museum", new Coord(34.0597166547792, -118.44368375961538)],
-        ["Hedrick Hall", new Coord(34.07341887984911, -118.45221587495782)],
-        ["Hershey Hall", new Coord(34.06679355101938, -118.43985150194395)],
-        ["Hitch Residential Suites", new Coord(34.07373197909357, -118.45371793077958)],
-        ["Humanities Building", new Coord(34.07171419871093, -118.44127964602781)],
-        ["James West Center", new Coord(34.070471235944105, -118.4451430866012)],
-        ["Jules Stein Eye Institute", new Coord(34.06491686384691, -118.44398277310833)],
-        ["Kaufman Hall", new Coord(34.073965503578236, -118.4442240496137)],
-        ["Kerckhoff Hall", new Coord(34.07063259934642, -118.44355748660129)],
-        ["Kinsey Science Teaching Pavilion", new Coord(34.07034386178524, -118.44136834427258)],
-        ["Knudsen Hall", new Coord(34.07079328618486, -118.44107564427274)],
-        ["Korn Convocation Hall", new Coord(34.07387991317846, -118.44312533077957)],
-        ["La Kretz Garden Pavilion", new Coord(34.06676203301789, -118.44153223077969)],
-        ["La Kretz Hall", new Coord(34.06775504340902, -118.44269563077962)],
-        ["Lab School 1", new Coord(34.075359640735805, -118.4441230019438)],
-        ["Law Building", new Coord(34.072834670162216, -118.43873265775424)],
-        ["Life Sciences", new Coord(34.06757981884672, -118.44040524427275)],
-        ["Lu Valle Commons", new Coord(34.073789718271776, -118.43941739214993)],
-        ["MacDonald Medical Research Laboratories", new Coord(34.06733974481398, -118.44427897310828)],
-        ["Macgowan Hall", new Coord(34.07610364667738, -118.43967057310815)],
-        ["Macgowan Hall East", new Coord(34.07593367869698, -118.43966751516949)],
-        ["Marion Anderson Hall", new Coord(34.0740785960199, -118.44295632818209)],
-        ["Marion Davies Children's Center", new Coord(34.065421750246415, -118.44198989084667)],
-        ["Mathematical Sciences", new Coord(34.07079353192487, -118.44094973984707)],
-        ["Medical Plaza 100", new Coord(34.06564738635145, -118.44574927495792)],
-        ["Medical Plaza 200", new Coord(34.06506957561769, -118.44681577920316)],
-        ["Medical Plaza 300", new Coord(34.06458524972706, -118.44606383077969)],
-        ["Melnitz Hall", new Coord(34.07661101235114, -118.44000980194392)],
-        ["Molecular Sciences Building", new Coord(34.06821968915325, -118.44086534677987)],
-        ["Moore Hall", new Coord(34.070494834778856, -118.44261903752619)],
-        ["Morton Medical Building", new Coord(34.06523159728839, -118.44547863742048)],
-        ["Murphy Hall", new Coord(34.07201228637565, -118.43860514242309)],
-        ["Neuroscience Research Building", new Coord(34.06765723088129, -118.44358820194387)],
-        ["No facility", null],
-        ["No Location", null],
-        ["Northwest Campus Auditorium", new Coord(34.0721306088205, -118.45047378660131)],
-        ["Off campus", null],
-        ["Online", null],
-        ["Online - Recorded", null],
-        ["Orthopaedic Hospital Research Center", new Coord(34.0675689815136, -118.44120280194402)],
-        ["Ostin Music Center", new Coord(34.07046696146252, -118.44027788660142)],
-        ["Perloff Hall", new Coord(34.07366736615829, -118.44024534612211)],
-        ["Physics and Astronomy Building", new Coord(34.07084656284753, -118.44158000194393)],
-        ["Portola Plaza Building", new Coord(34.0703763955532, -118.44184409797171)],
-        ["Powell Library Building", new Coord(34.07170168372432, -118.44215751471553)],
-        ["Pritzker Hall", new Coord(34.06979737917609, -118.44075760316845)],
-        ["Public Affairs Building", new Coord(34.074316015804875, -118.4385481962411)],
-        ["Public Health, School of", new Coord(34.06700817053388, -118.44333609454576)],
-        ["Reed Neurological Research Center", new Coord(34.06640504609998, -118.44443114666824)],
-        ["Renee and David Kaplan Hall", new Coord(34.07131425924011, -118.441118715437)],
-        ["Rieber Hall", new Coord(34.071877196473764, -118.45159800379358)],
-        ["Rolfe Hall", new Coord(34.07395050481058, -118.44204757310818)],
-        ["Rosenfeld Library", new Coord(34.074146617522885, -118.44345567310828)],
-        ["Royce Hall", new Coord(34.072924325772995, -118.44218065821016)],
-        ["Schoenberg Music Building", new Coord(34.07116180085136, -118.44047522468482)],
-        ["Sculpture Garden", new Coord(34.07523978110291, -118.43986747521654)],
-        ["Semel Institute for Neuroscience and HumanBehavior", new Coord(34.06596987154504, -118.4448672866014)],
-        ["Slichter Hall", new Coord(34.06934527816948, -118.4404310270805)],
-        ["Sproul Hall", new Coord(34.07214633465558, -118.44958042892998)],
-        ["Strathmore Building", new Coord(34.06832776766664, -118.4452304951975)],
-        ["Student Activities Center", new Coord(34.07169768711251, -118.44412921728663)],
-        ["Terasaki Life Sciences Building", new Coord(34.06735914419834, -118.43988990433964)],
-        ["UCLA Lab School, Seeds Campus", new Coord(34.07537041450641, -118.44410268434461)],
-        ["Ueberroth Building", new Coord(34.06420631417785, -118.44689975776575)],
-        ["Vatche and Tamar Manoukian Medical Building", new Coord(34.06571249653149, -118.445824201944)],
-        ["Wendy and Leonard Goldberg Medical Building", new Coord(34.06468576168065, -118.44608585961541)],
-        ["West Medical", new Coord(34.0605666089195, -118.44778532706898)],
-        ["William Andrews Clark Memorial Library", new Coord(34.033745869528914, -118.31448379285351)],
-        ["Wooden Recreation and Sports Center", new Coord(34.07127162866979, -118.44570073946167)],
-        ["Young Hall", new Coord(34.06876052882566, -118.44152213130202)],
-        ["Young Research Library", new Coord(34.075075721540614, -118.44095101783246)]
-    ])
+    // parse all class info from webpage
+    let class_info = getClassBuildings();
 
     // Construct unique building coordinates by indexing into coordinate table
     let unique_buildings = [];
@@ -345,6 +531,8 @@ function initiateTimeDistance(){
         if(val != null) // only add if not null
             unique_buildings.push(val);
     }
+
+    console.log(unique_buildings);
 
     let total_buildings = unique_buildings.length;
     let str_coord = "";
@@ -365,21 +553,32 @@ function initiateTimeDistance(){
         }
     }
 
-    // TODO: SECURE API_KEY
-    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=";
+    // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
+    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + API_KEY;
 
-    // TODO: REMOVE THIS TEMPORARY CALL
-    populateTimeDistance(null, class_info.get("orderedClasses"));
+    // Compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development)
+    chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
 
-    // TODO: UNCOMMENT API CALL TO DISTANCEMATRIX
-    /*chrome.runtime.sendMessage({
-        url: map_url,
-        contentScriptQuery: "getTimeDistanceData"
-    }
-        , response => {
-            populateTimeDistance(response, class_info.get("orderedClasses"));
+        // Check if we're in "Developer" mode
+        if (dev_mode) {
+
+            console.log("Peforming Distance Matrix API call... (developer mode ENABLED)");
+
+            // Perform API call
+            chrome.runtime.sendMessage({
+                url: map_url,
+                contentScriptQuery: "getTimeDistanceData"
+            }
+                , response => {
+                    populateTimeDistance(response, class_info);
+                }
+            );
         }
-    );*/
+        else { // Don't perform API call, and inject placeholder (i.e. "N/A (disabled)")
+            console.log("Avoiding Distance Matrix API call (developer mode DISABLED)");
+            populateTimeDistance(null, class_info);
+        }
+    })
 
 }
 /*

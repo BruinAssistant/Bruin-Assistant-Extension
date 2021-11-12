@@ -28,7 +28,8 @@
         }
     ],
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "storage"
     ],
     "host_permissions": [
         "https://class-planner-assistant.herokuapp.com/",

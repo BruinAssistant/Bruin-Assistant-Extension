@@ -1,9 +1,77 @@
-.groupme-btn {
+
+.groupme-img {
     width: 1rem;
     height: 1rem;
+    position: relative;
+    display: inline-block;
+}
+
+/* Popup QR Code  */
+
+.qr-img {
+    margin: 0;
+}
+
+/* Popup container */
+.qr-popup {
+    position: relative;
+    /* display: inline-block; */
+    cursor: pointer;
     float: right;
 }
 
-tr th:nth-child(2) {
-    width: 4rem;
+/* The actual popup (appears on top) */
+.qr-popup .qr-popuptext {
+    visibility: hidden;
+    width: 150px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 1rem;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -88px;
+}
+
+/* Popup arrow */
+.qr-popup .qr-popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.qr-popup:hover .qr-popuptext {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
