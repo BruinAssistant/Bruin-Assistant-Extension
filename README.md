@@ -29,11 +29,12 @@ Bruin-Assistant-Extension
 ├── assets
 │   └── groupme.png
 ├── background.js
+├── bruinwalk.css
 ├── bruinwalk.js
+├── bruinwalkPopup.js
 ├── config.js
 ├── groupme.css
 ├── groupme.js
-├── jquery-3.6.0.min.js
 ├── manifest.json
 ├── observer.js
 ├── package.json
@@ -56,6 +57,11 @@ Bruin-Assistant-Extension
 │   │   ├── test1.js
 │   │   ├── test2.js
 │   │   └── test3.js
+│   ├── bruinwalk
+│   │   ├── README.md
+│   │   ├── imgs
+│   │   │   └── test1.png
+│   │   └── test1.jss   
 │   └── mutation
 └── timedistance.js
 ```

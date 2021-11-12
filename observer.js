@@ -8,14 +8,17 @@
 
 let timeout = null
 
-/**
- * The list of ClassNames that are expected to be injected into the DOM. 
- * 
- * @see {@link removePrevInjections} for removing injections from DOM.
- * @see {@link validMutation} for checking if the child nodes added are in the 
- * whitelist of injections.
- */
-const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup"];
+// DOM Nodes that should not trigger mutation callback for reload.
+const observerWhiteListClassName = [
+    "inst-rating-title-div",
+    "inst-rating-content-div",
+    "hide-small",
+    "section-header",
+    "inst-rating-footer-div",
+];
+
+const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "popup bruinwalk-button",
+"js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths js no-flexbox flexbox-legacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths", "popuptext", "instructor-container", "", "close", "metricTable", "comment", "bruinwalk-undefined"];
 
 
 /**
@@ -31,6 +34,7 @@ const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup"];
 function validMutation(mutation, callback) {
     for (let node of mutation.addedNodes) {
         if (!injectionClassNames.includes(node.className)) {
+            // console.log(node.className);
             console.log("Mutation: ", mutation);
             callback();
             return;
@@ -85,6 +89,7 @@ function repopulate(mutationsList, observer) {
         populateGroupMeLinks();
         resizeColumnWidths();
         initiateTimeDistance();
+        findClassInst();
     }
 }
 
