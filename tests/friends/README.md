@@ -28,7 +28,7 @@ A critical component of the friend system is social networking. This basic examp
 Just enter your friend's name and hit "Invite"!
 
 ###  Expected Output:
-![](./imgs/2-francis-invite.png)
+![](./imgs/2-francis-invite-henry.png)
 
 ---
 
@@ -41,7 +41,7 @@ To protect users from spam and protect privacy, friend requests must be approved
 Each invite will include your friend's name as well an individualized "Accept" button for that particular invitation. This button will send a request to the internal server confirming the friendship.
 
 ### Expected Output:
-![](./imgs/3-henry-invite-francis.png)
+![](./imgs/3-henry-invite-franics.png)
 
 ---
 
