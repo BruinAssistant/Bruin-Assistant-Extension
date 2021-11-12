@@ -1,18 +1,26 @@
 /**
+ * @file This file works on creating a bruinwalk review popup. It processes the instructor
+ * url from bruinwalk.com and displays information on the popup. It also utilizes chart.js
+ * to display chart and grade distribution
+ * 
+ * @author Nathakin "Ken" Leepreecha (KenNL42)
+ */
+
+/**
  * 
  * @param {string} instUrl Bruinwalk url of instructor who teaches the class
  * @param {HTMLCollection} instDiv HTML div element of instructor cell from class planner
  * @param {HTMLCollection} responseHTML HTML of bruinwalk page of instructor who teaches the class
  * @returns 
  */
-
 function showPopup(instUrl, instDiv, responseHTML) {
 
   // -------------- create button ----------------
   var bruinwalkPopupButton = document.createElement('button');
+  // console.log(instUrl);
   
   // create 'N/A' button for professor whose review is not on bruinwalk
-  if (instUrl == null || responseHTML == null){
+  if (instUrl == "" || responseHTML == ""){
     bruinwalkPopupButton.className = "bruinwalk-undefined";
     bruinwalkPopupButton.innerText = "N/A";
     bruinwalkPopupButton.onclick = null;

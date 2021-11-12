@@ -8,11 +8,6 @@
  * @author Eldon Ngo (eldon3141)
  */
 
-// This will use the same observer from groupme.js
-observer.observe(document.querySelector('.centerColumn'), config);
-
-
-
 
 /**
  * Specifies the column index that the newly-injected time/distance column
@@ -35,7 +30,7 @@ const TIME_DIST_COL_IDX = 7;
  * @todo Secure API key in backend.
  * @todo Consider possibly moving this to some extension-wide CONFIG module.
  */
-const API_KEY = null;
+const API_KEY = "AIzaSyDW_FKptRQMGtYiQqPPw4s15jkF-YLe2w8";
 
 
 /**
@@ -460,6 +455,7 @@ function populateTimeDistance(response, parsed_class_info) {
 
         // init new "Distance From Previous Class" column for injection into header
         let time_dist_col = document.createElement('th');
+        time_dist_col.className = "th-timedistance";
         time_dist_col.style.width = "13%";
         time_dist_col.innerHTML = "Dist<span class=\"hide-small\">ance From Previous Class</span>";
 
@@ -475,6 +471,7 @@ function populateTimeDistance(response, parsed_class_info) {
 
             // init new data element for "Distance From Previous Class" column
             let time_dist_data = document.createElement('td');
+            time_dist_data.className = "td-timedistance";
             time_dist_data.innerHTML = (offnominal_response) ? offnominal_innerhtml : formatTimeDistData(td_matrix, unique_buildings, class_infos, section_name);
             section.firstElementChild.getElementsByTagName('td')[TIME_DIST_COL_IDX - 1].after(time_dist_data);
         }

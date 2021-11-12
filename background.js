@@ -30,10 +30,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         return true;
     }
     if (request.contentScriptQuery == "getBruinwalkData") {
-        fetch(request.url)
-        .then(res => res.text())
-        .then(res => sendResponse(res))
-        .catch(error => console.log("Error: ", error))
+        if (request.url == ""){res => {
+            sendResponse(""); 
+            return true;
+        }
+        }
+        else{
+            fetch(request.url)
+            .then(res => res.text())
+            .then(res => sendResponse(res))
+            .catch(error => console.log("Error: ", error))
+        }
         return true;
     }
     if (request.contentScriptQuery == "getTimeDistanceData") {

@@ -1,3 +1,12 @@
+/**
+ * @file This file works on fetching data from MyULCA Planner and fetch data
+ * from bruinwalk.com according to student's class planner. It searches the
+ * bruinwalk href of an instructor from class planner.
+ * 
+ * @author Nathakin "Ken" Leepreecha (KenNL42)
+ */
+
+
 findClassInst();
 /**
  * Main function to seach instructor Bruinwalk information and display popup to be.my.ucla.edu class planner
@@ -23,27 +32,28 @@ function findClassInst(){
         // loop to get search result of all professor name
         // there are cases of more than one instructors in one table
         
-        
         var allInstName = instName.split(/\n/);
         for (let j = 0; j < allInstName.length; j++){
 
             // ignore if it is empty string or '...' after split
             if(allInstName[j] != "..."){
                 getSearchResult(fullCourseName, allInstName[j], ((instUrl) => {
-                    /*if (instUrl != null){*/ // <---- need to rework to append 'N/A' button
-
-                        // get bruinwalk html to process
+                    // get bruinwalk html to process
+                    if (instUrl == ""){
+                        showPopup("", uclaClasses[i].getElementsByClassName('instructor-container')[j], "")
+                    }
+                    else{
                         chrome.runtime.sendMessage({
                             url: instUrl,
                             contentScriptQuery: "getBruinwalkData",
                         }, responseHTMLString => {
                             var responseHTML = stringToHTML(responseHTMLString);
-                            console.log(instUrl);
+                            // console.log(instUrl);
                             // showPopup(instUrl, courseTable[7], responseHTML);
-                            showPopup(instUrl, courseTable[7].getElementsByClassName('instructor-container')[j], responseHTML);
+                            // showPopup(instUrl, courseTable[7].getElementsByClassName('instructor-container')[j], responseHTML);
+                            showPopup(instUrl, uclaClasses[i].getElementsByClassName('instructor-container')[j], responseHTML);
                         });
-
-                    /*}*/
+                    }
                 }));
             }
         }
@@ -77,7 +87,7 @@ function getSearchResult(fullCourseName, instName, handler){
  * get instructor bruinwalk url if they teach the class
  * @param {string} responseHTMLString text version of a class' bruinwalk page
  * @param {String[]} instNameArr list of instructors in a particular class from class planner
- * @return {string} url of instructor and the class that user is taking. Otherwise, null
+ * @return {string} url of instructor and the class that user is taking. Otherwise, empty string
  */
 function fetchInstBruinwalk(responseHTMLString, instNameArr){
     var responseHTML = stringToHTML(responseHTMLString);
@@ -97,7 +107,7 @@ function fetchInstBruinwalk(responseHTMLString, instNameArr){
 
         }
     }
-    return "No Professor Found";
+    return "";
 }
 
 
