@@ -22,6 +22,7 @@ jsdoc *.js -d docs
 
 ## Directory structure
 
+```
 Bruin-Assistant-Extension     
 ├── LICENSE
 ├── README.md
@@ -57,3 +58,4 @@ Bruin-Assistant-Extension
 │   │   └── test3.js
 │   └── mutation
 └── timedistance.js
+```
