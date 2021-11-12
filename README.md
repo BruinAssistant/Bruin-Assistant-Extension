@@ -17,7 +17,7 @@ To generate JSDocs
 
 ```shell
 npm install -g jsdoc
-jsdoc *.js
+jsdoc *.js -d docs
 ```
 
 ## Directory structure
