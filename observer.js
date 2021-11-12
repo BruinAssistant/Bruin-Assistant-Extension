@@ -17,9 +17,7 @@ const observerWhiteListClassName = [
     "inst-rating-footer-div",
 ];
 
-const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "popup bruinwalk-button",
-"js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths js no-flexbox flexbox-legacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths", "popuptext", "instructor-container", "", "close", "metricTable", "comment", "bruinwalk-undefined"];
-
+const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "bruinwalk-btn"]
 
 /**
  * Checks whether the mutation is caused by extension injection, if so then do
@@ -32,9 +30,16 @@ const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "
  * @returns {void}
  */
 function validMutation(mutation, callback) {
+
+    // TODO: Use unique className
+    for (let bwalkBtn of document.getElementsByClassName("hide-small")) {
+        if (bwalkBtn.contains(mutation.target)) {
+            return;
+        }
+    }
+
     for (let node of mutation.addedNodes) {
         if (!injectionClassNames.includes(node.className)) {
-            // console.log(node.className);
             console.log("Mutation: ", mutation);
             callback();
             return;

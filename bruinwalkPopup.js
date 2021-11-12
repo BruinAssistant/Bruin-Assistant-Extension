@@ -20,9 +20,9 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
   // create 'N/A' button for professor whose review is not on bruinwalk
   if (instUrl == "" || responseHTML == "") {
-    bruinwalkPopupButton.className = "bruinwalk-undefined";
+    bruinwalkPopupButton.className = "bruinwalk-btn bruinwalk-undefined";
     bruinwalkPopupButton.innerText = "N/A";
-    bruinwalkPopupButton.onclick = null;
+    bruinwalkPopupButton.disabled = true;
     instDiv.appendChild(bruinwalkPopupButton);
     return;
   }
@@ -34,7 +34,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
   // show 'N/A' button to professor who has not received student metric score review
   if (responseHTML.getElementsByClassName('metric')[0] == null) {
     console.log('no metric review yet');
-    bruinwalkPopupButton.className = "bruinwalk-undefined";
+    bruinwalkPopupButton.className = "bruinwalk-btn bruinwalk-undefined";
     bruinwalkPopupButton.innerText = "N/A";
     // note: clicking N/A refresh the page somehow
     instDiv.appendChild(bruinwalkPopupButton);
@@ -43,7 +43,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
   const overallRating = responseHTML.getElementsByClassName('metric')[0].innerText.match(/\d+.\d+/g);
 
   bruinwalkPopupButton.type = "button";
-  bruinwalkPopupButton.className = "popup bruinwalk-button";
+  bruinwalkPopupButton.className = "bruinwalk-btn popup bruinwalk-normal";
   bruinwalkPopupButton.id = id;
   bruinwalkPopupButton.innerText = overallRating;
   instDiv.appendChild(bruinwalkPopupButton);
@@ -74,10 +74,14 @@ function showPopup(instUrl, instDiv, responseHTML) {
   };
 
   // ------------- add psuedo close popup (X mark)------------
+  var titleDiv = document.createElement('div');
+  titleDiv.className = 'bwalk-popup-title-div';
+  titleDiv.innerHTML = id.toUpperCase();
   var closeX = document.createElement('div');
   closeX.innerText = "X";
-  closeX.className = "close";
-  popup.appendChild(closeX);
+  closeX.className = "bwalk-popup-title-close";
+  titleDiv.appendChild(closeX);
+  popup.appendChild(titleDiv);
 
 
   // ------------ get professor metrics ----------------
@@ -116,6 +120,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
   // ------------- create radar chart for 5 metrics---------------
   var chartDiv = document.createElement('canvas');
+  chartDiv.className = "bruinwalk-radar-canvas";
   chartDiv.id = 'metricRadar' + id;
   popup.appendChild(chartDiv);
 
@@ -132,7 +137,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgb(54, 162, 235)'
     }, {
-      label: '[FAKE DATA] Average of instructors in class ' + id.toUpperCase(),
+      label: 'Average of instructors in class ' + id.toUpperCase(),
       data: [3.0, 3.0, 3.0, 3.0, 3.0],
       fill: true,
       backgroundColor: 'rgba(227, 217, 105, 0.2)',
@@ -298,9 +303,10 @@ function showPopup(instUrl, instDiv, responseHTML) {
 
   //------------ attach bruinwalk link-----------------
   var bruinwalkLink = document.createElement('a');
+  bruinwalkLink.className = "view-on-bwalk-a"
   bruinwalkLink.href = instUrl;
   bruinwalkLink.target = "_blank";
-  bruinwalkLink.innerHTML = "Redirect to Bruinwalk";
+  bruinwalkLink.innerHTML = "View on BruinWalk";
   popup.appendChild(bruinwalkLink);
 }
 
