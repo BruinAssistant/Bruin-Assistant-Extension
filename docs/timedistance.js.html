@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: timedistance.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: timedistance.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @file A content script dedicated to performing the computation and injection
  * of travel time and distance information for each class in a user's Class Plan
  * relative to the previous class in that day. Handles no phsyical location and
@@ -50,7 +78,7 @@ function Coord(lat, lng) {
  * Class Plan.
  * 
  * @global
- * @constant {Map<string, Coord>}
+ * @constant {Map&lt;string, Coord>}
  * @readonly
  * @todo Consider changing mapped type to addresses (String) to improve later
  * time/distance accuracy.
@@ -181,7 +209,7 @@ const coords = new Map([
  * Class Plan.
  * 
  * @global
- * @constant {Map<string, string>}
+ * @constant {Map&lt;string, string>}
  * @readonly
  * 
  * @todo Confirm mappings are correct.
@@ -363,7 +391,7 @@ const coords = new Map([
  * for internal processing and invoking of Distance Matrix API.
  * 
  * @global
- * @constant {Array<string>}
+ * @constant {Array&lt;string>}
  * @readonly
  * @todo Utilize this in blacklisting within {@link initiateTimeDistance}.
  * 
@@ -380,7 +408,7 @@ const buildings_no_location = ["No facility", "No Location", "Online", "Online -
  * for internal processing and invoking of Distance Matrix API.
  * 
  * @global
- * @constant {Array<string>}
+ * @constant {Array&lt;string>}
  * @readonly
  * @todo Utilize this in blacklisting within {@link initiateTimeDistance}.
  * 
@@ -419,8 +447,8 @@ function getLng(building){
  * relevant information into user's Class Plan. Utilizes helper function
  * `formatTimeDistData()` to format the injected data accordingly.
  * 
- * @param {Map<String, Object>} response - Response given from Distance Matrix API call
- * @param {Map<String, Object>} parsed_class_info - Class information representing user's schedule, parsed from user's Class Planner
+ * @param {Map&lt;String, Object>} response - Response given from Distance Matrix API call
+ * @param {Map&lt;String, Object>} parsed_class_info - Class information representing user's schedule, parsed from user's Class Planner
  * @return void
  * 
  * @see {@link formatTimeDistData} for helper formatting function.
@@ -433,7 +461,7 @@ function populateTimeDistance(response, parsed_class_info) {
 
     // check if offnominal response given (disabled or denied request)
     let response_disabled = (response == null);
-    let response_denied = (!response_disabled && response.status == "REQUEST_DENIED");
+    let response_denied = (!response_disabled &amp;&amp; response.status == "REQUEST_DENIED");
     let offnominal_response = response_disabled || response_denied;
 
     if (response_denied)
@@ -471,13 +499,13 @@ function populateTimeDistance(response, parsed_class_info) {
         let time_dist_col = document.createElement('th');
         time_dist_col.className = "th-timedistance";
         time_dist_col.style.width = "13%";
-        time_dist_col.innerHTML = "Dist<span class=\"hide-small\">ance From Previous Class</span>";
+        time_dist_col.innerHTML = "Dist&lt;span class=\"hide-small\">ance From Previous Class&lt;/span>";
 
         // inject time/dist column into header at position TIME_DIST_COL_NUMBER
         let header = course_table.item(0);
         header.getElementsByTagName('th')[TIME_DIST_COL_IDX - 1].after(time_dist_col);
         // iterate through sections to inject all relevant class time/dist info
-        for (let i = 1; i < course_table.length; i++) {
+        for (let i = 1; i &lt; course_table.length; i++) {
 
             // determine which section we're currently injecting for
             let section = course_table.item(i);
@@ -496,8 +524,8 @@ function populateTimeDistance(response, parsed_class_info) {
 /**
  * Removes blacklisted buildings according to global constant from list.
  * 
- * @param {Array<string>} buildings
- * @return {Array<string>}
+ * @param {Array&lt;string>} buildings
+ * @return {Array&lt;string>}
  * 
  * @see {@link buildings_blacklist} for global blacklisted buildings.
  */
@@ -516,9 +544,9 @@ function cleanBlacklistedBuildings(buildings) {
 /**
  * Extract relevant information from Distance Matrix and format accordingly to prepare for injection.
  * 
- * @param {Array<Array<Object>>} td_matrix - Distance Matrix of locations returned by Distance Matrix API call.
- * @param {Array<String>} buildings_idx - Array of building names, representing the indices corresponding to each building into `td_matrix`.
- * @param {Map<String,Array<Array<classInfo>>>} class_infos - Contains all applicable `classInfo` structs for classes for the corresponding section referenced by `section_name`.
+ * @param {Array&lt;Array&lt;Object>>} td_matrix - Distance Matrix of locations returned by Distance Matrix API call.
+ * @param {Array&lt;String>} buildings_idx - Array of building names, representing the indices corresponding to each building into `td_matrix`.
+ * @param {Map&lt;String,Array&lt;Array&lt;classInfo>>>} class_infos - Contains all applicable `classInfo` structs for classes for the corresponding section referenced by `section_name`.
  * @param {String} section_name - Name of section to format for.
  * @returns {String}
  * 
@@ -527,7 +555,7 @@ function cleanBlacklistedBuildings(buildings) {
 function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name) {
 
     // init constants that will be used/referenced during formatting
-    const newline = "</br>";
+    const newline = "&lt;/br>";
     const no_data = "N/A";
     const unknown = "?";
     const day_abbrev_map = new Map([
@@ -613,10 +641,10 @@ function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name)
  * are also of interest due to our desire to support the time/distance
  * estimation between classes.
  * 
- * @param {Map<String,Array<classInfo>>} ordered_classes - All `classInfo` structs parsed from student's Class Planner, representing a schedule.
+ * @param {Map&lt;String,Array&lt;classInfo>>} ordered_classes - All `classInfo` structs parsed from student's Class Planner, representing a schedule.
  * @param {String} course_department_abbrev - Abbreviation of course's department.
  * @param {String} course_number - Course's number.
- * @returns {Map<String,Array<Array<classInfo>>>}
+ * @returns {Map&lt;String,Array&lt;Array&lt;classInfo>>>}
  */
 function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, course_number) {
 
@@ -661,7 +689,7 @@ function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, co
  * @returns {String}
  */
 function extractDepartmentFromClassRecord(str) {
-    return /(?<=:).*/.exec(str)[0].trim();
+    return /(?&lt;=:).*/.exec(str)[0].trim();
 }
 
 
@@ -716,7 +744,7 @@ function initiateTimeDistance() {
         // %7C is '|' and %2C is ','
         str_coord += (latStr + "%2C" + lngStr);
 
-        for(let i = 1; i < total_buildings; i++){
+        for(let i = 1; i &lt; total_buildings; i++){
             latStr = getLat(unique_buildings[i]);
             lngStr = getLng(unique_buildings[i]);
             str_coord += "%7C";
@@ -725,7 +753,7 @@ function initiateTimeDistance() {
     }
 
     // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
-    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + MAP_API_KEY;
+    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&amp;" + "destinations=" + str_coord + "&amp;units=imperial&amp;mode=walking&amp;key=" + MAP_API_KEY;
 
     // Compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development)
     chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
@@ -775,7 +803,7 @@ function classInfo(name, section, building) {
  * Performs parsing of user's Class Planner, constructing a schedule represented
  * by various mappings of `classInfo` structs.
  * 
- * @returns {Map<String, Object>} 1st element: A mapping from
+ * @returns {Map&lt;String, Object>} 1st element: A mapping from
  * day of week to an ordered list
  * of buildings that the student must visit for that day.
  * 2nd element: A set of all distinct buildings students
@@ -860,4 +888,26 @@ function hasNumber(str) {
 
 
 // Kick-off time/distance computation and injection
-initiateTimeDistance();
+initiateTimeDistance();</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="classInfo.html">classInfo</a></li><li><a href="Coord.html">Coord</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKEND_URL">BACKEND_URL</a></li><li><a href="global.html#buildings_blacklist">buildings_blacklist</a></li><li><a href="global.html#buildings_no_location">buildings_no_location</a></li><li><a href="global.html#cleanBlacklistedBuildings">cleanBlacklistedBuildings</a></li><li><a href="global.html#coords">coords</a></li><li><a href="global.html#department_abbrev">department_abbrev</a></li><li><a href="global.html#extractBuilding">extractBuilding</a></li><li><a href="global.html#extractDepartmentFromClassRecord">extractDepartmentFromClassRecord</a></li><li><a href="global.html#extractNumberFromClassRecord">extractNumberFromClassRecord</a></li><li><a href="global.html#fetchInstBruinwalk">fetchInstBruinwalk</a></li><li><a href="global.html#findClassInst">findClassInst</a></li><li><a href="global.html#formatTimeDistData">formatTimeDistData</a></li><li><a href="global.html#getAllCurAndPrevClassInfo">getAllCurAndPrevClassInfo</a></li><li><a href="global.html#getClassBuildings">getClassBuildings</a></li><li><a href="global.html#getGroupmeLink">getGroupmeLink</a></li><li><a href="global.html#getLat">getLat</a></li><li><a href="global.html#getLng">getLng</a></li><li><a href="global.html#getSearchResult">getSearchResult</a></li><li><a href="global.html#hasNumber">hasNumber</a></li><li><a href="global.html#initiateTimeDistance">initiateTimeDistance</a></li><li><a href="global.html#injectionClassNames">injectionClassNames</a></li><li><a href="global.html#MAP_API_KEY">MAP_API_KEY</a></li><li><a href="global.html#observer">observer</a></li><li><a href="global.html#populateGroupMeLinks">populateGroupMeLinks</a></li><li><a href="global.html#populateTimeDistance">populateTimeDistance</a></li><li><a href="global.html#QR_API_URL">QR_API_URL</a></li><li><a href="global.html#removePrevInjections">removePrevInjections</a></li><li><a href="global.html#repopulate">repopulate</a></li><li><a href="global.html#resizeColumnWidths">resizeColumnWidths</a></li><li><a href="global.html#TIME_DIST_COL_IDX">TIME_DIST_COL_IDX</a></li><li><a href="global.html#validMutation">validMutation</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Nov 11 2021 23:24:05 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

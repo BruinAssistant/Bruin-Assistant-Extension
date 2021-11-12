@@ -2,7 +2,7 @@
  * @file This file defines the configuration of the extension. The configuration
  * here will be used by all content scripts.
  * 
- * @author Johnson Zhou
+ * @author Johnson Zhou (Clumsyndicate)
  */
 
 

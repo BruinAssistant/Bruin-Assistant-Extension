@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: observer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: observer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file This file uses a MutationObserver to automatically refresh the 
+ * extension to remove old content and inject new DOM elements.
+ * 
+ * @author Johnson Zhou (Clumsyndicate)
+ */
+
+
+let timeout = null
+
+/**
+ * The list of ClassNames that are expected to be injected into the DOM. 
+ * 
+ * @see {@link removePrevInjections} for removing injections from DOM.
+ * @see {@link validMutation} for checking if the child nodes added are in the 
+ * whitelist of injections.
+ */
+const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup"];
+
+
+/**
+ * Checks whether the mutation is caused by extension injection, if so then do
+ * not reload. If this is not prevented, we'll have an infinite loop of reloads.
+ * 
+ * @function 
+ * 
+ * @param {MutationRecord} mutation 
+ * @param {*} callback 
+ * @returns {void}
+ */
+function validMutation(mutation, callback) {
+    for (let node of mutation.addedNodes) {
+        if (!injectionClassNames.includes(node.className)) {
+            console.log("Mutation: ", mutation);
+            callback();
+            return;
+        }
+    }
+}
+
+/**
+ * Creates a mutation observers that listens for DOM mutations. 
+ * 
+ * @global 
+ * @constant {MutationObserver}
+ * @readonly
+ */
+
+const observer = new MutationObserver((mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+        if (validMutation(mutation, () => {
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                repopulate(mutationsList, observer);
+            }, 1000);
+        })) {
+            break;
+        }
+    }
+});
+
+const config = { subtree: true, childList: true };
+
+// Attaches the MutationObserver onto the 
+observer.observe(document, config);
+
+/**
+ * This is the callback for Mutation Observer that listens on class planner 
+ * changes in the DOM.
+ * 
+ * @function 
+ * 
+ * @param {*} mutationsList 
+ * @param {*} observer 
+ * 
+ * @returns {void}
+ */
+// 
+function repopulate(mutationsList, observer) {
+    // run the script if it detects a class search page
+    // Need to remove previous injections to avoid duplicates
+    removePrevInjections();
+    const windowURL = `${window.location.href}`
+    if (windowURL.includes('be.my.ucla.edu')) {
+        populateGroupMeLinks();
+        resizeColumnWidths();
+        initiateTimeDistance();
+    }
+}
+
+/**
+ * Removes previous injections to prepare to repopulate injections.
+ * 
+ * @function
+ * @returns {void}
+ * 
+ * @see {@link injectionClassNames} for removing previous injections.
+ * @see {@link repopulate} to find use case.
+ */
+function removePrevInjections() {
+    for (const className of injectionClassNames) {
+        const elements = document.getElementsByClassName(className);
+        while (elements.length > 0) elements[0].remove();
+    }
+}
+
+/**
+ * Resize the column width of the course table to make things look nicer.
+ * 
+ * This function is invoked whenever the extension injections happen.
+ * 
+ * @function
+ * @returns {void}
+ */
+function resizeColumnWidths() {
+
+    for (const table of document.getElementsByClassName('coursetable')) {
+        if (table.getElementsByTagName('th').length >= 6) {
+            table.getElementsByTagName('th')[1].style.width = "8%"; // Section
+            table.getElementsByTagName('th')[5].style.width = "13%"; // Time
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="classInfo.html">classInfo</a></li><li><a href="Coord.html">Coord</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKEND_URL">BACKEND_URL</a></li><li><a href="global.html#buildings_blacklist">buildings_blacklist</a></li><li><a href="global.html#buildings_no_location">buildings_no_location</a></li><li><a href="global.html#cleanBlacklistedBuildings">cleanBlacklistedBuildings</a></li><li><a href="global.html#coords">coords</a></li><li><a href="global.html#department_abbrev">department_abbrev</a></li><li><a href="global.html#extractBuilding">extractBuilding</a></li><li><a href="global.html#extractDepartmentFromClassRecord">extractDepartmentFromClassRecord</a></li><li><a href="global.html#extractNumberFromClassRecord">extractNumberFromClassRecord</a></li><li><a href="global.html#fetchInstBruinwalk">fetchInstBruinwalk</a></li><li><a href="global.html#findClassInst">findClassInst</a></li><li><a href="global.html#formatTimeDistData">formatTimeDistData</a></li><li><a href="global.html#getAllCurAndPrevClassInfo">getAllCurAndPrevClassInfo</a></li><li><a href="global.html#getClassBuildings">getClassBuildings</a></li><li><a href="global.html#getGroupmeLink">getGroupmeLink</a></li><li><a href="global.html#getLat">getLat</a></li><li><a href="global.html#getLng">getLng</a></li><li><a href="global.html#getSearchResult">getSearchResult</a></li><li><a href="global.html#hasNumber">hasNumber</a></li><li><a href="global.html#initiateTimeDistance">initiateTimeDistance</a></li><li><a href="global.html#injectionClassNames">injectionClassNames</a></li><li><a href="global.html#MAP_API_KEY">MAP_API_KEY</a></li><li><a href="global.html#observer">observer</a></li><li><a href="global.html#populateGroupMeLinks">populateGroupMeLinks</a></li><li><a href="global.html#populateTimeDistance">populateTimeDistance</a></li><li><a href="global.html#QR_API_URL">QR_API_URL</a></li><li><a href="global.html#removePrevInjections">removePrevInjections</a></li><li><a href="global.html#repopulate">repopulate</a></li><li><a href="global.html#resizeColumnWidths">resizeColumnWidths</a></li><li><a href="global.html#TIME_DIST_COL_IDX">TIME_DIST_COL_IDX</a></li><li><a href="global.html#validMutation">validMutation</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Nov 11 2021 23:24:05 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
