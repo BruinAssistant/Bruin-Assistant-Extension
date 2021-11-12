@@ -1,3 +1,10 @@
+let dev_mode = false;
+
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.sync.set({ "dev_mode" : dev_mode });
+    console.log('Default developer setting set to ' + dev_mode);
+});
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {  
     console.log("Sending request " + request)  
     if (request.contentScriptQuery == "getdata") {
@@ -27,6 +34,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         .then(res => res.text())
         .then(res => sendResponse(res))
         .catch(error => console.log("Error: ", error))
+        return true;
+    }
+    if (request.contentScriptQuery == "getTimeDistanceData") {
+        fetch(request.url)
+            .then(response => response.json())
+            .then(response => sendResponse(response))
+            .catch(error => console.log("Error: ", error))
         return true;
     }
 });
