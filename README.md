@@ -10,39 +10,57 @@ To add the extension to your Chrome browser:
 
 Other resources [debugging tutorial](https://developer.chrome.com/docs/extensions/mv3/tut_debugging/)
 
+
+## JSDoc
+
+To generate JSDocs
+
+```shell
+npm install -g jsdoc
+jsdoc *.js
+```
+
+## Directory structure
+
 Bruin-Assistant-Extension     
-├─ assets                     
-│  └─ groupme.png             
-├─ tests                      
-│  ├─ map-backend             
-│  │  ├─ imgs                 
-│  │  │  ├─ test1_result.jpg  
-│  │  │  ├─ test1_succ.jpg    
-│  │  │  ├─ test2_result.jpg  
-│  │  │  ├─ test2_succ.jpg    
-│  │  │  ├─ test3_result.jpg  
-│  │  │  └─ test3_succ.jpg    
-│  │  ├─ README.md            
-│  │  ├─ test1.js             
-│  │  ├─ test2.js             
-│  │  └─ test3.js  
-│  ├─ bruinwalk  
-│  │  ├─ imgs                 
-│  │  │  └─ test1.png  
-│  │  ├─ README.md            
-│  │  └─ test1.js  
-│  └─ README.md               
-├─ background.js              
-├─ bruinwalk.js  
-├─ bruinwalkPopup.js  
-├─ chart.js           
-├─ groupme.css                
-├─ groupme.js                      
-├─ LICENSE                    
-├─ manifest.json              
-├─ observer.js                
-├─ README.md                  
-├─ settings.css               
-├─ settings.html              
-├─ settings.js                
-└─ timedistance.js
+├── LICENSE  
+├── README.md  
+├── assets  
+│   └── groupme.png  
+├── background.js  
+├── bruinwalk.css  
+├── bruinwalk.js  
+├── bruinwalkPopup.js  
+├── config.js  
+├── groupme.css  
+├── groupme.js  
+├── manifest.json  
+├── observer.js  
+├── package.json  
+├── settings.css  
+├── settings.html  
+├── settings.js  
+├── tests  
+│   ├── README.md  
+│   ├── groupme  
+│   │   └── unittest.js  
+│   ├── map-backend  
+│   │   ├── README.md  
+│   │   ├── imgs  
+│   │   │   ├── test1_result.jpg  
+│   │   │   ├── test1_succ.jpg  
+│   │   │   ├── test2_result.jpg  
+│   │   │   ├── test2_succ.jpg  
+│   │   │   ├── test3_result.jpg  
+│   │   │   └── test3_succ.jpg  
+│   │   ├── test1.js  
+│   │   ├── test2.js  
+│   │   └── test3.js  
+│   └── mutation    
+│   ├─ bruinwalk  
+│   │  ├─ imgs                 
+│   │  │  └─ test1.png  
+│   │  ├─ README.md            
+│   │  └─ test1.js  
+│   └─ README.md  
+└── timedistance.js

@@ -1,0 +1,22 @@
+{
+  "name": "bruin-assistant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BruinAssistant/Bruin-Assistant-Extension.git"
+  },
+  "author": "TBA",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BruinAssistant/Bruin-Assistant-Extension/issues"
+  },
+  "homepage": "https://github.com/BruinAssistant/Bruin-Assistant-Extension#readme"
+}

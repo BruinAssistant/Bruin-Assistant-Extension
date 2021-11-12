@@ -20,6 +20,17 @@ const observerWhiteListClassName = [
 const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "popup bruinwalk-button",
 "js flexbox canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths js no-flexbox flexbox-legacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths", "popuptext", "instructor-container", "", "close", "metricTable", "comment", "bruinwalk-undefined"];
 
+
+/**
+ * Checks whether the mutation is caused by extension injection, if so then do
+ * not reload. If this is not prevented, we'll have an infinite loop of reloads.
+ * 
+ * @function 
+ * 
+ * @param {MutationRecord} mutation 
+ * @param {*} callback 
+ * @returns {void}
+ */
 function validMutation(mutation, callback) {
     for (let node of mutation.addedNodes) {
         if (!injectionClassNames.includes(node.className)) {
@@ -30,6 +41,14 @@ function validMutation(mutation, callback) {
         }
     }
 }
+
+/**
+ * Creates a mutation observers that listens for DOM mutations. 
+ * 
+ * @global 
+ * @constant {MutationObserver}
+ * @readonly
+ */
 
 const observer = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
@@ -46,9 +65,21 @@ const observer = new MutationObserver((mutationsList, observer) => {
 
 const config = { subtree: true, childList: true };
 
-observer.observe(document.getElementsByClassName("classPlanner_ClassesInPlanSection")[0], config);
+// Attaches the MutationObserver onto the 
+observer.observe(document, config);
 
-// this is called whenever DOM is modifies
+/**
+ * This is the callback for Mutation Observer that listens on class planner 
+ * changes in the DOM.
+ * 
+ * @function 
+ * 
+ * @param {*} mutationsList 
+ * @param {*} observer 
+ * 
+ * @returns {void}
+ */
+// 
 function repopulate(mutationsList, observer) {
     // run the script if it detects a class search page
     // Need to remove previous injections to avoid duplicates
@@ -62,9 +93,36 @@ function repopulate(mutationsList, observer) {
     }
 }
 
+/**
+ * Removes previous injections to prepare to repopulate injections.
+ * 
+ * @function
+ * @returns {void}
+ * 
+ * @see {@link injectionClassNames} for removing previous injections.
+ * @see {@link repopulate} to find use case.
+ */
 function removePrevInjections() {
     for (const className of injectionClassNames) {
         const elements = document.getElementsByClassName(className);
         while (elements.length > 0) elements[0].remove();
+    }
+}
+
+/**
+ * Resize the column width of the course table to make things look nicer.
+ * 
+ * This function is invoked whenever the extension injections happen.
+ * 
+ * @function
+ * @returns {void}
+ */
+function resizeColumnWidths() {
+
+    for (const table of document.getElementsByClassName('coursetable')) {
+        if (table.getElementsByTagName('th').length >= 6) {
+            table.getElementsByTagName('th')[1].style.width = "8%"; // Section
+            table.getElementsByTagName('th')[5].style.width = "13%"; // Time
+        }
     }
 }
