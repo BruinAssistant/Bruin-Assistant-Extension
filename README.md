@@ -25,13 +25,19 @@ Bruin-Assistant-Extension
 │  │  ├─ README.md            
 │  │  ├─ test1.js             
 │  │  ├─ test2.js             
-│  │  └─ test3.js             
+│  │  └─ test3.js 
+│  ├─ bruinwalk
+│  │  ├─ imgs                 
+│  │  │  ├─ test1_result.jpg  
+│  │  ├─ README.md            
+│  │  └─ test1.js  
 │  └─ README.md               
 ├─ background.js              
-├─ bruinwalk.js               
+├─ bruinwalk.js
+├─ bruinwalkPopup.js
+├─ chart.js           
 ├─ groupme.css                
-├─ groupme.js                 
-├─ jquery-3.6.0.min.js        
+├─ groupme.js                      
 ├─ LICENSE                    
 ├─ manifest.json              
 ├─ observer.js                
