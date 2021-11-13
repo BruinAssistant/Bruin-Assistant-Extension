@@ -7,7 +7,7 @@
  */
 
 
-findClassInst();
+// findClassInst();
 /**
  * Main function to seach instructor Bruinwalk information and display popup to be.my.ucla.edu class planner
  */

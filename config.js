@@ -36,4 +36,4 @@ const QR_API_URL = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&dat
  * @todo Secure API key in backend.
  * @todo Consider possibly moving this to some extension-wide CONFIG module.
  */
- const MAP_API_KEY = null;
+ const MAP_API_KEY = "AIzaSyDW_FKptRQMGtYiQqPPw4s15jkF-YLe2w8";
