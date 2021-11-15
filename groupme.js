@@ -5,9 +5,9 @@
  * @author Johnson Zhou (Clumsyndicate)
  */
 
-// Inject on start-up
-populateGroupMeLinks();
-resizeColumnWidths();
+// // Inject on start-up
+// populateGroupMeLinks();
+// resizeColumnWidths();
 
 /**
  * Inject GroupMe add-on related DOM elements into the content page.
@@ -86,11 +86,11 @@ function populateGroupMeLinks() {
  */
 
 function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
-    console.log("Sending message" + JSON.stringify({
-        sectionID: sectionID,
-        className: classNameText,
-        sectionName: sectionNameText
-    }));
+    // console.log("Sending message" + JSON.stringify({
+    //     sectionID: sectionID,
+    //     className: classNameText,
+    //     sectionName: sectionNameText
+    // }));
 
     chrome.runtime.sendMessage({
         contentScriptQuery: "postData",
@@ -101,7 +101,7 @@ function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
         }),
         url: BACKEND_URL + "groupme"
     }, function (response) {
-        console.log(response)
+        // console.log(response)
         if (response != undefined && response != "") {
             handler(response);
         }

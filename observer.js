@@ -17,9 +17,7 @@ const observerWhiteListClassName = [
     "inst-rating-footer-div",
 ];
 
-const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "popup bruinwalk-button",
- "popuptext", "instructor-container", "", "close", "metricTable", "comment", "bruinwalk-undefined"];
-
+const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "bruinwalk-btn"]
 
 /**
  * Checks whether the mutation is caused by extension injection, if so then do
@@ -32,14 +30,23 @@ const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "
  * @returns {void}
  */
 function validMutation(mutation, callback) {
-    for (let node of mutation.addedNodes) {
-        if (!injectionClassNames.includes(node.className)) {
-            console.log(node.className);
-            console.log("Mutation: ", mutation);
-            callback();
-            return;
-        }
-    }
+
+    // TODO: Use unique className
+    console.log("Mutation:", mutation);
+
+    // for (let bwalkBtn of document.getElementsByClassName("hide-small")) {
+    //     if (bwalkBtn.contains(mutation.target)) {
+    //         return;
+    //     }
+    // }
+
+    // for (let node of mutation.addedNodes) {
+    //     if (!injectionClassNames.includes(node.className)) {
+    //         console.log("Mutation: ", mutation);
+    //         callback();
+    //         return;
+    //     }
+    // }
 }
 
 /**
@@ -52,21 +59,21 @@ function validMutation(mutation, callback) {
 
 const observer = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
-        if (validMutation(mutation, () => {
-            if (timeout) clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                repopulate(mutationsList, observer);
-            }, 1000);
-        })) {
+        // This is kind of a hack.
+        // Check if the body changed className to 'ajax-none iweResponsive'
+        // If so we can presume the page has reloaded.
+        if (mutation.target.classList.length === 2) {
+            repopulate();
             break;
         }
     }
 });
 
-const config = { subtree: true, childList: true };
+// const config = { subtree: true, childList: true };
+const config = { attributes: true };
 
 // Attaches the MutationObserver onto the 
-observer.observe(document, config);
+observer.observe(document.getElementsByTagName('body')[0], config);
 
 /**
  * This is the callback for Mutation Observer that listens on class planner 
@@ -80,18 +87,25 @@ observer.observe(document, config);
  * @returns {void}
  */
 // 
-function repopulate(mutationsList, observer) {
+function repopulate() {
     // run the script if it detects a class search page
     // Need to remove previous injections to avoid duplicates
-    removePrevInjections();
-    const windowURL = `${window.location.href}`
-    if (windowURL.includes('be.my.ucla.edu')) {
-        populateGroupMeLinks();
-        resizeColumnWidths();
-        initiateTimeDistance();
-        findClassInst();
-    }
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        console.log("Re-injecting Bruin Assistant...")
+        removePrevInjections();
+        const windowURL = `${window.location.href}`
+        if (windowURL.includes('be.my.ucla.edu')) {
+            populateGroupMeLinks();
+            initiateTimeDistance();
+            resizeColumnWidths();
+            // findClassInst();
+            callParseCourseItem();
+        }
+    }, 500);
 }
+
+repopulate();
 
 /**
  * Removes previous injections to prepare to repopulate injections.
@@ -103,10 +117,16 @@ function repopulate(mutationsList, observer) {
  * @see {@link repopulate} to find use case.
  */
 function removePrevInjections() {
+    console.log("Removing previous injections...");
     for (const className of injectionClassNames) {
         const elements = document.getElementsByClassName(className);
         while (elements.length > 0) elements[0].remove();
     }
+}
+
+function removeElementsWithClassName(className) {
+    const elements = document.getElementsByClassName(className);
+    while (elements.length > 0) elements[0].remove();
 }
 
 /**
@@ -120,9 +140,26 @@ function removePrevInjections() {
 function resizeColumnWidths() {
 
     for (const table of document.getElementsByClassName('coursetable')) {
-        if (table.getElementsByTagName('th').length >= 6) {
-            table.getElementsByTagName('th')[1].style.width = "8%"; // Section
-            table.getElementsByTagName('th')[5].style.width = "13%"; // Time
+        let ths = table.getElementsByTagName('th')
+        if (ths.length >= 6) {
+            ths[1].style.width = "8%"; // Section
+            ths[6].style.width = "13%"; // Time
         }
+    }
+}
+
+
+class Injection {
+    constructor(className) {
+        this.className = className;
+    }
+
+    remove() {
+        const elements = document.getElementsByClassName(this.className);
+        while (elements.length > 0) elements[0].remove();
+    }
+
+    inject() {
+        console.error("Need to override inject()");
     }
 }

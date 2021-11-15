@@ -525,78 +525,6 @@ Class Plan.
 
         
             
-<h4 class="name" id="injectionClassNames"><span class="type-signature">(constant) </span>injectionClassNames<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    The list of ClassNames that are expected to be injected into the DOM.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line18">line 18</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="global.html#removePrevInjections">removePrevInjections</a> for removing injections from DOM.</li>
-        
-            <li><a href="global.html#validMutation">validMutation</a> for checking if the child nodes added are in the 
-whitelist of injections.</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="MAP_API_KEY"><span class="type-signature">(constant) </span>MAP_API_KEY<span class="type-signature"> :String</span></h4>
 
 
@@ -733,7 +661,7 @@ Distance Matrix API (mimics macro-defined constant).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line49">line 49</a>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -1543,7 +1471,7 @@ class's number, removing all course department information.
     
 
     
-    <h4 class="name" id="fetchInstBruinwalk"><span class="type-signature"></span>fetchInstBruinwalk<span class="signature">(responseHTMLString, instNameArr)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="fetchInstBruinwalk"><span class="type-signature"></span>fetchInstBruinwalk<span class="signature">(responseHTMLString, instNameArr)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
 
     
@@ -1592,6 +1520,11 @@ class's number, removing all course department information.
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
@@ -1609,6 +1542,11 @@ class's number, removing all course department information.
             
 
             <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
+
+
             
             </td>
 
@@ -1657,7 +1595,7 @@ class's number, removing all course department information.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line77">line 77</a>
+        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line89">line 89</a>
     </li></ul></dd>
     
 
@@ -1686,10 +1624,22 @@ class's number, removing all course department information.
 
         
 <div class="param-desc">
-    url of instructor and the class that user is taking. Otherwise, null
+    url of instructor and the class that user is taking. Otherwise, empty string
 </div>
 
 
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
 
     
 
@@ -1755,7 +1705,7 @@ class's number, removing all course department information.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line8">line 8</a>
+        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -2917,6 +2867,11 @@ string to prepare for Distance Matrix API call.
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
@@ -2934,6 +2889,11 @@ string to prepare for Distance Matrix API call.
             
 
             <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
             
             </td>
 
@@ -3000,7 +2960,7 @@ string to prepare for Distance Matrix API call.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line49">line 49</a>
+        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -3646,7 +3606,7 @@ relevant information into user's Class Plan. Utilizes helper function
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line100">line 100</a>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -3656,7 +3616,7 @@ relevant information into user's Class Plan. Utilizes helper function
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="global.html#injectionClassNames">injectionClassNames</a> for removing previous injections.</li>
+            <li>injectionClassNames for removing previous injections.</li>
         
             <li><a href="global.html#repopulate">repopulate</a> to find use case.</li>
         </ul>
@@ -3834,7 +3794,7 @@ changes in the DOM.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line79">line 79</a>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -3942,7 +3902,7 @@ This function is invoked whenever the extension injections happen.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line115">line 115</a>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line125">line 125</a>
     </li></ul></dd>
     
 
@@ -3985,6 +3945,481 @@ This function is invoked whenever the extension injections happen.
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="showPopup"><span class="type-signature"></span>showPopup<span class="signature">(instUrl, instDiv, responseHTML)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>instUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Bruinwalk url of instructor who teaches the class</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>instDiv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLCollection</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HTML div element of instructor cell from class planner</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>responseHTML</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLCollection</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">HTML of bruinwalk page of instructor who teaches the class</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bruinwalkPopup.js.html">bruinwalkPopup.js</a>, <a href="bruinwalkPopup.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="stringToHTML"><span class="type-signature"></span>stringToHTML<span class="signature">(str)</span><span class="type-signature"> &rarr; {HTMLCollection}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    turn string of html into html element
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">string of html</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line117">line 117</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    html element
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">HTMLCollection</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="transformInstDiv"><span class="type-signature"></span>transformInstDiv<span class="signature">(instDiv)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Convert pure cell into a div for one instructor, so we can append button next to the instructor
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>instDiv</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLCollection</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">cell inside class planner that contains instructor name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="bruinwalk.js.html">bruinwalk.js</a>, <a href="bruinwalk.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4121,7 +4556,7 @@ not reload. If this is not prevented, we'll have an infinite loop of reloads.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line31">line 31</a>
+        <a href="observer.js.html">observer.js</a>, <a href="observer.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -4326,13 +4761,13 @@ not reload. If this is not prevented, we'll have an infinite loop of reloads.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="classInfo.html">classInfo</a></li><li><a href="Coord.html">Coord</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKEND_URL">BACKEND_URL</a></li><li><a href="global.html#buildings_blacklist">buildings_blacklist</a></li><li><a href="global.html#buildings_no_location">buildings_no_location</a></li><li><a href="global.html#cleanBlacklistedBuildings">cleanBlacklistedBuildings</a></li><li><a href="global.html#coords">coords</a></li><li><a href="global.html#department_abbrev">department_abbrev</a></li><li><a href="global.html#extractBuilding">extractBuilding</a></li><li><a href="global.html#extractDepartmentFromClassRecord">extractDepartmentFromClassRecord</a></li><li><a href="global.html#extractNumberFromClassRecord">extractNumberFromClassRecord</a></li><li><a href="global.html#fetchInstBruinwalk">fetchInstBruinwalk</a></li><li><a href="global.html#findClassInst">findClassInst</a></li><li><a href="global.html#formatTimeDistData">formatTimeDistData</a></li><li><a href="global.html#getAllCurAndPrevClassInfo">getAllCurAndPrevClassInfo</a></li><li><a href="global.html#getClassBuildings">getClassBuildings</a></li><li><a href="global.html#getGroupmeLink">getGroupmeLink</a></li><li><a href="global.html#getLat">getLat</a></li><li><a href="global.html#getLng">getLng</a></li><li><a href="global.html#getSearchResult">getSearchResult</a></li><li><a href="global.html#hasNumber">hasNumber</a></li><li><a href="global.html#initiateTimeDistance">initiateTimeDistance</a></li><li><a href="global.html#injectionClassNames">injectionClassNames</a></li><li><a href="global.html#MAP_API_KEY">MAP_API_KEY</a></li><li><a href="global.html#observer">observer</a></li><li><a href="global.html#populateGroupMeLinks">populateGroupMeLinks</a></li><li><a href="global.html#populateTimeDistance">populateTimeDistance</a></li><li><a href="global.html#QR_API_URL">QR_API_URL</a></li><li><a href="global.html#removePrevInjections">removePrevInjections</a></li><li><a href="global.html#repopulate">repopulate</a></li><li><a href="global.html#resizeColumnWidths">resizeColumnWidths</a></li><li><a href="global.html#TIME_DIST_COL_IDX">TIME_DIST_COL_IDX</a></li><li><a href="global.html#validMutation">validMutation</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="classInfo.html">classInfo</a></li><li><a href="Coord.html">Coord</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKEND_URL">BACKEND_URL</a></li><li><a href="global.html#buildings_blacklist">buildings_blacklist</a></li><li><a href="global.html#buildings_no_location">buildings_no_location</a></li><li><a href="global.html#cleanBlacklistedBuildings">cleanBlacklistedBuildings</a></li><li><a href="global.html#coords">coords</a></li><li><a href="global.html#department_abbrev">department_abbrev</a></li><li><a href="global.html#extractBuilding">extractBuilding</a></li><li><a href="global.html#extractDepartmentFromClassRecord">extractDepartmentFromClassRecord</a></li><li><a href="global.html#extractNumberFromClassRecord">extractNumberFromClassRecord</a></li><li><a href="global.html#fetchInstBruinwalk">fetchInstBruinwalk</a></li><li><a href="global.html#findClassInst">findClassInst</a></li><li><a href="global.html#formatTimeDistData">formatTimeDistData</a></li><li><a href="global.html#getAllCurAndPrevClassInfo">getAllCurAndPrevClassInfo</a></li><li><a href="global.html#getClassBuildings">getClassBuildings</a></li><li><a href="global.html#getGroupmeLink">getGroupmeLink</a></li><li><a href="global.html#getLat">getLat</a></li><li><a href="global.html#getLng">getLng</a></li><li><a href="global.html#getSearchResult">getSearchResult</a></li><li><a href="global.html#hasNumber">hasNumber</a></li><li><a href="global.html#initiateTimeDistance">initiateTimeDistance</a></li><li><a href="global.html#MAP_API_KEY">MAP_API_KEY</a></li><li><a href="global.html#observer">observer</a></li><li><a href="global.html#populateGroupMeLinks">populateGroupMeLinks</a></li><li><a href="global.html#populateTimeDistance">populateTimeDistance</a></li><li><a href="global.html#QR_API_URL">QR_API_URL</a></li><li><a href="global.html#removePrevInjections">removePrevInjections</a></li><li><a href="global.html#repopulate">repopulate</a></li><li><a href="global.html#resizeColumnWidths">resizeColumnWidths</a></li><li><a href="global.html#showPopup">showPopup</a></li><li><a href="global.html#stringToHTML">stringToHTML</a></li><li><a href="global.html#TIME_DIST_COL_IDX">TIME_DIST_COL_IDX</a></li><li><a href="global.html#transformInstDiv">transformInstDiv</a></li><li><a href="global.html#validMutation">validMutation</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Nov 11 2021 23:24:05 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri Nov 12 2021 11:40:12 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

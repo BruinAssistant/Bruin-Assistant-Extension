@@ -8,10 +8,6 @@
  * @author Eldon Ngo (eldon3141)
  */
 
-// NOTE: Uses same observer from groupme.js
-// TODO: Refactor this into separate Observer module, formalizing the following of
-// the Observer design pattern.
-observer.observe(document.querySelector('.centerColumn'), config);
 
 /**
  * Specifies the column index that the newly-injected time/distance column
@@ -469,6 +465,7 @@ function populateTimeDistance(response, parsed_class_info) {
 
         // get class department and number (for class info lookups)
         let course_nameinfo = course.getElementsByClassName("SubjectAreaName_ClassName").item(0).children;
+        console.log(course_nameinfo, course_nameinfo.item(0).innerText);
         let course_department = extractDepartmentFromClassRecord(course_nameinfo.item(0).innerText);
         let course_number = extractNumberFromClassRecord(course_nameinfo.item(1).innerText);
 
@@ -672,7 +669,7 @@ function getAllCurAndPrevClassInfo(ordered_classes, course_department_abbrev, co
  * @returns {String}
  */
 function extractDepartmentFromClassRecord(str) {
-    return /(?<=:).*/.exec(str)[0].trim();
+    return /(?:[^:]*:)?(.*)/.exec(str)[1].trim();
 }
 
 
@@ -871,4 +868,4 @@ function hasNumber(str) {
 
 
 // Kick-off time/distance computation and injection
-initiateTimeDistance();
+// initiateTimeDistance();

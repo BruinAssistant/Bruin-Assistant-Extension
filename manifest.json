@@ -14,7 +14,7 @@
         },
         {
           "matches": ["*://be.my.ucla.edu/*"],
-          "js": ["config.js", "observer.js", "groupme.js", "bruinwalk.js", "timedistance.js", "bruinwalkPopup.js", "chart.js"],
+          "js": ["config.js", "observer.js", "parser.js", "groupme.js", "bruinwalk.js", "timedistance.js", "bruinwalkPopup.js", "chart.js"],
           "run_at": "document_end"
         }
     ],
@@ -28,7 +28,6 @@
         }
     ],
     "permissions": [
-        "activeTab",
         "storage"
     ],
     "host_permissions": [
