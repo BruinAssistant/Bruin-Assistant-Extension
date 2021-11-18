@@ -1,10 +1,26 @@
 /**
- * @file A content script that handles the injection of GroupMe invite links for classes at UCLA. 
+ * @file A content script that handles the injection of GroupMe invite links for
+ * classes at UCLA. 
+ * 
+ * @author Johnson Zhou (Clumsyndicate)
  */
-const backendurl = "https://class-planner-assistant.herokuapp.com";
 
-populateGroupMeLinks();
-resizeColumnWidths();
+// // Inject on start-up
+// populateGroupMeLinks();
+// resizeColumnWidths();
+
+/**
+ * Inject GroupMe add-on related DOM elements into the content page.
+ * 
+ * This function iterates over all courses, requests for GroupMe invite links, 
+ * and populates the page asynchronously.
+ * 
+ * Any fetch calls can be only made in background.js. Therefore a message is
+ * sent to background.js to make the cross-domain request.
+ * 
+ * @function
+ * @returns {void}
+ */
 
 function populateGroupMeLinks() {
     const classes = document.getElementsByClassName('courseItem')
@@ -28,7 +44,7 @@ function populateGroupMeLinks() {
                     let QRSpan = document.createElement('span');
                     QRSpan.className = "qr-popuptext";
                     let QR = document.createElement('img');
-                    QR.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + groupmeLink;
+                    QR.src = QR_API_URL + groupmeLink;
                     QR.className = "qr-img"
                     QRSpan.appendChild(QR);
 
@@ -52,12 +68,29 @@ function populateGroupMeLinks() {
     }
 }
 
+/**
+ * Callback for getting GroupMe links
+ * 
+ * @callback getGroupmeLinkCallback
+ * @param {String} response 
+ */
+
+/**
+ * Sends a message to the background.js worklet to let it perform a fetch on 
+ * behalf of the content script. 
+ * 
+ * @param {String} sectionID 
+ * @param {String} classNameText 
+ * @param {String} sectionNameText 
+ * @param {getGroupmeLinkCallback} handler 
+ */
+
 function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
-    console.log("Sending message" + JSON.stringify({
-        sectionID: sectionID,
-        className: classNameText,
-        sectionName: sectionNameText
-    }));
+    // console.log("Sending message" + JSON.stringify({
+    //     sectionID: sectionID,
+    //     className: classNameText,
+    //     sectionName: sectionNameText
+    // }));
 
     chrome.runtime.sendMessage({
         contentScriptQuery: "postData",
@@ -66,22 +99,11 @@ function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
             className: classNameText,
             sectionName: sectionNameText
         }),
-        url: backendurl + "/groupme"
+        url: BACKEND_URL + "groupme"
     }, function (response) {
-        console.log(response)
+        // console.log(response)
         if (response != undefined && response != "") {
             handler(response);
         }
     });
-}
-
-// Change the column width of the course table to make things look better
-function resizeColumnWidths() {
-
-    for (const table of document.getElementsByClassName('coursetable')) {
-        if (table.getElementsByTagName('th').length >= 6) {
-            table.getElementsByTagName('th')[1].style.width = "8%"; // Section
-            table.getElementsByTagName('th')[5].style.width = "13%"; // Time
-        }
-    }
 }

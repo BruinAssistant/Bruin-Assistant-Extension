@@ -1,0 +1,196 @@
+/* Popup container - can be anything you want */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  background-color: rgb(248, 248, 248);
+  color: rgb(100, 100, 100);
+  text-align: center;
+  border-radius: 6px;
+  padding: 0 8px;
+  z-index: 1;
+  width: 320px;
+  max-height: 90vh;
+  overflow-y: overlay !important;
+  box-shadow: 0 0 10px rgb(147, 169, 190);
+
+  position: fixed;
+  left: 70vw;
+  top: 0;
+
+  /* position: absolute;
+  left: 40px;
+  top: -45vh; */
+  transition: all .8s ease-in-out;
+
+}
+
+/* Toggle this class - hide and show the popup */
+.popup:hover .popuptext {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+  z-index: 999;
+}
+
+.popup .popuptext:hover {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+  z-index: 999;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.metricTable {
+  margin: 0 auto;
+}
+
+/* .metricTable td {
+  padding:0 30px 0 0;
+} */
+
+.metricTable tr:nth-child(even) {
+  background-color: rgb(253, 253, 253);
+}
+
+.metricTable tr:nth-child(odd) {
+  background-color: rgb(237, 247, 252);
+}
+
+.metricTable tr td:nth-child(1) {
+  text-align: left;
+  padding: 0 50px 0 20px;
+}
+
+.metricTable tr td:nth-child(2) {
+  text-align: right;
+  padding: 0 20px 0 50px;
+}
+
+.comment {
+  white-space: normal;
+  max-height: 100px;
+  overflow-y: overlay;
+  padding: 3px 16px;
+}
+
+/* Customized Scrollbar */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+.covid {
+  border: 3px solid;
+  border-radius: 16px;
+  width: 80px;
+  border-color: rgb(227, 217, 105);
+  color: rgb(227, 217, 105);
+  text-align: center;
+}
+
+.bruinwalk-btn {
+  font-family: ProximaNova, Verdana, sans-serif;
+}
+
+.bruinwalk-normal {
+  background-color: rgb(2, 117, 216);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 40px;
+  height: 20px;
+}
+
+.bruinwalk-undefined {
+  background-color: rgb(216, 34, 2);
+  color: white;
+  border-radius: 5px;
+  border: none;
+  width: 40px;
+  height: 20px;
+}
+
+.instructor-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bwalk-popup-title-div {
+  text-align: center;
+  position: relative;
+  font-size: large;
+  background-color: rgb(36,82,160);
+  color: white;
+  margin: 0 -8px 10px -8px;
+  height: 32px;
+  line-height: 32px;
+  vertical-align: middle;
+}
+
+.bwalk-popup-title-close {
+  margin-right: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: small;
+}
+
+.view-on-bwalk-a {
+  appearance: button;
+  height: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba;
+  font-size: medium;
+  background-color: rgba(140, 140, 140, 0.461);
+  margin: 10px -8px 0 -8px;
+}
+
+.bruinwalk-radar-canvas {
+  margin: 10px;
+}

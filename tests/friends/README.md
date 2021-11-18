@@ -28,7 +28,7 @@ A critical component of the friend system is social networking. This basic examp
 Just enter your friend's name and hit "Invite"!
 
 ###  Expected Output:
-![](./imgs/2-francis-invite.png)
+![](./imgs/2-francis-invite-henry.png)
 
 ---
 
