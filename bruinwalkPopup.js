@@ -50,44 +50,14 @@ function showPopup(instUrl, instDiv, responseHTML) {
   chartDiv.id = 'metricRadar' + id;
   popup.appendChild(chartDiv);
 
-  let profMetricData = {
-    labels: metrics,
-    datasets: [{
-      label: 'Intructor ' + professorName + ' in ' + id.toUpperCase(),
-      data: metrics_score,
-      fill: true,
-      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-      borderColor: 'rgb(54, 162, 235)',
-      pointBackgroundColor: 'rgb(54, 162, 235)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgb(54, 162, 235)'
-    }, {
-      label: 'Average of instructors in ' + id.toUpperCase(),
-      data: [3.0, 3.0, 3.0, 3.0, 3.0],
-      fill: true,
-      backgroundColor: 'rgba(227, 217, 105, 0.2)',
-      borderColor: 'rgba(227, 217, 105, 1)',
-      pointBackgroundColor: 'rgba(227, 217, 105, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(227, 217, 105, 1)'
-    }]
-  };
-  let radarOptions = {
-    scale: {
-      min: 0,
-      max: 5,
-    }
-  }
-
-  let radarChart = new Chart('metricRadar' + id, {
-    type: 'radar',
-    data: profMetricData,
-    options: radarOptions
+  // testing getting average
+  let base_url = "https://testing-bruinassistant.herokuapp.com/"; // need to change after backend is updated
+  chrome.runtime.sendMessage({
+    contentScriptQuery: "getBruinwalkAverage",
+    url: base_url + "average/" + id
+  }, (response) => {
+    createRadarChart(metrics, metrics_score, professorName, id, response);
   });
-
-
 
   // -------------- fetch distribution data --------------
 
@@ -145,49 +115,8 @@ function showPopup(instUrl, instDiv, responseHTML) {
       data: profDistributionData,
       options: profDistributionOption
     });
-
-    // ------------- [Unfinished] Try to get average metrics across the class-------------
-    let metric_dict = {
-      'Overall': [],
-      'Easiness': [],
-      'Workload': [],
-      'Clarity': [],
-      'Helpfulness': [],
-    }
-    chrome.runtime.sendMessage({
-      url: "https://www.bruinwalk.com/classes/com-sci-130/",
-      contentScriptQuery: "getBruinwalkData",
-    }, responseHTMLString => {
-      courseHtml = stringToHTML(responseHTMLString);
-      ratingCells = (courseHtml.getElementsByClassName('rating-cell'));
-
-      // filter out only the desired div
-      filteredRatingCells = []
-      for (let i = 0; i < ratingCells.length; i++) {
-        if (ratingCells[i].width == "80px") {
-          filteredRatingCells.push(ratingCells[i]);
-        }
-      }
-
-      for (let i = 0; i < filteredRatingCells.length; i++) {
-        if (filteredRatingCells[i].innerText != null) {
-          let text = filteredRatingCells[i].innerText;
-          text = text.split('\n')
-          if (text[1] != 'N/A') {
-            // console.log(text[1])
-          }
-        }
-      }
-      filteredRatingCells.forEach(cell => {
-        let text = cell.innerText.split('\n');
-        if (text[1] != 'N/A') {
-          metric_dict[text[2]].push(text[1]);
-        }
-      })
-    })
   }
-
-
+  
   // --------------- get student comment ---------------------
 
   // case: no student review yet
@@ -234,16 +163,6 @@ function showPopup(instUrl, instDiv, responseHTML) {
   bruinwalkLink.target = "_blank";
   bruinwalkLink.innerHTML = "View on BruinWalk";
   popup.appendChild(bruinwalkLink);
-}
-
-// ----------- NOT FINISH -----------------
-function findAverageMetrics(courseName) {
-  let url = "https://www.bruinwalk.com/classes/" + courseName;
-  // fetch website
-
-
-  // check if there is next page or not. If yes, fetch again and store in array
-  // else, return average
 }
 
 function createButton(instUrl, instDiv, responseHTML, id){
@@ -305,4 +224,48 @@ function createMetricsTable(metrics, responseHTML, popup){
   popup.appendChild(document.createElement("br"));
 
   return metrics_score;
+}
+
+function createRadarChart(metrics, metrics_score, professorName, id, averageResponse){
+  let averageData = [];
+  for (m of metrics){
+    averageData.push(averageResponse[m.toLowerCase()]);
+  }
+  // console.log(averageData);
+  let profMetricData = {
+    labels: metrics,
+    datasets: [{
+      label: 'Intructor ' + professorName + ' in ' + id.toUpperCase(),
+      data: metrics_score,
+      fill: true,
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      borderColor: 'rgb(54, 162, 235)',
+      pointBackgroundColor: 'rgb(54, 162, 235)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgb(54, 162, 235)'
+    }, {
+      label: 'Average of instructors in ' + id.toUpperCase(),
+      data: averageData,
+      fill: true,
+      backgroundColor: 'rgba(227, 217, 105, 0.2)',
+      borderColor: 'rgba(227, 217, 105, 1)',
+      pointBackgroundColor: 'rgba(227, 217, 105, 1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(227, 217, 105, 1)'
+    }]
+  };
+  let radarOptions = {
+    scale: {
+      min: 0,
+      max: 5,
+    }
+  }
+
+  let radarChart = new Chart('metricRadar' + id, {
+    type: 'radar',
+    data: profMetricData,
+    options: radarOptions
+  });
 }
