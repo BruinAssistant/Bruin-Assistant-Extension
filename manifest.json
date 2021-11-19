@@ -35,6 +35,7 @@
         "https://class-planner-assistant.herokuapp.com/",
         "https://www.bruinwalk.com/",
         "https://az.bruinwalk.com/",
-        "https://maps.googleapis.com/*"
+        "https://maps.googleapis.com/*",
+        "https://bruin-map.herokuapp.com/*"
     ]
 }

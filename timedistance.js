@@ -623,6 +623,7 @@ function getClassBuildings() {
         i++;
     }
 
+    storeOrderedClasses(ordered_classes);
     result.set("orderedClasses", ordered_classes);
     result.set("uniqueBuildings", unique_buildings);
     console.log(result);
@@ -653,4 +654,35 @@ function extractBuilding(place) {
 
 function hasNumber(str) {
     return /\d/.test(str);
+}
+
+function storeOrderedClasses(ordered_classes){
+    let ordered_locations = {};
+    ordered_classes.forEach((value, key) => {
+        let class_coords = [];
+        value.forEach(class_info => {
+            let class_coord = coords.get(class_info.building);
+            if(class_coord != null){
+                let lnglat = {lat: class_coord.lat, lng: class_coord.lng};
+                class_coords.push(lnglat);
+            }
+        })
+        ordered_locations[key] = class_coords;
+    } )
+    console.log("ordered locations string:");
+    
+    chrome.runtime.sendMessage({
+        contentScriptQuery: "postLocations",
+        data: JSON.stringify({
+            username: "John",
+            orderedLocations: ordered_locations
+        }),
+        url: 'https://bruin-map.herokuapp.com/api/studentInfo'
+    }, function (response) {
+        console.log("RESPONSE:")
+        console.log(response)
+        if (response != undefined && response != "") 
+            console.log("oof");
+    });
+
 }

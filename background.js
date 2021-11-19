@@ -43,4 +43,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             .catch(error => console.log("Error: ", error))
         return true;
     }
+    if (request.contentScriptQuery == "postLocations") {
+        fetch(request.url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: request.data
+        })
+            .then(res => res.text())
+            .then(res => sendResponse(res))
+            .catch(error => console.log('Error:', error));
+        return true;
+    }
 });
