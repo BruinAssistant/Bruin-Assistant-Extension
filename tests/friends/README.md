@@ -41,7 +41,7 @@ To protect users from spam and protect privacy, friend requests must be approved
 Each invite will include your friend's name as well an individualized "Accept" button for that particular invitation. This button will send a request to the internal server confirming the friendship.
 
 ### Expected Output:
-![](./imgs/3-henry-invite-franics.png)
+![](./imgs/3-henry-invite-francis.png)
 
 ---
 
