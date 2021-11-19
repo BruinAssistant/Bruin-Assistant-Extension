@@ -12,10 +12,11 @@
  * @param {HTMLCollection} instDiv HTML div element of instructor cell from class planner
  * @param {HTMLCollection} responseHTML HTML of bruinwalk page of instructor who teaches the class
  */
-function showPopup(instUrl, instDiv, responseHTML) {
+function showPopup(instUrl, instDiv, id, responseHTML) {
   
   const parts = instUrl.split("/");
-  const id = parts[parts.length - 2];
+  // const id = parts[parts.length - 3];
+  const coursename = parts[parts.length - 2];
   
   // -------------- create button ----------------
   // return if N/A
@@ -36,7 +37,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
   // ------------- add title------------
   let titleDiv = document.createElement('div');
   titleDiv.className = 'bwalk-popup-title-div';
-  titleDiv.innerHTML = id.toUpperCase();
+  titleDiv.innerHTML = coursename.toUpperCase();
   popup.appendChild(titleDiv);
 
   const metrics = ['Overall', 'Easiness', 'Workload', 'Clarity', 'Helpfulness'];
@@ -54,16 +55,16 @@ function showPopup(instUrl, instDiv, responseHTML) {
   let base_url = "https://testing-bruinassistant.herokuapp.com/"; // need to change after backend is updated
   chrome.runtime.sendMessage({
     contentScriptQuery: "getBruinwalkAverage",
-    url: base_url + "average/" + id
+    url: base_url + "average/" + coursename
   }, (response) => {
-    createRadarChart(metrics, metrics_score, professorName, id, response);
+    createRadarChart(metrics, metrics_score, professorName, id, coursename, response);
   });
 
   // -------------- fetch distribution data --------------
 
   // case: no distribution yet:
   if (responseHTML.getElementsByClassName('distribution bruinwalk-card row')[0].innerText == "\n\nNo grades are available.\n") {
-    console.log("no distribution yet");
+    // console.log("no distribution yet");
     let noDistDiv = document.createElement('div');
     noDistDiv.innerText = "Grade distribution is not available";
     popup.appendChild(noDistDiv);
@@ -116,7 +117,7 @@ function showPopup(instUrl, instDiv, responseHTML) {
       options: profDistributionOption
     });
   }
-  
+
   // --------------- get student comment ---------------------
 
   // case: no student review yet
@@ -226,7 +227,7 @@ function createMetricsTable(metrics, responseHTML, popup){
   return metrics_score;
 }
 
-function createRadarChart(metrics, metrics_score, professorName, id, averageResponse){
+function createRadarChart(metrics, metrics_score, professorName, id, cousename, averageResponse){
   let averageData = [];
   for (m of metrics){
     averageData.push(averageResponse[m.toLowerCase()]);
@@ -235,7 +236,7 @@ function createRadarChart(metrics, metrics_score, professorName, id, averageResp
   let profMetricData = {
     labels: metrics,
     datasets: [{
-      label: 'Intructor ' + professorName + ' in ' + id.toUpperCase(),
+      label: 'Intructor ' + professorName + ' in ' + cousename.toUpperCase(),
       data: metrics_score,
       fill: true,
       backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -245,7 +246,7 @@ function createRadarChart(metrics, metrics_score, professorName, id, averageResp
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgb(54, 162, 235)'
     }, {
-      label: 'Average of instructors in ' + id.toUpperCase(),
+      label: 'Average of instructors in ' + cousename.toUpperCase(),
       data: averageData,
       fill: true,
       backgroundColor: 'rgba(227, 217, 105, 0.2)',

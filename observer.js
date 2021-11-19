@@ -101,6 +101,10 @@ function repopulate() {
             resizeColumnWidths();
             // findClassInst();
             callParseCourseItem();
+            callParseSearchItem();
+        }
+        else if(windowURL.includes('sa.ucla.edu')){
+            // callParseCourseItem();
         }
     }, 500);
 }

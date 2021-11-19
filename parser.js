@@ -58,12 +58,12 @@ function parseCourseItem(courseItem, callbacks) {
     res["sections"] = [];
 
     // Skips the first one because that's the header
-    for (let i=1; i<tbodies.length; i++) {
+    for (let i = 1; i < tbodies.length; i++) {
         let sectionInfo = {};
         // first element here because second is mostly enroll section stuff
         // Looks like ['Lec 1', 'Enrolled: 10 of 100 Left', '', 'TR', '10am-11:50am', 'Mathematical Sciences 4000A', '4.0', 'Zhang, L.']
         let columnTexts = tbodies.item(i).firstElementChild.innerText.trim().split("\t").map((val) => val.trim());
-        
+
         sectionInfo["section"] = columnTexts[0];
         sectionInfo["status"] = columnTexts[1];
         sectionInfo["info"] = columnTexts[2];
@@ -76,7 +76,7 @@ function parseCourseItem(courseItem, callbacks) {
         // Other info
         // console.log(tbodies.item(i).getElementsByClassName("section-header").item(0));
         sectionInfo["id"] = tbodies.item(i).getElementsByClassName("section-header").item(0).getElementsByTagName('a').item(0).title.match(/Class Detail for ([0-9]+)/i)[1];
-        
+
         if (callbacks.forEachSection) {
             callbacks.forEachSection(res, sectionInfo, tbodies.item(i));
         }
@@ -84,20 +84,66 @@ function parseCourseItem(courseItem, callbacks) {
         res.sections.push(sectionInfo);
     }
 
+    res['instructor-div'] = courseItem.getElementsByTagName("tbody")[1].getElementsByClassName("hide-small")[1];
+
     if (callbacks.forCourseTable) {
         callbacks.forCourseTable(res, courseTable);
     }
 
     console.log(res);
+
+}
+
+// class search section
+function parseSearchItem(searchItem, callback) {
+    // wait until class table is created:
+    if (searchItem.getElementsByClassName("ClassSearchList search_results").item(0)) {
+
+        // ClassSearchList search_results
+        let res = {};
+        res['course-title-0'] = searchItem.getElementsByClassName("ClassSearchBox").item(0).value;
+        res['course-title-1'] = searchItem.getElementsByClassName("row-fluid class-title").item(0).innerText;
+        // course-name format: 'abbreviate-name-coursenum'
+        // NOTE: Physics, Art, Asian does not have abbreviate
+        // res['abbreviate-course-name'] = res['course-title-0'].match(/\(([^)]+)\)/)[1].replace(/\s/g, "-").toLowerCase() + "-" + res['course-title-1'].split(" - ")[0];
+        res['major'] = res['course-title-0'].replace(/ *\([^)]*\) */g, "");
+        res['course-number'] = res['course-title-1'].split(" - ")[0];
+
+        for (section of searchItem.getElementsByClassName("row-fluid data_row class-info scrollable-collapse table-width2")) {
+            /*let sectionInfo = {}
+            sectionInfo['id'] = section.getElementsByClassName("span2").item(0).getElementsByTagName('a').item(0).title.match(/\d+/g)[0];
+            */
+            res['id'] = section.getElementsByClassName("span2").item(0).getElementsByTagName('a').item(0).title.match(/\d+/g)[0];
+            res['instructor-div'] = section.getElementsByClassName("span9 hide-small").item(0);
+            callback(res);
+        }
+    }
 }
 
 // For demo purposes
 function callParseCourseItem() {
     for (let courseItem of document.getElementsByClassName("courseItem")) {
         // work on injecting buttons
-        parseCourseItem(courseItem, {"forCourseTable": (res, courseTable) => {
-            setTimeout(()=>{}, 1000)
-            findClassPlannerInstructor(res, courseTable);
-        }});
+        parseCourseItem(courseItem, {
+            "forCourseTable": (res, courseTable) => {
+                findClassPlannerInstructor(res);
+            }
+        });
+    }
+
+    // for sa.ucla.edu
+    // for (let courseItem of document.getElementsByTagName('ucla-sa-soc-app')[0].shadowRoot.getElementById('resultsTitle')){
+    //     console.log(courseItem);
+    // }
+}
+
+function callParseSearchItem() {
+    // for "Search for Class and Add to Plan"
+    // use ClassSearchWidget since only the search box contains major name
+    for (let searchItem of document.getElementsByClassName("ClassSearchWidget")) {
+        parseSearchItem(searchItem, (res) => {
+            // console.log(res)
+            findClassPlannerInstructor(res);
+        })
     }
 }

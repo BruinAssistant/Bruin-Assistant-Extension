@@ -30,7 +30,7 @@
   /* position: absolute;
   left: 40px;
   top: -45vh; */
-  transition: all .3s ease-in-out;
+  transition: all 1s ease-in-out;
 
 }
 
@@ -97,9 +97,9 @@
 }
 
 .comment {
-  white-space: normal;
+  /* white-space: normal;
   max-height: 100px;
-  overflow-y: overlay;
+  overflow-y: overlay; */
   padding: 3px 16px;
 }
 

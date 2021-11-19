@@ -65,7 +65,6 @@ function findClassInst(){
 function getSearchResult(fullCourseName, instName, handler){
     const instNameArr = instName.split(/[ ,.]+/).slice(0,-1);
     let url = "https://www.bruinwalk.com/classes/" + encodeURI(fullCourseName.toLowerCase());
-    
     chrome.runtime.sendMessage({
         url: url,
         contentScriptQuery: "getBruinwalkData",
@@ -141,19 +140,35 @@ function transformInstDiv(instDiv){
 
 //module.exports = fetchInstBruinwalk; // uses for unit test. Otherwise, vanilla js won't recognize
 
-function findClassPlannerInstructor(res, courseItem){
-    let instName = res.sections[0].instructor;
-    let courseMajor = res['course-title-0'].split(": ")[1];
-    let courseNum = res['course-title-1'].split(" - ")[0];
-    let fullCourseName = classDict[courseMajor] + '-' + courseNum;
+function findClassPlannerInstructor(res){
+    // let instName = res.sections[0].instructor;
+    let id;
+    if (res['sections']){
+        id = res['sections'][0]['id']
+    }
+    else{
+        id = res['id'];
+    }
 
-    transformedDiv = transformInstDiv(courseItem.getElementsByTagName("tbody")[1].getElementsByClassName("hide-small")[1]);
+
+    let abbreviateCourseName = "";
+    if (res['major'] && res['course-number']){
+        abbreviateCourseName = classDict[res['major'].trim()] + '-' + res['course-number'];
+    }
+    else{
+        let courseMajor = res['course-title-0'].split(": ")[1];
+        let courseNum = res['course-title-1'].split(" - ")[0];
+        abbreviateCourseName = classDict[courseMajor] + '-' + courseNum;
+    }
+
+    // transformedDiv = transformInstDiv(courseItem.getElementsByTagName("tbody")[1].getElementsByClassName("hide-small")[1]);
+    let transformedDiv = transformInstDiv(res['instructor-div']);
 
     // iterate through each newly transformed div to create button and div
     for (let profNameDiv of transformedDiv.getElementsByClassName('instructor-container')){
-        getSearchResult(fullCourseName, profNameDiv.innerText, ((instUrl) => {
+        getSearchResult(abbreviateCourseName, profNameDiv.innerText, ((instUrl) => {
             if (instUrl == ""){
-                showPopup("", profNameDiv, "")
+                showPopup("", profNameDiv, "", "")
             }
             else{
                 chrome.runtime.sendMessage({
@@ -161,7 +176,7 @@ function findClassPlannerInstructor(res, courseItem){
                     contentScriptQuery: "getBruinwalkData",
                 }, responseHTMLString => {
                     let responseHTML = stringToHTML(responseHTMLString);
-                    showPopup(instUrl, profNameDiv, responseHTML);
+                    showPopup(instUrl, profNameDiv, id, responseHTML);
                 });
             }
         }))
