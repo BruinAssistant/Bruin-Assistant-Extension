@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: groupme.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: groupme.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file A content script that handles the injection of GroupMe invite links for
+ * classes at UCLA. 
+ * 
+ * @author Johnson Zhou (Clumsyndicate)
+ */
+
+// Inject on start-up
+populateGroupMeLinks();
+resizeColumnWidths();
+
+/**
+ * Inject GroupMe add-on related DOM elements into the content page.
+ * 
+ * This function iterates over all courses, requests for GroupMe invite links, 
+ * and populates the page asynchronously.
+ * 
+ * Any fetch calls can be only made in background.js. Therefore a message is
+ * sent to background.js to make the cross-domain request.
+ * 
+ * @function
+ * @returns {void}
+ */
+
+function populateGroupMeLinks() {
+    const classes = document.getElementsByClassName('courseItem')
+
+    for (const classSection of classes) {
+        let classNameText = classSection.getElementsByClassName('SubjectAreaName_ClassName')[0].getElementsByTagName('p')[1].innerText;
+        for (const section of classSection.getElementsByClassName('section-header')) {
+            if (section.getElementsByTagName('a').length) {
+                let sectionName = section.getElementsByTagName('a')[0];
+                const sectionIDMatchResults = sectionName.title.match(/Class Detail for ([0-9]+)/i);
+                let sectionNameText = sectionName.innerText;
+                if (sectionIDMatchResults.length &lt; 2) {
+                    console.error("Cannot find section ID for " + sectionName.title);
+                }
+                const sectionID = sectionIDMatchResults[1];
+                getGroupmeLink(sectionID, classNameText, sectionNameText, (groupmeLink) => {
+                    for (let node of section.getElementsByClassName("qr-popup")) {
+                        node.remove();
+                    }
+
+                    let QRSpan = document.createElement('span');
+                    QRSpan.className = "qr-popuptext";
+                    let QR = document.createElement('img');
+                    QR.src = QR_API_URL + groupmeLink;
+                    QR.className = "qr-img"
+                    QRSpan.appendChild(QR);
+
+                    let QRPopup = document.createElement('a');
+                    QRPopup.target = "_blank";
+                    QRPopup.rel = "noopener noreferrer";
+                    QRPopup.href = groupmeLink;
+                    
+                    QRPopup.className = "qr-popup"
+
+                    let btnImg = document.createElement('img');
+                    btnImg.src = chrome.runtime.getURL("assets/groupme.png");
+                    btnImg.className = "groupme-img"
+
+                    QRPopup.appendChild(btnImg);
+                    QRPopup.appendChild(QRSpan);
+                    section.appendChild(QRPopup);
+                });
+            }
+        }
+    }
+}
+
+/**
+ * Callback for getting GroupMe links
+ * 
+ * @callback getGroupmeLinkCallback
+ * @param {String} response 
+ */
+
+/**
+ * Sends a message to the background.js worklet to let it perform a fetch on 
+ * behalf of the content script. 
+ * 
+ * @param {String} sectionID 
+ * @param {String} classNameText 
+ * @param {String} sectionNameText 
+ * @param {getGroupmeLinkCallback} handler 
+ */
+
+function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
+    console.log("Sending message" + JSON.stringify({
+        sectionID: sectionID,
+        className: classNameText,
+        sectionName: sectionNameText
+    }));
+
+    chrome.runtime.sendMessage({
+        contentScriptQuery: "postData",
+        data: JSON.stringify({
+            sectionID: sectionID,
+            className: classNameText,
+            sectionName: sectionNameText
+        }),
+        url: BACKEND_URL + "groupme"
+    }, function (response) {
+        console.log(response)
+        if (response != undefined &amp;&amp; response != "") {
+            handler(response);
+        }
+    });
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="classInfo.html">classInfo</a></li><li><a href="Coord.html">Coord</a></li></ul><h3>Global</h3><ul><li><a href="global.html#BACKEND_URL">BACKEND_URL</a></li><li><a href="global.html#buildings_blacklist">buildings_blacklist</a></li><li><a href="global.html#buildings_no_location">buildings_no_location</a></li><li><a href="global.html#cleanBlacklistedBuildings">cleanBlacklistedBuildings</a></li><li><a href="global.html#coords">coords</a></li><li><a href="global.html#department_abbrev">department_abbrev</a></li><li><a href="global.html#extractBuilding">extractBuilding</a></li><li><a href="global.html#extractDepartmentFromClassRecord">extractDepartmentFromClassRecord</a></li><li><a href="global.html#extractNumberFromClassRecord">extractNumberFromClassRecord</a></li><li><a href="global.html#fetchInstBruinwalk">fetchInstBruinwalk</a></li><li><a href="global.html#findClassInst">findClassInst</a></li><li><a href="global.html#formatTimeDistData">formatTimeDistData</a></li><li><a href="global.html#getAllCurAndPrevClassInfo">getAllCurAndPrevClassInfo</a></li><li><a href="global.html#getClassBuildings">getClassBuildings</a></li><li><a href="global.html#getGroupmeLink">getGroupmeLink</a></li><li><a href="global.html#getLat">getLat</a></li><li><a href="global.html#getLng">getLng</a></li><li><a href="global.html#getSearchResult">getSearchResult</a></li><li><a href="global.html#hasNumber">hasNumber</a></li><li><a href="global.html#initiateTimeDistance">initiateTimeDistance</a></li><li><a href="global.html#MAP_API_KEY">MAP_API_KEY</a></li><li><a href="global.html#observer">observer</a></li><li><a href="global.html#populateGroupMeLinks">populateGroupMeLinks</a></li><li><a href="global.html#populateTimeDistance">populateTimeDistance</a></li><li><a href="global.html#QR_API_URL">QR_API_URL</a></li><li><a href="global.html#removePrevInjections">removePrevInjections</a></li><li><a href="global.html#repopulate">repopulate</a></li><li><a href="global.html#resizeColumnWidths">resizeColumnWidths</a></li><li><a href="global.html#showPopup">showPopup</a></li><li><a href="global.html#stringToHTML">stringToHTML</a></li><li><a href="global.html#TIME_DIST_COL_IDX">TIME_DIST_COL_IDX</a></li><li><a href="global.html#transformInstDiv">transformInstDiv</a></li><li><a href="global.html#validMutation">validMutation</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Fri Nov 12 2021 11:40:12 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,48 +1,32 @@
-// responds to classes in classplan
+/**
+ * @file A content script that handles the injection of GroupMe invite links for
+ * classes at UCLA. 
+ * 
+ * @author Johnson Zhou (Clumsyndicate)
+ */
 
-let timeout = null
-const backendurl = "https://class-planner-assistant.herokuapp.com";
+// // Inject on start-up
+// populateGroupMeLinks();
+// resizeColumnWidths();
 
-populateGroupMeLinks();
-resizeColumnWidths();
-
-const config = { subtree: true, childList: true };
-
-// this is called whenever DOM is modifies
-function listener(mutationsList, observer) {
-    // run the script if it detects a class search page
-    console.log(mutationsList);
-    const windowURL = `${window.location.href}`
-    if (windowURL.includes('be.my.ucla.edu')) {
-        populateGroupMeLinks();
-        resizeColumnWidths();
-    }
-}
-const observer = new MutationObserver((mutationsList, observer) => {
-    let trigger = false;
-    for (const mutation of mutationsList) {
-        if (mutation.target.className !== "section-header") {
-            trigger = true;
-            break;
-        }
-    }
-    if (trigger) {
-        if (timeout) clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            listener(mutationsList, observer);
-        }, 1000);
-    }
-});
-// before: observing the entire doc, but change to observe only class section-header
-// because other program also manipulates document
-observer.observe(document.querySelector('.section-header'), config);
+/**
+ * Inject GroupMe add-on related DOM elements into the content page.
+ * 
+ * This function iterates over all courses, requests for GroupMe invite links, 
+ * and populates the page asynchronously.
+ * 
+ * Any fetch calls can be only made in background.js. Therefore a message is
+ * sent to background.js to make the cross-domain request.
+ * 
+ * @function
+ * @returns {void}
+ */
 
 function populateGroupMeLinks() {
     const classes = document.getElementsByClassName('courseItem')
 
     for (const classSection of classes) {
         let classNameText = classSection.getElementsByClassName('SubjectAreaName_ClassName')[0].getElementsByTagName('p')[1].innerText;
-
         for (const section of classSection.getElementsByClassName('section-header')) {
             if (section.getElementsByTagName('a').length) {
                 let sectionName = section.getElementsByTagName('a')[0];
@@ -52,32 +36,61 @@ function populateGroupMeLinks() {
                     console.error("Cannot find section ID for " + sectionName.title);
                 }
                 const sectionID = sectionIDMatchResults[1];
-                const btn = document.createElement('a');
                 getGroupmeLink(sectionID, classNameText, sectionNameText, (groupmeLink) => {
-                    let prev = section.getElementsByClassName("groupme-btn");
-                    if (prev.length > 0) {
-                        prev[0].remove();
+                    for (let node of section.getElementsByClassName("qr-popup")) {
+                        node.remove();
                     }
-                    btn.className = "groupme-btn";
-                    btn.target = "_blank";
-                    btn.rel = "noopener noreferrer";
-                    btn.href = groupmeLink;
+
+                    let QRSpan = document.createElement('span');
+                    QRSpan.className = "qr-popuptext";
+                    let QR = document.createElement('img');
+                    QR.src = QR_API_URL + groupmeLink;
+                    QR.className = "qr-img"
+                    QRSpan.appendChild(QR);
+
+                    let QRPopup = document.createElement('a');
+                    QRPopup.target = "_blank";
+                    QRPopup.rel = "noopener noreferrer";
+                    QRPopup.href = groupmeLink;
+                    
+                    QRPopup.className = "qr-popup"
+
                     let btnImg = document.createElement('img');
                     btnImg.src = chrome.runtime.getURL("assets/groupme.png");
-                    btn.appendChild(btnImg);
-                    section.appendChild(btn);
+                    btnImg.className = "groupme-img"
+
+                    QRPopup.appendChild(btnImg);
+                    QRPopup.appendChild(QRSpan);
+                    section.appendChild(QRPopup);
                 });
             }
         }
     }
 }
 
+/**
+ * Callback for getting GroupMe links
+ * 
+ * @callback getGroupmeLinkCallback
+ * @param {String} response 
+ */
+
+/**
+ * Sends a message to the background.js worklet to let it perform a fetch on 
+ * behalf of the content script. 
+ * 
+ * @param {String} sectionID 
+ * @param {String} classNameText 
+ * @param {String} sectionNameText 
+ * @param {getGroupmeLinkCallback} handler 
+ */
+
 function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
-    console.log("Sending message" + JSON.stringify({
-        sectionID: sectionID,
-        className: classNameText,
-        sectionName: sectionNameText
-    }));
+    // console.log("Sending message" + JSON.stringify({
+    //     sectionID: sectionID,
+    //     className: classNameText,
+    //     sectionName: sectionNameText
+    // }));
 
     chrome.runtime.sendMessage({
         contentScriptQuery: "postData",
@@ -86,22 +99,11 @@ function getGroupmeLink(sectionID, classNameText, sectionNameText, handler) {
             className: classNameText,
             sectionName: sectionNameText
         }),
-        url: backendurl + "/groupme"
+        url: BACKEND_URL + "groupme"
     }, function (response) {
-        console.log(response)
+        // console.log(response)
         if (response != undefined && response != "") {
             handler(response);
-            // btn.href = response;
         }
     });
-}
-
-// Change the column width of the course table to make things look better
-function resizeColumnWidths() {
-
-    for (const table of document.getElementsByClassName('coursetable')) {
-        if (table.getElementsByTagName('th').length >= 2) {
-            table.getElementsByTagName('th')[1].style.width = "10%";
-        }
-    }
 }

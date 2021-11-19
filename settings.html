@@ -9,19 +9,41 @@
     <title>Bruin Assistant Settings</title>
     <link rel="stylesheet" href="settings.css">
 </head>
+
 <body>
-  <div name='probably should just embed backend/home or something'>
-    <form action="https://class-planner-assistant-dev.herokuapp.com/login" method="POST">
+  <div id="login-form-div" class="show">
+    <form method="POST" id="login-form" action="https://class-planner-assistant-dev.herokuapp.com/login">
       <div>
           <label>Username:</label>
           <input type="text" name="username"/>
       </div>
       <div>
           <label>Password:</label>
-          <input type="password" name="password"/>
+          <input type="password" name="password">
       </div>
       <div>
-          <input type="submit" value="Log In"/>
+        <input type="submit" value="Log In"/>
+      </div>
+    </form>
+
+    <form method="POST" id="register-form" action="https://class-planner-assistant-dev.herokuapp.com/register">
+      <div>
+          <label>Username:</label>
+          <input type="text" name="username"/>
+      </div>
+      <div>
+          <label>UCLA Email:</label>
+          <input placeholder="*@g.ucla.edu" type="text" name="email"/>
+      </div>
+      <div>
+          <label>Password:</label>
+          <input type="password" name="password" placeholder="Type your password" id="password-input">
+          <br>
+          <span id="StrengthDisp"></span>
+          <br>
+      </div>
+      <div>
+          <input type="submit" value="Register" id="register-submit"/>
       </div>
     </form>
   </div>
@@ -55,6 +77,12 @@
     <button id="get-friends">Get Friends</button>
     <button id="get-invites">Get Invites</button>
   </div>
+
+  <h2>Developer Mode:</h2>
+  <label id="devModeToggle" class="switch">
+      <input type="checkbox" id="devModeToggleSwitch">
+      <span class="slider round"></span>
+  </label>
   <script src="settings.js"></script>
 </body>
 </html>
