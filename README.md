@@ -32,15 +32,13 @@ Bruin-Assistant-Extension
 ├── bruinwalk.css
 ├── bruinwalk.js
 ├── bruinwalkPopup.js
-├── config.js
+├── common
+│   ├── config.js
+│   ├── observer.js
 ├── groupme.css
 ├── groupme.js
 ├── manifest.json
-├── observer.js
 ├── package.json
-├── settings.css
-├── settings.html
-├── settings.js
 ├── tests
 │   ├── README.md
 │   ├── groupme
