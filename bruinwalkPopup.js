@@ -17,6 +17,7 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
   const parts = instUrl.split("/");
   // const id = parts[parts.length - 3];
   const coursename = parts[parts.length - 2];
+  console.log(instUrl);
   
   // -------------- create button ----------------
   // return if N/A
@@ -52,7 +53,7 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
   popup.appendChild(chartDiv);
 
   // testing getting average
-  let base_url = "https://testing-bruinassistant.herokuapp.com/"; // need to change after backend is updated
+  let base_url = "https://class-planner-assistant.herokuapp.com/";
   chrome.runtime.sendMessage({
     contentScriptQuery: "getBruinwalkAverage",
     url: base_url + "average/" + coursename

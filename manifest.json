@@ -16,6 +16,16 @@
           "matches": ["*://be.my.ucla.edu/*"],
           "js": ["config.js", "observer.js", "parser.js", "groupme.js", "bruinwalk.js", "timedistance.js", "bruinwalkPopup.js", "chart.js"],
           "run_at": "document_end"
+        },
+        {
+            "matches": ["*://sa.ucla.edu/*"],
+            "js": ["config.js", "observer.js", "parser.js", "bruinwalk.js","bruinwalkPopup.js", "chart.js"],
+            "run_at": "document_end"
+        },
+        {
+            "matches": ["*://sa.ucla.edu/*"],
+            "css": ["bruinwalk.css"],
+            "run_at": "document_end"
         }
     ],
     "action": {
@@ -33,7 +43,6 @@
     "host_permissions": [
         "https://class-planner-assistant.herokuapp.com/",
         "https://www.bruinwalk.com/",
-        "https://maps.googleapis.com/*",
-        "https://testing-bruinassistant.herokuapp.com/"
+        "https://maps.googleapis.com/*"
     ]
 }
