@@ -17,7 +17,7 @@ devModeToggleSwitch.addEventListener("change", function () {
     else {
         setDevModeToggle(false);
         console.log("Devloper Mode disabled.");
-    }     
+    }
 });
 
 function setDevModeToggle(enable) {

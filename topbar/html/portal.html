@@ -1,0 +1,45 @@
+<!-- The user portal pop up for the extension -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruin Assistant User Portal</title>
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+
+<body>
+  <div>
+    <form id='invite-form' action="BACKEND_URL./api/friends/invite" method="POST">
+      <div>
+          <label>Friend's Username:</label>
+          <input type="text" id="username-input" name="username"/>
+      </div>
+      <div>
+          <input type="submit" value="Invite"/>
+      </div>
+    </form>
+  </div>
+
+  <div>
+    <div>
+      <label>Friends:</label>
+      <ul id="friends-display"></ul>
+      <button id="get-friends">Get Friends</button>
+    </div>
+    <div>
+      <label>Invites:</label>
+      <ul id="invites-display"></ul>
+      <button id="get-invites">Get Invites</button>
+    </div>
+  </div>
+  <div>
+    <label id="display"></label>
+  </div>
+
+  <script src="/common/config.js"></script>
+  <script src="../js/portal.js"></script>
+</body>
+</html>

@@ -62,3 +62,14 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+.show {
+    display: inherit;
+}
+
+#login-form-div {
+    display: none;
+}
+
+#login-form-div.show {
+    display: inherit;
+}
