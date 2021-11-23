@@ -33,7 +33,6 @@
     "host_permissions": [
         "https://class-planner-assistant.herokuapp.com/",
         "https://www.bruinwalk.com/",
-        "https://maps.googleapis.com/*",
-        "https://testing-bruinassistant.herokuapp.com/"
+        "https://maps.googleapis.com/*"
     ]
 }

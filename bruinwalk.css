@@ -18,7 +18,7 @@
   border-radius: 6px;
   padding: 0 8px;
   z-index: 1;
-  width: 320px;
+  width: 30em;
   max-height: 90vh;
   overflow-y: overlay !important;
   box-shadow: 0 0 10px rgb(147, 169, 190);

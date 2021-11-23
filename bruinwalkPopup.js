@@ -52,7 +52,7 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
   popup.appendChild(chartDiv);
 
   // testing getting average
-  let base_url = "https://testing-bruinassistant.herokuapp.com/"; // need to change after backend is updated
+  let base_url = "https://class-planner-assistant.herokuapp.com/";
   chrome.runtime.sendMessage({
     contentScriptQuery: "getBruinwalkAverage",
     url: base_url + "average/" + coursename

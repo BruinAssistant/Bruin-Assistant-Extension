@@ -130,11 +130,6 @@ function callParseCourseItem() {
             }
         });
     }
-
-    // for sa.ucla.edu
-    // for (let courseItem of document.getElementsByTagName('ucla-sa-soc-app')[0].shadowRoot.getElementById('resultsTitle')){
-    //     console.log(courseItem);
-    // }
 }
 
 function callParseSearchItem() {
@@ -142,7 +137,6 @@ function callParseSearchItem() {
     // use ClassSearchWidget since only the search box contains major name
     for (let searchItem of document.getElementsByClassName("ClassSearchWidget")) {
         parseSearchItem(searchItem, (res) => {
-            // console.log(res)
             findClassPlannerInstructor(res);
         })
     }
