@@ -872,16 +872,6 @@ function generateMapID(ordered_classes) {
     console.log("ordered locations string:");
 
     let json_str = JSON.stringify(ordered_locations);
-    let map_special = "";
-    const encode_map_special = {
-        '{': '<boop>',
-        '}': '<zoop>',
-        '"': '<bap>',
-        '[': '<beep>',
-        ']': '<bop>',
-        ":": '<zeep>',
-        ",": '<zap>' 
-    }
 
     const encode_map_num = {
         '1': '!',
@@ -895,25 +885,21 @@ function generateMapID(ordered_classes) {
         '9': '(',
         '0': ')'
     }
+    
+    let map_id_special = "";
 
     for(let i = 0; i < json_str.length; i++){
         let curr_char = json_str.charAt(i);
-        if(curr_char in encode_map_special)
-            map_special += encode_map_special[curr_char];
-        else if(curr_char in encode_map_num)
-            map_special += encode_map_num[curr_char];
+        if(curr_char in encode_map_num)
+            map_id_special += encode_map_num[curr_char];
         else 
-            map_special += curr_char;
+            map_id_special += curr_char;
     }
     
-    let map_M = map_special.replaceAll("Monday", "MATLAB");
-    let map_T = map_M.replaceAll("Tuesday","TypeScript");
-    let map_W = map_T.replaceAll("Wednesday", "Wolfram");
-    let map_R = map_W.replaceAll("Thursday","R");
-    let map_F = map_R.replaceAll("Friday","Fortran");
-    let map_lat = map_F.replaceAll("lat", "parallel");
-    let map_id = map_lat.replaceAll("lng", "meridian");
-    
+    let map_id = "";
+    for(let i = map_id_special.length-1; i >= 0; i--)
+        map_id += map_id_special[i];
+
     console.log(map_id);
 }
 // Kick-off time/distance computation and injection
