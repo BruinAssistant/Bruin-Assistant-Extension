@@ -37,7 +37,6 @@ function Coord(lat, lng) {
     this.lng = lng;
 }
 
-
 /**
  * Lookup table for Location to Coordinate.
  * 
@@ -807,6 +806,7 @@ function getClassBuildings() {
         i++;
     }
 
+    generateMapID(ordered_classes);
     result.set("orderedClasses", ordered_classes);
     result.set("uniqueBuildings", unique_buildings);
     console.log(result);
@@ -855,6 +855,66 @@ function hasNumber(str) {
     return /\d/.test(str);
 }
 
+// TODO: Documentation
+function generateMapID(ordered_classes) {
+    let ordered_locations = {};
+    ordered_classes.forEach((value, key) => {
+        let class_coords = [];
+        value.forEach(class_info => {
+            let class_coord = coords.get(class_info.building);
+            if (class_coord != null) {
+                let lnglat = { lat: class_coord.lat, lng: class_coord.lng };
+                class_coords.push(lnglat);
+            }
+        })
+        ordered_locations[key] = class_coords;
+    })
+    console.log("ordered locations string:");
 
+    let json_str = JSON.stringify(ordered_locations);
+    let map_special = "";
+    const encode_map_special = {
+        '{': '<boop>',
+        '}': '<zoop>',
+        '"': '<bap>',
+        '[': '<beep>',
+        ']': '<bop>',
+        ":": '<zeep>',
+        ",": '<zap>' 
+    }
+
+    const encode_map_num = {
+        '1': '!',
+        '2': '@',
+        '3': '#',
+        '4': '$',
+        '5': '%',
+        '6': '^',
+        '7': '&',
+        '8': '*',
+        '9': '(',
+        '0': ')'
+    }
+
+    for(let i = 0; i < json_str.length; i++){
+        let curr_char = json_str.charAt(i);
+        if(curr_char in encode_map_special)
+            map_special += encode_map_special[curr_char];
+        else if(curr_char in encode_map_num)
+            map_special += encode_map_num[curr_char];
+        else 
+            map_special += curr_char;
+    }
+    
+    let map_M = map_special.replaceAll("Monday", "MATLAB");
+    let map_T = map_M.replaceAll("Tuesday","TypeScript");
+    let map_W = map_T.replaceAll("Wednesday", "Wolfram");
+    let map_R = map_W.replaceAll("Thursday","R");
+    let map_F = map_R.replaceAll("Friday","Fortran");
+    let map_lat = map_F.replaceAll("lat", "parallel");
+    let map_id = map_lat.replaceAll("lng", "meridian");
+    
+    console.log(map_id);
+}
 // Kick-off time/distance computation and injection
 // initiateTimeDistance();
