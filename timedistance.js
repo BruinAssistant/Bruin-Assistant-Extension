@@ -901,6 +901,18 @@ function generateMapID(ordered_classes) {
         map_id += map_id_special[i];
 
     console.log(map_id);
+
+    let storage = chrome.storage.local;
+    let obj = {'id':map_id};
+
+    storage.set({'mapID': obj}, function() {
+        console.log('Value is set to ' + map_id);
+    });
+   
+
+    storage.get(['mapID'], function(result) {
+        console.log(result);
+      });
 }
 // Kick-off time/distance computation and injection
 // initiateTimeDistance();
