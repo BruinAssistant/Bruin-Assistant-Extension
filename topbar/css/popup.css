@@ -73,3 +73,16 @@ input:checked + .slider:before {
 #login-form-div.show {
     display: inherit;
 }
+
+/* Copy and Map Buttons */
+.copy-props{
+    width: 32px;
+    height: 32px;
+}
+
+.marker-props{
+    width: 30px;
+    height: 30px;
+    border: 1px solid #36454f;
+    border-radius: 25%;
+}
