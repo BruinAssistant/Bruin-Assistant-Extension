@@ -18,19 +18,19 @@
   border-radius: 6px;
   padding: 0 8px;
   z-index: 1;
-  width: 320px;
+  width: 30em;
   max-height: 90vh;
   overflow-y: overlay !important;
   box-shadow: 0 0 10px rgb(147, 169, 190);
 
   position: fixed;
   left: 70vw;
-  top: 0;
+  top: 20px;
 
   /* position: absolute;
   left: 40px;
   top: -45vh; */
-  transition: all .8s ease-in-out;
+  transition: all 1s ease-in-out;
 
 }
 
@@ -97,9 +97,9 @@
 }
 
 .comment {
-  white-space: normal;
+  /* white-space: normal;
   max-height: 100px;
-  overflow-y: overlay;
+  overflow-y: overlay; */
   padding: 3px 16px;
 }
 

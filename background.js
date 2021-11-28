@@ -49,6 +49,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         }
         return true;
     }
+    if (request.contentScriptQuery == "getBruinwalkAverage"){
+        fetch(request.url)
+            .then(res => res.json())
+            .then(res => sendResponse(res))
+            .catch(error => console.log("Error: ", error))
+        return true;
+    }
     if (request.contentScriptQuery == "getTimeDistanceData") {
         fetch(request.url)
             .then(response => response.json())
