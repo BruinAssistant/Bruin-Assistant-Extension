@@ -855,7 +855,11 @@ function hasNumber(str) {
     return /\d/.test(str);
 }
 
-// TODO: Documentation
+/**
+ * Generates a Map ID that'll be copied by the user to create a 3D map of their schedule. 
+ * @param {Object} ordered_classes 
+ * @returns {void}
+ */
 function generateMapID(ordered_classes) {
     let ordered_locations = {};
     ordered_classes.forEach((value, key) => {
