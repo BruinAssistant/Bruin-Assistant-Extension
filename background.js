@@ -1,20 +1,13 @@
-let dev_mode = false;
-let mystery_mode = false;
-let units_imperial = false;
+let defaults = {
+    "dev_mode" : false,
+    "mystery_mode" : false,
+    "units_imperial" : false,
+    "use_biking_time" : false
+}
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.set({ "dev_mode" : dev_mode });
-    console.log('Default developer setting set to ' + dev_mode);
-});
-
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.set({ "mystery_mode" : mystery_mode });
-    console.log('Default mystery setting set to ' + mystery_mode);
-});
-
-chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.set({ "units_imperial" : units_imperial });
-    console.log('Default units imperial setting set to ' + units_imperial);
+    chrome.storage.sync.set(defaults);
+    console.log("Defaults set: developer setting (" + defaults["dev_mode"] + "), mystery setting (" + defaults["mystery_mode"] + "), imperial units (" + defaults["units_imperial"] + "), use biking time (" + defaults["use_biking_time"] + ")");
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {  

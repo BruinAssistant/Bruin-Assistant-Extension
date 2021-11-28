@@ -852,8 +852,7 @@ function initiateTimeDistance() {
 
     /* compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development) */
     
-    // start by constructing API invocation URL
-    // - determine what unit to represent distance in
+    // determine what unit to represent distance in
     chrome.storage.sync.get("units_imperial", ({ units_imperial }) => {
         
         let str_units = "";
@@ -866,31 +865,45 @@ function initiateTimeDistance() {
             str_units = ""; // default is metric, so leave as is
         }
 
-        // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
-        var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_addr + "&" + "destinations=" + str_addr + str_units + "&mode=walking&key=" + MAP_API_KEY;
+        // determine what mode of transportation we should use for estimates
+        chrome.storage.sync.get("use_biking_time", ({ use_biking_time }) => {
 
-        // determine if we should perform API call
-        chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
+            let str_mode = "";
+            
+            // check if biking time estimates are preferred
+            if (use_biking_time) {
+                str_mode = "&mode=biking";
+            }
+            else {
+                str_mode = "&mode=walking";
+            }
 
-            // check if we're in "Developer" mode
-            if (dev_mode) {
+            // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
+            var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_addr + "&" + "destinations=" + str_addr + str_units + str_mode + "&key=" + MAP_API_KEY;
 
-                console.log("Peforming Distance Matrix API call... (developer mode ENABLED)");
+            // determine if we should perform API call
+            chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
 
-                // Perform API call
-                chrome.runtime.sendMessage({
-                    url: map_url,
-                    contentScriptQuery: "getTimeDistanceData"
-                }
-                    , response => {
-                        populateTimeDistance(response, class_info);
+                // check if we're in "Developer" mode
+                if (dev_mode) {
+
+                    console.log("Peforming Distance Matrix API call... (developer mode ENABLED)");
+
+                    // Perform API call
+                    chrome.runtime.sendMessage({
+                        url: map_url,
+                        contentScriptQuery: "getTimeDistanceData"
                     }
-                );
-            }
-            else { // Don't perform API call, and inject placeholder (i.e. "N/A (disabled)")
-                console.log("Avoiding Distance Matrix API call (developer mode DISABLED)");
-                populateTimeDistance(null, class_info);
-            }
+                        , response => {
+                            populateTimeDistance(response, class_info);
+                        }
+                    );
+                }
+                else { // Don't perform API call, and inject placeholder (i.e. "N/A (disabled)")
+                    console.log("Avoiding Distance Matrix API call (developer mode DISABLED)");
+                    populateTimeDistance(null, class_info);
+                }
+            })
         })
     });
 }
