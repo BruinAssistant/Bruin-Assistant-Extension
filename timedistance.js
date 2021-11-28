@@ -822,7 +822,7 @@ function initiateTimeDistance() {
     // parse all class info from webpage
     let class_info = getClassBuildings();
 
-    // Construct unique building addresses by indexing into coordinate table
+    // Construct unique building addresses by indexing into address table
     let unique_buildings = [];
     for (let building of class_info.get("uniqueBuildings")){
         let val = location_to_address.get(building);
@@ -833,7 +833,7 @@ function initiateTimeDistance() {
     console.log(unique_buildings);
 
     let total_buildings = unique_buildings.length;
-    let str_coord = "";
+    let str_addr = "";
 
     // construct Distance Matrix API call URL
     if (total_buildings > 0) {
@@ -841,42 +841,58 @@ function initiateTimeDistance() {
         console.log(unique_buildings[0]);
 
         // %7C is '|' and %2C is ','
-        str_coord += unique_buildings[0];
+        str_addr += unique_buildings[0];
         for (let i = 1; i < total_buildings; i++) {
-            str_coord += "%7C";
-            str_coord += unique_buildings[i];
+            str_addr += "%7C";
+            str_addr += unique_buildings[i];
         }
     }
 
-    console.log(str_coord);
+    console.log(str_addr);
 
-    // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
-    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + MAP_API_KEY;
+    /* compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development) */
+    
+    // start by constructing API invocation URL
+    // - determine what unit to represent distance in
+    chrome.storage.sync.get("units_imperial", ({ units_imperial }) => {
+        
+        let str_units = "";
 
-    // Compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development)
-    chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
+        // check if imperial units preferred
+        if (units_imperial) {
+            str_units = "&units=imperial";
+        }
+        else {
+            str_units = ""; // default is metric, so leave as is
+        }
 
-        // Check if we're in "Developer" mode
-        if (dev_mode) {
+        // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
+        var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_addr + "&" + "destinations=" + str_addr + str_units + "&mode=walking&key=" + MAP_API_KEY;
 
-            console.log("Peforming Distance Matrix API call... (developer mode ENABLED)");
+        // determine if we should perform API call
+        chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
 
-            // Perform API call
-            chrome.runtime.sendMessage({
-                url: map_url,
-                contentScriptQuery: "getTimeDistanceData"
-            }
-                , response => {
-                    populateTimeDistance(response, class_info);
+            // check if we're in "Developer" mode
+            if (dev_mode) {
+
+                console.log("Peforming Distance Matrix API call... (developer mode ENABLED)");
+
+                // Perform API call
+                chrome.runtime.sendMessage({
+                    url: map_url,
+                    contentScriptQuery: "getTimeDistanceData"
                 }
-            );
-        }
-        else { // Don't perform API call, and inject placeholder (i.e. "N/A (disabled)")
-            console.log("Avoiding Distance Matrix API call (developer mode DISABLED)");
-            populateTimeDistance(null, class_info);
-        }
-    })
-
+                    , response => {
+                        populateTimeDistance(response, class_info);
+                    }
+                );
+            }
+            else { // Don't perform API call, and inject placeholder (i.e. "N/A (disabled)")
+                console.log("Avoiding Distance Matrix API call (developer mode DISABLED)");
+                populateTimeDistance(null, class_info);
+            }
+        })
+    });
 }
 
 
