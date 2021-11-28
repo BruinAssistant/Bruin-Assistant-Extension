@@ -1,5 +1,6 @@
 let dev_mode = false;
 let mystery_mode = false;
+let units_imperial = false;
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({ "dev_mode" : dev_mode });
@@ -9,6 +10,11 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({ "mystery_mode" : mystery_mode });
     console.log('Default mystery setting set to ' + mystery_mode);
+});
+
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.sync.set({ "units_imperial" : units_imperial });
+    console.log('Default units imperial setting set to ' + units_imperial);
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {  
