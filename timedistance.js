@@ -38,24 +38,6 @@ function Coord(lat, lng) {
 }
 
 /**
- * Address: Holds an address, composed of: street, city, state, and zip code.
- * 
- * Used within location_to_address lookup table.
- * 
- * @constructor
- * @param {string} street
- * @param {string} city
- * @param {string} state
- * @param {string} zip_code
- * 
- * @see {@link location_to_coords} for current use case.
- */
- function Address(street, city, state, zip_code) {
-    this.lat = lat;
-    this.lng = lng;
-}
-
-/**
  * Lookup table for Location to Address.
  * 
  * Used when getting the relevant class information structures when handling
