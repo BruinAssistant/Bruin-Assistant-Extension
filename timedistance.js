@@ -831,10 +831,10 @@ function initiateTimeDistance() {
     // parse all class info from webpage
     let class_info = getClassBuildings();
 
-    // Construct unique building coordinates by indexing into coordinate table
+    // Construct unique building addresses by indexing into coordinate table
     let unique_buildings = [];
     for (let building of class_info.get("uniqueBuildings")){
-        let val = location_to_coords.get(building);
+        let val = location_to_address.get(building);
         if(val != null) // only add if not null
             unique_buildings.push(val);
     }
@@ -843,22 +843,21 @@ function initiateTimeDistance() {
 
     let total_buildings = unique_buildings.length;
     let str_coord = "";
-    let latStr = "";
-    let lngStr = "";
-    if(total_buildings > 0){
-        console.log(unique_buildings[0]);
-        latStr = getLat(unique_buildings[0]);
-        lngStr = getLng(unique_buildings[0]);
-        // %7C is '|' and %2C is ','
-        str_coord += (latStr + "%2C" + lngStr);
 
-        for(let i = 1; i < total_buildings; i++){
-            latStr = getLat(unique_buildings[i]);
-            lngStr = getLng(unique_buildings[i]);
+    // construct Distance Matrix API call URL
+    if (total_buildings > 0) {
+
+        console.log(unique_buildings[0]);
+
+        // %7C is '|' and %2C is ','
+        str_coord += unique_buildings[0];
+        for (let i = 1; i < total_buildings; i++) {
             str_coord += "%7C";
-            str_coord += (latStr + "%2C" + lngStr);
+            str_coord += unique_buildings[i];
         }
     }
+
+    console.log(str_coord);
 
     // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
     var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + MAP_API_KEY;
