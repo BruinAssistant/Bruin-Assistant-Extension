@@ -7,21 +7,22 @@
  */
 
 /**
- * 
+ * Create popup on myUCLA that contains Bruinwalk review metrics, metric radar chart, grade distributuion, 
+ * review, and link to Bruinwalk.
  * @param {string} instUrl Bruinwalk url of instructor who teaches the class
  * @param {HTMLCollection} instDiv HTML div element of instructor cell from class planner
+ * @param {string} id Unique id for creating divs that only belong to a certain instructor and a class
  * @param {HTMLCollection} responseHTML HTML of bruinwalk page of instructor who teaches the class
+ * @returns {void}
  */
 function showPopup(instUrl, instDiv, id, responseHTML) {
-  
   const parts = instUrl.split("/");
-  // const id = parts[parts.length - 3];
   const coursename = parts[parts.length - 2];
-  
+
   // -------------- create button ----------------
   // return if N/A
   let bruinwalkPopupButton = createButton(instUrl, instDiv, responseHTML, id);
-  if (!bruinwalkPopupButton){
+  if (!bruinwalkPopupButton) {
     return;
   };
 
@@ -33,7 +34,6 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
   popup.id = "myPopup" + id;
   document.getElementById(id).appendChild(popup);
 
-
   // ------------- add title------------
   let titleDiv = document.createElement('div');
   titleDiv.className = 'bwalk-popup-title-div';
@@ -44,7 +44,7 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
 
   // ------------ create metrics table and retrieve review metrics
   let metrics_score = createMetricsTable(metrics, responseHTML, popup);
-  
+
   // ------------- create radar chart for 5 metrics---------------
   let chartDiv = document.createElement('canvas');
   chartDiv.className = "bruinwalk-radar-canvas";
@@ -64,7 +64,6 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
 
   // case: no distribution yet:
   if (responseHTML.getElementsByClassName('distribution bruinwalk-card row')[0].innerText == "\n\nNo grades are available.\n") {
-    // console.log("no distribution yet");
     let noDistDiv = document.createElement('div');
     noDistDiv.innerText = "Grade distribution is not available";
     popup.appendChild(noDistDiv);
@@ -75,7 +74,7 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
     for (let i = 0; i < 13; i++) {
       let grade = responseHTML.getElementsByClassName('bar-fill has-tip tip-left')[i].getAttribute('title');
       if (grade == null) {
-        console.log("THIS PROFESSOR HASN'T TAUGHT AT UCLA YET");
+        // THIS PROFESSOR HASN'T TAUGHT AT UCLA YET
         return;
       }
       gradeArray.push(parseFloat(grade));
@@ -166,7 +165,17 @@ function showPopup(instUrl, instDiv, id, responseHTML) {
   popup.appendChild(bruinwalkLink);
 }
 
-function createButton(instUrl, instDiv, responseHTML, id){
+/**
+ * Create button for each professor. Display "Overall" Bruinwalk metric rating on the button. 
+ * If no such professor review on Bruinwalk, display "N/A" button instead.
+ * 
+ * @param {String} instUrl URL string of instructor on Bruinwalk who teaches the class
+ * @param {HTMLCollection} instDiv DOM for injecting a popup button
+ * @param {HTMLCollection} responseHTML Bruinwalk HTML page that contains professor's review
+ * @param {String} id Unique id for a particular professor in a course
+ * @returns {HTMLCollection} Button DOM if there exists review of the professor. Otherwise, NULL
+ */
+function createButton(instUrl, instDiv, responseHTML, id) {
   let bruinwalkPopupButton = document.createElement('button');
 
   // create 'N/A' button for professor whose review is not on bruinwalk
@@ -180,10 +189,8 @@ function createButton(instUrl, instDiv, responseHTML, id){
 
   // show 'N/A' button to professor who has not received student metric score review
   if (responseHTML.getElementsByClassName('metric')[0] == null) {
-    console.log('no metric review yet');
     bruinwalkPopupButton.className = "bruinwalk-btn bruinwalk-undefined";
     bruinwalkPopupButton.innerText = "N/A";
-    // note: clicking N/A refresh the page somehow
     instDiv.appendChild(bruinwalkPopupButton);
     return null;
   }
@@ -197,7 +204,15 @@ function createButton(instUrl, instDiv, responseHTML, id){
   return bruinwalkPopupButton;
 }
 
-function createMetricsTable(metrics, responseHTML, popup){
+/**
+ * Create a table that contains metric score for 5 categories on Bruinwalk of the instructor.
+ * 
+ * @param {Array<string>} metrics 5 metrics strings: Overall, Easiness, Workload, Clarity, Helpfulness
+ * @param {HTMLCollection} responseHTML Bruinwalk HTML page that contains professor's review
+ * @param {HTMLCollection} popup Div for injecting the table onto
+ * @returns {Array<float>} Metrics scores from Bruinwalk page
+ */
+function createMetricsTable(metrics, responseHTML, popup) {
   // ------------ get professor metrics ----------------
   let prof_ratings_div = responseHTML.getElementsByClassName('metric');
   let metrics_score = [];
@@ -227,12 +242,22 @@ function createMetricsTable(metrics, responseHTML, popup){
   return metrics_score;
 }
 
-function createRadarChart(metrics, metrics_score, professorName, id, cousename, averageResponse){
+/**
+ * Create radar chart of professor's 5 metrics scores and an average radar chart scores across 
+ * all professors who teach the same course.
+ * @param {Array<String>} metrics 5 metrics strings of Bruinwalk review category
+ * @param {Array<float>} metrics_score Scores for each metric of Bruinwalk review
+ * @param {String} professorName Professor name
+ * @param {String} id Unique ID for creating a unique div
+ * @param {String} cousename Abbreviation name of coursename
+ * @param {Array<float>} averageResponse Average scores across professors who teach class
+ * @returns {void}
+ */
+function createRadarChart(metrics, metrics_score, professorName, id, cousename, averageResponse) {
   let averageData = [];
-  for (m of metrics){
+  for (m of metrics) {
     averageData.push(averageResponse[m.toLowerCase()]);
   }
-  // console.log(averageData);
   let profMetricData = {
     labels: metrics,
     datasets: [{

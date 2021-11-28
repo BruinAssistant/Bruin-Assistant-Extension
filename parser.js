@@ -98,21 +98,13 @@ function parseCourseItem(courseItem, callbacks) {
 function parseSearchItem(searchItem, callback) {
     // wait until class table is created:
     if (searchItem.getElementsByClassName("ClassSearchList search_results").item(0)) {
-
-        // ClassSearchList search_results
         let res = {};
         res['course-title-0'] = searchItem.getElementsByClassName("ClassSearchBox").item(0).value;
         res['course-title-1'] = searchItem.getElementsByClassName("row-fluid class-title").item(0).innerText;
-        // course-name format: 'abbreviate-name-coursenum'
-        // NOTE: Physics, Art, Asian does not have abbreviate
-        // res['abbreviate-course-name'] = res['course-title-0'].match(/\(([^)]+)\)/)[1].replace(/\s/g, "-").toLowerCase() + "-" + res['course-title-1'].split(" - ")[0];
         res['major'] = res['course-title-0'].replace(/ *\([^)]*\) */g, "");
         res['course-number'] = res['course-title-1'].split(" - ")[0];
 
         for (section of searchItem.getElementsByClassName("row-fluid data_row class-info scrollable-collapse table-width2")) {
-            /*let sectionInfo = {}
-            sectionInfo['id'] = section.getElementsByClassName("span2").item(0).getElementsByTagName('a').item(0).title.match(/\d+/g)[0];
-            */
             res['id'] = section.getElementsByClassName("span2").item(0).getElementsByTagName('a').item(0).title.match(/\d+/g)[0];
             res['instructor-div'] = section.getElementsByClassName("span9 hide-small").item(0);
             callback(res);
