@@ -936,6 +936,7 @@ function getClassBuildings() {
         i++;
     }
 
+    generateMapID(ordered_classes);
     result.set("orderedClasses", ordered_classes);
     result.set("uniqueBuildings", unique_buildings);
     console.log(result);
@@ -984,6 +985,68 @@ function hasNumber(str) {
     return /\d/.test(str);
 }
 
+/**
+ * Generates a Map ID that'll be copied by the user to create a 3D map of their schedule. 
+ * @param {Object} ordered_classes 
+ * @returns {void}
+ */
+function generateMapID(ordered_classes) {
+    let ordered_locations = {};
+    ordered_classes.forEach((value, key) => {
+        let class_coords = [];
+        value.forEach(class_info => {
+            let class_coord = location_to_coords.get(class_info.building);
+            if (class_coord != null) {
+                let lnglat = { lat: class_coord.lat, lng: class_coord.lng };
+                class_coords.push(lnglat);
+            }
+        })
+        ordered_locations[key] = class_coords;
+    })
+    console.log("ordered locations string:");
 
+    let json_str = JSON.stringify(ordered_locations);
+
+    const encode_map_num = {
+        '1': '!',
+        '2': '@',
+        '3': '#',
+        '4': '$',
+        '5': '%',
+        '6': '^',
+        '7': '&',
+        '8': '*',
+        '9': '(',
+        '0': ')'
+    }
+    
+    let map_id_special = "";
+
+    for(let i = 0; i < json_str.length; i++){
+        let curr_char = json_str.charAt(i);
+        if(curr_char in encode_map_num)
+            map_id_special += encode_map_num[curr_char];
+        else 
+            map_id_special += curr_char;
+    }
+    
+    let map_id = "";
+    for(let i = map_id_special.length-1; i >= 0; i--)
+        map_id += map_id_special[i];
+
+    console.log(map_id);
+
+    let storage = chrome.storage.local;
+    let obj = {'id':map_id};
+
+    storage.set({'mapID': obj}, function() {
+        console.log('Value is set to ' + map_id);
+    });
+   
+
+    storage.get(['mapID'], function(result) {
+        console.log(result);
+      });
+}
 // Kick-off time/distance computation and injection
 // initiateTimeDistance();
