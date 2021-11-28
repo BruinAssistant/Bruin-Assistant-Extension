@@ -46,7 +46,7 @@ function Coord(lat, lng) {
  * estimations.
  * 
  * @global
- * @constant {Map<string, Coord>}
+ * @constant {Map<string, string>}
  * @readonly
  */
  const location_to_address = new Map([
