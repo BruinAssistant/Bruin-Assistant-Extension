@@ -35,36 +35,157 @@ const TIME_DIST_COL_IDX = 7;
 /**
  * Coord: Holds a coordinate, composed of a Latitude and Longitude.
  * 
- * Used within coords lookup table.
+ * Used within location_to_coords lookup table.
  * 
  * @constructor
  * @param {Number} lat - Latitude (degrees)
  * @param {Number} lng - Longitude (degrees)
  * 
- * @see {@link coords} for current use case.
+ * @see {@link location_to_coords} for current use case.
  */
 function Coord(lat, lng) {
     this.lat = lat;
     this.lng = lng;
 }
 
+/**
+ * Lookup table for Location to Address.
+ * 
+ * Used when getting the relevant class information structures when handling
+ * time/dist computation and injection for a particular course in a user's
+ * Class Plan. Addresses used instead of Coordinates for more accurate
+ * estimations.
+ * 
+ * @global
+ * @constant {Map<string, string>}
+ * @readonly
+ */
+ const location_to_address = new Map([
+    ["700 Westwood Plaza", "700 Westwood Plaza, Los Angeles, CA 90024"],
+    ["1010 Westwood Center", "1010 Westwood Blvd, Los Angeles, CA 90024"],
+    ["Ackerman Union", "308 Westwood Plaza, Los Angeles, CA 90024"],
+    ["Biomedical Sciences Research Building", "615 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Boelter Hall", "580 Portola Plaza, Los Angeles, CA 90095"],
+    ["Botany Building", "618 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Boyer Hall", "611 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Bradley Hall", "417 Charles E Young Drive West, Los Angeles, CA 90024"],
+    ["Brain Mapping Center", "660 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Brain Research Institute", "695 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Broad Art Center", "240 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Bunche Hall", "11282 Portola Plaza, Los Angeles, CA 90095"],
+    ["California NanoSystems Institute", "570 Westwood Plaza Building 114, Los Angeles, CA 90095"],
+    ["Campbell Hall", "335 Portola Plaza, Los Angeles, CA 90095"],
+    ["Canyon Point", "Covel Steps, Los Angeles, CA 90024"],
+    ["Carnesale Commons", "251 Charles E Young Drive West, Los Angeles, CA 90095"],
+    ["Center for the Health Sciences", "10833 Le Conte Ave, Los Angeles, CA 90024"],
+    ["Collins Center for Executive Education", "110 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Cornell Hall", "110 Westwood Plaza, Los Angeles, CA 90077"],
+    ["Covel Commons", "330 De Neve Dr, Los Angeles, CA 90095"],
+    ["De Neve Plaza Commons Building", "351 Charles E Young Drive West, Los Angeles, CA 90024"],
+    ["Dentistry, School of", "714 Tiverton Ave, Los Angeles, CA 90024"],
+    ["Dodd Hall", "315 Portola Plaza, Los Angeles, CA 90095"],
+    ["Downtown Center", "600 Wilshire Blvd #870, Los Angeles, CA 90017"],
+    ["East Melnitz Hall", "235 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Education and Information Studies Building", "457 Portola Plaza, Los Angeles, CA 90095"],
+    ["Engineering I", "7400 Boelter Hall, Los Angeles, CA 90095"],
+    ["Engineering IV", "Engineering IV, Los Angeles, CA 90095"],
+    ["Engineering V", "Engineering V, Los Angeles, CA 90095"],
+    ["Engineering VI", "404 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Entrepreneurs Hall", "110 Westwood Plaza, Los Angeles, CA 90077"],
+    ["Factor Health Sciences Building", "650 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Fernald Center", "320 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Field", "UCLA Intramural Fields, Los Angeles, CA 90095"],
+    ["Fowler Museum at UCLA", "308 Charles E Young Dr N, Los Angeles, CA 90024"],
+    ["Franz Hall", "502 Portola Plaza, Los Angeles, CA 90095"],
+    ["Geffen Hall", "885 Tiverton Dr, Los Angeles, CA 90024"],
+    ["Geology Building", "595 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Gold Hall", "Gold Hall, Royce Dr, Los Angeles, CA 90024"],
+    ["Gonda (Goldschmied) Neuroscience and Genetics Research Center", "695 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Haines Hall", "375 Portola Plaza, Los Angeles, CA 90095"],
+    ["Hammer Museum", "10899 Wilshire Blvd, Los Angeles, CA 90024"],
+    ["Hedrick Hall", "250 De Neve Dr, Los Angeles, CA 90024"],
+    ["Hershey Hall", "801 Hilgard Ave, Los Angeles, CA 90095"],
+    ["Hitch Residential Suites", "245 De Neve Dr, Los Angeles, CA 90024"],
+    ["Humanities Building", "12001 Chalon Rd, Los Angeles, CA 90049"],
+    ["James West Center", "James West Alumni Center, Los Angeles, CA 90095"],
+    ["Jules Stein Eye Institute", "100 Stein Plaza Driveway, Los Angeles, CA 90095"],
+    ["Kaufman Hall", "120 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Kerckhoff Hall", "308 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Kinsey Science Teaching Pavilion", "Kinsey Pavilion, Los Angeles, CA 90095"],
+    ["Knudsen Hall", "475 Portola Plaza, Los Angeles, CA 90095"],
+    ["Korn Convocation Hall", "Korn Convocation Hall, Los Angeles, CA 90095"],
+    ["La Kretz Garden Pavilion", "707 Tiverton Dr, Los Angeles, CA 90095"],
+    ["La Kretz Hall", "619 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Lab School 1", "330 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Law Building", "385 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Life Sciences", "610 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Lu Valle Commons", "Lu Valle Commons, 398 Portola Plaza, Los Angeles, CA 90095"],
+    ["MacDonald Medical Research Laboratories", "675 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Macgowan Hall", "245 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Macgowan Hall East", "243 Charles E Young Dr E, Los Angeles, CA 90024"],
+    ["Marion Anderson Hall", "110 Westwood Plaza, Los Angeles, CA 90024"],
+    ["Marion Davies Children's Center", "805 Tiverton Dr, Los Angeles, CA 90024"],
+    ["Mathematical Sciences", "520 Portola Plaza, Los Angeles, CA 90095"],
+    ["Medical Plaza 100", "100 Medical Plaza Driveway, Los Angeles, CA 90024"],
+    ["Medical Plaza 200", "200 Medical Plaza Driveway, Los Angeles, CA 90024"],
+    ["Medical Plaza 300", "300 Medical Plaza Driveway St 2100, Los Angeles, CA 90095"],
+    ["Melnitz Hall", "235 Charles E Young Dr E, Los Angeles, CA 90024"],
+    ["Molecular Sciences Building", "619 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Moore Hall", "457 Portola Plaza, Los Angeles, CA 90095"],
+    ["Morton Medical Building", "200 Medical Plaza Driveway, Los Angeles, CA 90024"],
+    ["Murphy Hall", "410 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Neuroscience Research Building", "635 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["No facility", null],
+    ["No Location", null],
+    ["Northwest Campus Auditorium", "350 De Neve Dr, Los Angeles, CA 90024"],
+    ["Off campus", null],
+    ["Online", null],
+    ["Online - Recorded", null],
+    ["Orthopaedic Hospital Research Center", "615 Charles E Young Dr S Rm. 410, Los Angeles, CA 90095"],
+    ["Ostin Music Center", "445 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Perloff Hall", "365 Portola Plaza, Los Angeles, CA 90095"],
+    ["Physics and Astronomy Building", "430 Portola Plaza, Los Angeles, CA 90095"],
+    ["Portola Plaza Building", "460 Portola Plaza, Los Angeles, CA 90095"],
+    ["Powell Library Building", "10740 Dickson Ct, Los Angeles, CA 90095"],
+    ["Pritzker Hall", "502 Portola Plaza, Los Angeles, CA 90095"],
+    ["Public Affairs Building", "337 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Public Health, School of", "650 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Reed Neurological Research Center", "710 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Renee and David Kaplan Hall", "415 Portola Plaza, Los Angeles, CA 90095"],
+    ["Rieber Hall", "310 De Neve Dr, Los Angeles, CA 90024"],
+    ["Rolfe Hall", "Rolfe Hall, Los Angeles, CA 90095"],
+    ["Rosenfeld Library", "110 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Royce Hall", "10745 Dickson Ct, Los Angeles, CA 90095"],
+    ["Schoenberg Music Building", "445 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Sculpture Garden", "Franklin D. Murphy Sculpture Garden, 245 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Semel Institute for Neuroscience and HumanBehavior", "760 Westwood Plaza, Los Angeles, CA 90024"],
+    ["Slichter Hall", "603 Charles E Young Dr E, Los Angeles, CA 90024"],
+    ["Sproul Hall", "350 De Neve Dr, Los Angeles, CA 90024"],
+    ["Strathmore Building", "501 Westwood Plaza Strathmore Building, Los Angeles, CA 90095"],
+    ["Student Activities Center", "220 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Terasaki Life Sciences Building", "610 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["UCLA Lab School, Seeds Campus", "330 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Ueberroth Building", "10945 Le Conte Ave, Los Angeles, CA 90024"],
+    ["Vatche and Tamar Manoukian Medical Building", "100 Medical Plaza Driveway, Los Angeles, CA 90024"],
+    ["Wendy and Leonard Goldberg Medical Building", "300 Medical Plaza Driveway, Los Angeles, CA 90095"],
+    ["West Medical", "1010 Veteran Ave, Los Angeles, CA 90095"],
+    ["William Andrews Clark Memorial Library", "2520 Cimarron St, Los Angeles, CA 90018"],
+    ["Wooden Recreation and Sports Center", "John R. Wooden Recreation and Sports Center, 221 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Young Hall", "607 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Young Research Library", "280 Charles E Young Dr N, Los Angeles, CA 90095"]
+]);
 
 /**
  * Lookup table for Location to Coordinate.
  * 
- * Used when getting the relevant class information structures when handling
- * time/dist computation and injection for a particular course in a user's
- * Class Plan.
- * 
  * @global
  * @constant {Map<string, Coord>}
  * @readonly
- * @todo Consider changing mapped type to addresses (String) to improve later
- * time/distance accuracy.
+ * @todo Update description for relevant use-case (for website integration soon).
  * 
  * @see {@link Coord} for Coord object description.
  */
-const coords = new Map([
+const location_to_coords = new Map([
     ["700 Westwood Plaza", new Coord(34.06693695833717, -118.4448437749579)],
     ["1010 Westwood Center", new Coord(34.062367842236796, -118.44505990379362)],
     ["Ackerman Union", new Coord(34.07061783552888, -118.44420560194396)],
@@ -606,6 +727,15 @@ function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name)
             }
 
             let time_dist_info = td_matrix[prev_class_idx].elements[cur_class_idx];
+
+            // check for off-nominal data (i.e. "NOT_FOUND" in the case of a problematic address input)
+            if (time_dist_info.status != "OK") {
+                // ERROR, but we'll handle gracefully instead of throwing an exception
+                buf += unknown;
+                continue;
+            }
+
+            // format nominal data
             buf += time_dist_info.distance.text + " (" + time_dist_info.duration.text + ")";
         }
     }
@@ -703,10 +833,10 @@ function initiateTimeDistance() {
     // parse all class info from webpage
     let class_info = getClassBuildings();
 
-    // Construct unique building coordinates by indexing into coordinate table
+    // Construct unique building addresses by indexing into coordinate table
     let unique_buildings = [];
     for (let building of class_info.get("uniqueBuildings")){
-        let val = coords.get(building);
+        let val = location_to_address.get(building);
         if(val != null) // only add if not null
             unique_buildings.push(val);
     }
@@ -715,22 +845,21 @@ function initiateTimeDistance() {
 
     let total_buildings = unique_buildings.length;
     let str_coord = "";
-    let latStr = "";
-    let lngStr = "";
-    if(total_buildings > 0){
-        console.log(unique_buildings[0]);
-        latStr = getLat(unique_buildings[0]);
-        lngStr = getLng(unique_buildings[0]);
-        // %7C is '|' and %2C is ','
-        str_coord += (latStr + "%2C" + lngStr);
 
-        for(let i = 1; i < total_buildings; i++){
-            latStr = getLat(unique_buildings[i]);
-            lngStr = getLng(unique_buildings[i]);
+    // construct Distance Matrix API call URL
+    if (total_buildings > 0) {
+
+        console.log(unique_buildings[0]);
+
+        // %7C is '|' and %2C is ','
+        str_coord += unique_buildings[0];
+        for (let i = 1; i < total_buildings; i++) {
             str_coord += "%7C";
-            str_coord += (latStr + "%2C" + lngStr);
+            str_coord += unique_buildings[i];
         }
     }
+
+    console.log(str_coord);
 
     // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
     var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + API_KEY;
@@ -818,6 +947,7 @@ function getClassBuildings() {
         i++;
     }
 
+    generateMapID(ordered_classes);
     result.set("orderedClasses", ordered_classes);
     result.set("uniqueBuildings", unique_buildings);
     console.log(result);
@@ -866,6 +996,68 @@ function hasNumber(str) {
     return /\d/.test(str);
 }
 
+/**
+ * Generates a Map ID that'll be copied by the user to create a 3D map of their schedule. 
+ * @param {Object} ordered_classes 
+ * @returns {void}
+ */
+function generateMapID(ordered_classes) {
+    let ordered_locations = {};
+    ordered_classes.forEach((value, key) => {
+        let class_coords = [];
+        value.forEach(class_info => {
+            let class_coord = location_to_coords.get(class_info.building);
+            if (class_coord != null) {
+                let lnglat = { lat: class_coord.lat, lng: class_coord.lng };
+                class_coords.push(lnglat);
+            }
+        })
+        ordered_locations[key] = class_coords;
+    })
+    console.log("ordered locations string:");
 
+    let json_str = JSON.stringify(ordered_locations);
+
+    const encode_map_num = {
+        '1': '!',
+        '2': '@',
+        '3': '#',
+        '4': '$',
+        '5': '%',
+        '6': '^',
+        '7': '&',
+        '8': '*',
+        '9': '(',
+        '0': ')'
+    }
+    
+    let map_id_special = "";
+
+    for(let i = 0; i < json_str.length; i++){
+        let curr_char = json_str.charAt(i);
+        if(curr_char in encode_map_num)
+            map_id_special += encode_map_num[curr_char];
+        else 
+            map_id_special += curr_char;
+    }
+    
+    let map_id = "";
+    for(let i = map_id_special.length-1; i >= 0; i--)
+        map_id += map_id_special[i];
+
+    console.log(map_id);
+
+    let storage = chrome.storage.local;
+    let obj = {'id':map_id};
+
+    storage.set({'mapID': obj}, function() {
+        console.log('Value is set to ' + map_id);
+    });
+   
+
+    storage.get(['mapID'], function(result) {
+        console.log(result);
+      });
+}
 // Kick-off time/distance computation and injection
 // initiateTimeDistance();
