@@ -995,7 +995,7 @@ function generateMapID(ordered_classes) {
     ordered_classes.forEach((value, key) => {
         let class_coords = [];
         value.forEach(class_info => {
-            let class_coord = coords.get(class_info.building);
+            let class_coord = location_to_coords.get(class_info.building);
             if (class_coord != null) {
                 let lnglat = { lat: class_coord.lat, lng: class_coord.lng };
                 class_coords.push(lnglat);
