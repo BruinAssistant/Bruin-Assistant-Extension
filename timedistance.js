@@ -20,17 +20,6 @@
  */
 const TIME_DIST_COL_IDX = 7;
 
-/**
- * Specifies the API key used for internal invocations to Google Maps'
- * Distance Matrix API (mimics macro-defined constant).
- * 
- * @global
- * @constant {string API_KEY}
- * @readonly
- * @todo Secure API key in backend.
- * @todo Consider possibly moving this to some extension-wide CONFIG module.
- */
- const API_KEY = null;
 
 /**
  * Coord: Holds a coordinate, composed of a Latitude and Longitude.
@@ -862,7 +851,7 @@ function initiateTimeDistance() {
     console.log(str_coord);
 
     // TODO: Invoke backend API to perform this call, which would passthrough response back to us (helps hide API key, and IH principle)
-    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + API_KEY;
+    var map_url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str_coord + "&" + "destinations=" + str_coord + "&units=imperial&mode=walking&key=" + MAP_API_KEY;
 
     // Compute time/distance between locations by invoking Distance Matrix API (only enabled in "Developer" mode for now to avoid excessive API calls while in development)
     chrome.storage.sync.get("dev_mode", ({ dev_mode }) => {
