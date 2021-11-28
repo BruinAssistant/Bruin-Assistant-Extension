@@ -734,6 +734,15 @@ function formatTimeDistData(td_matrix, buildings_idx, class_infos, section_name)
             }
 
             let time_dist_info = td_matrix[prev_class_idx].elements[cur_class_idx];
+
+            // check for off-nominal data (i.e. "NOT_FOUND" in the case of a problematic address input)
+            if (time_dist_info.status != "OK") {
+                // ERROR, but we'll handle gracefully instead of throwing an exception
+                buf += unknown;
+                continue;
+            }
+
+            // format nominal data
             buf += time_dist_info.distance.text + " (" + time_dist_info.duration.text + ")";
         }
     }
