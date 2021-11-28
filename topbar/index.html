@@ -13,13 +13,25 @@
 <body>
   <iframe src="html/home.html"></iframe>
 
+  <h2>Mystery Mode:</h2>
+  <div id="wrapper">
+    <img id="icon" src="../../assets/mystery-egg.png"/>
+    <label id="mysteryModeToggle" class="switch">
+        <input type="checkbox" id="mysteryModeToggleSwitch">
+        <span class="slider round"></span>
+    </label>
+  </div>
+
   <h2>Developer Mode:</h2>
-  <label id="devModeToggle" class="switch">
-      <input type="checkbox" id="devModeToggleSwitch">
-      <span class="slider round"></span>
-  </label>
+  <div id="wrapper">
+    <img id="icon" src="../../assets/dev-wrench.png"/>
+    <label id="devModeToggle" class="switch">
+        <input type="checkbox" id="devModeToggleSwitch">
+        <span class="slider round"></span>
+    </label>
+  </div>
 
   <script src="/common/config.js"></script>
-  <script src="js/devswitch.js"></script>
+  <script src="js/switches.js"></script>
 </body>
 </html>
