@@ -1,11 +1,24 @@
 /* The pop up settings CSS  */
 
+#wrapper {
+    width: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+#icon {
+    width: 33px;
+    height: 32px;
+    float: left;
+}
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;
     display: inline-block;
     width: 60px;
     height: 34px;
+    overflow: hidden;
 }
 
 /* Hide default HTML checkbox */

@@ -1,8 +1,14 @@
 let dev_mode = false;
+let mystery_mode = false;
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({ "dev_mode" : dev_mode });
     console.log('Default developer setting set to ' + dev_mode);
+});
+
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.sync.set({ "mystery_mode" : mystery_mode });
+    console.log('Default mystery setting set to ' + mystery_mode);
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {  
