@@ -1,6 +1,6 @@
 {
     "name": "Bruin Assistant Extension",
-    "description": "Building a better UCLA experience.",
+    "description": "Building a better UCLA class planning experience.",
     "version": "1.0",
     "manifest_version": 3,
     "background": {
