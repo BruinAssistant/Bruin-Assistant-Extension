@@ -24,36 +24,175 @@ const TIME_DIST_COL_IDX = 7;
 /**
  * Coord: Holds a coordinate, composed of a Latitude and Longitude.
  * 
- * Used within coords lookup table.
+ * Used within location_to_coords lookup table.
  * 
  * @constructor
  * @param {Number} lat - Latitude (degrees)
  * @param {Number} lng - Longitude (degrees)
  * 
- * @see {@link coords} for current use case.
+ * @see {@link location_to_coords} for current use case.
  */
 function Coord(lat, lng) {
     this.lat = lat;
     this.lng = lng;
 }
 
+/**
+ * Address: Holds an address, composed of: street, city, state, and zip code.
+ * 
+ * Used within location_to_address lookup table.
+ * 
+ * @constructor
+ * @param {string} street
+ * @param {string} city
+ * @param {string} state
+ * @param {string} zip_code
+ * 
+ * @see {@link location_to_coords} for current use case.
+ */
+ function Address(street, city, state, zip_code) {
+    this.lat = lat;
+    this.lng = lng;
+}
 
 /**
- * Lookup table for Location to Coordinate.
+ * Lookup table for Location to Address.
  * 
  * Used when getting the relevant class information structures when handling
  * time/dist computation and injection for a particular course in a user's
- * Class Plan.
+ * Class Plan. Addresses used instead of Coordinates for more accurate
+ * estimations.
  * 
  * @global
  * @constant {Map<string, Coord>}
  * @readonly
- * @todo Consider changing mapped type to addresses (String) to improve later
- * time/distance accuracy.
+ */
+ const location_to_address = new Map([
+    ["700 Westwood Plaza", "700 Westwood Plaza, Los Angeles, CA 90024"],
+    ["1010 Westwood Center", "1010 Westwood Blvd, Los Angeles, CA 90024"],
+    ["Ackerman Union", "308 Westwood Plaza, Los Angeles, CA 90024"],
+    ["Biomedical Sciences Research Building", "615 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Boelter Hall", "580 Portola Plaza, Los Angeles, CA 90095"],
+    ["Botany Building", "618 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Boyer Hall", "611 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Bradley Hall", "417 Charles E Young Drive West, Los Angeles, CA 90024"],
+    ["Brain Mapping Center", "660 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Brain Research Institute", "695 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Broad Art Center", "240 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Bunche Hall", "11282 Portola Plaza, Los Angeles, CA 90095"],
+    ["California NanoSystems Institute", "570 Westwood Plaza Building 114, Los Angeles, CA 90095"],
+    ["Campbell Hall", "335 Portola Plaza, Los Angeles, CA 90095"],
+    ["Canyon Point", "Covel Steps, Los Angeles, CA 90024"],
+    ["Carnesale Commons", "251 Charles E Young Drive West, Los Angeles, CA 90095"],
+    ["Center for the Health Sciences", "10833 Le Conte Ave, Los Angeles, CA 90024"],
+    ["Collins Center for Executive Education", "110 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Cornell Hall", "110 Westwood Plaza, Los Angeles, CA 90077"],
+    ["Covel Commons", "330 De Neve Dr, Los Angeles, CA 90095"],
+    ["De Neve Plaza Commons Building", "351 Charles E Young Drive West, Los Angeles, CA 90024"],
+    ["Dentistry, School of", "714 Tiverton Ave, Los Angeles, CA 90024"],
+    ["Dodd Hall", "315 Portola Plaza, Los Angeles, CA 90095"],
+    ["Downtown Center", "600 Wilshire Blvd #870, Los Angeles, CA 90017"],
+    ["East Melnitz Hall", "235 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Education and Information Studies Building", "457 Portola Plaza, Los Angeles, CA 90095"],
+    ["Engineering I", "7400 Boelter Hall, Los Angeles, CA 90095"],
+    ["Engineering IV", "Engineering IV, Los Angeles, CA 90095"],
+    ["Engineering V", "Engineering V, Los Angeles, CA 90095"],
+    ["Engineering VI", "404 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Entrepreneurs Hall", "110 Westwood Plaza, Los Angeles, CA 90077"],
+    ["Factor Health Sciences Building", "650 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Fernald Center", "320 Charles E Young Dr N, Los Angeles, CA 90095"],
+    ["Field", "UCLA Intramural Fields, Los Angeles, CA 90095"],
+    ["Fowler Museum at UCLA", "308 Charles E Young Dr N, Los Angeles, CA 90024"],
+    ["Franz Hall", "502 Portola Plaza, Los Angeles, CA 90095"],
+    ["Geffen Hall", "885 Tiverton Dr, Los Angeles, CA 90024"],
+    ["Geology Building", "595 Charles E Young Dr E, Los Angeles, CA 90095"],
+    ["Gold Hall", "Gold Hall, Royce Dr, Los Angeles, CA 90024"],
+    ["Gonda (Goldschmied) Neuroscience and Genetics Research Center", "695 Charles E Young Dr S, Los Angeles, CA 90095"],
+    ["Haines Hall", "375 Portola Plaza, Los Angeles, CA 90095"],
+    ["Hammer Museum", "10899 Wilshire Blvd, Los Angeles, CA 90024"],
+    ["Hedrick Hall", "250 De Neve Dr, Los Angeles, CA 90024"],
+    ["Hershey Hall", "801 Hilgard Ave, Los Angeles, CA 90095"],
+    ["Hitch Residential Suites", "245 De Neve Dr, Los Angeles, CA 90024"],
+    ["Humanities Building", "12001 Chalon Rd, Los Angeles, CA 90049"],
+    ["James West Center", "James West Alumni Center, Los Angeles, CA 90095"],
+    ["Jules Stein Eye Institute", "100 Stein Plaza Driveway, Los Angeles, CA 90095"],
+    ["Kaufman Hall", "120 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Kerckhoff Hall", "308 Westwood Plaza, Los Angeles, CA 90095"],
+    ["Kinsey Science Teaching Pavilion", "Kinsey Pavilion, Los Angeles, CA 90095"],
+    ["Knudsen Hall", "475 Portola Plaza, Los Angeles, CA 90095"],
+    ["Korn Convocation Hall", "Korn Convocation Hall, Los Angeles, CA 90095"],
+    ["La Kretz Garden Pavilion", new Coord(34.06676203301789, -118.44153223077969)],
+    ["La Kretz Hall", new Coord(34.06775504340902, -118.44269563077962)],
+    ["Lab School 1", new Coord(34.075359640735805, -118.4441230019438)],
+    ["Law Building", new Coord(34.072834670162216, -118.43873265775424)],
+    ["Life Sciences", new Coord(34.06757981884672, -118.44040524427275)],
+    ["Lu Valle Commons", new Coord(34.073789718271776, -118.43941739214993)],
+    ["MacDonald Medical Research Laboratories", new Coord(34.06733974481398, -118.44427897310828)],
+    ["Macgowan Hall", new Coord(34.07610364667738, -118.43967057310815)],
+    ["Macgowan Hall East", new Coord(34.07593367869698, -118.43966751516949)],
+    ["Marion Anderson Hall", new Coord(34.0740785960199, -118.44295632818209)],
+    ["Marion Davies Children's Center", new Coord(34.065421750246415, -118.44198989084667)],
+    ["Mathematical Sciences", new Coord(34.07079353192487, -118.44094973984707)],
+    ["Medical Plaza 100", new Coord(34.06564738635145, -118.44574927495792)],
+    ["Medical Plaza 200", new Coord(34.06506957561769, -118.44681577920316)],
+    ["Medical Plaza 300", new Coord(34.06458524972706, -118.44606383077969)],
+    ["Melnitz Hall", new Coord(34.07661101235114, -118.44000980194392)],
+    ["Molecular Sciences Building", new Coord(34.06821968915325, -118.44086534677987)],
+    ["Moore Hall", new Coord(34.070494834778856, -118.44261903752619)],
+    ["Morton Medical Building", new Coord(34.06523159728839, -118.44547863742048)],
+    ["Murphy Hall", new Coord(34.07201228637565, -118.43860514242309)],
+    ["Neuroscience Research Building", new Coord(34.06765723088129, -118.44358820194387)],
+    ["No facility", null],
+    ["No Location", null],
+    ["Northwest Campus Auditorium", new Coord(34.0721306088205, -118.45047378660131)],
+    ["Off campus", null],
+    ["Online", null],
+    ["Online - Recorded", null],
+    ["Orthopaedic Hospital Research Center", new Coord(34.0675689815136, -118.44120280194402)],
+    ["Ostin Music Center", new Coord(34.07046696146252, -118.44027788660142)],
+    ["Perloff Hall", new Coord(34.07366736615829, -118.44024534612211)],
+    ["Physics and Astronomy Building", new Coord(34.07084656284753, -118.44158000194393)],
+    ["Portola Plaza Building", new Coord(34.0703763955532, -118.44184409797171)],
+    ["Powell Library Building", new Coord(34.07170168372432, -118.44215751471553)],
+    ["Pritzker Hall", new Coord(34.06979737917609, -118.44075760316845)],
+    ["Public Affairs Building", new Coord(34.074316015804875, -118.4385481962411)],
+    ["Public Health, School of", new Coord(34.06700817053388, -118.44333609454576)],
+    ["Reed Neurological Research Center", new Coord(34.06640504609998, -118.44443114666824)],
+    ["Renee and David Kaplan Hall", new Coord(34.07131425924011, -118.441118715437)],
+    ["Rieber Hall", new Coord(34.071877196473764, -118.45159800379358)],
+    ["Rolfe Hall", new Coord(34.07395050481058, -118.44204757310818)],
+    ["Rosenfeld Library", new Coord(34.074146617522885, -118.44345567310828)],
+    ["Royce Hall", new Coord(34.072924325772995, -118.44218065821016)],
+    ["Schoenberg Music Building", new Coord(34.07116180085136, -118.44047522468482)],
+    ["Sculpture Garden", new Coord(34.07523978110291, -118.43986747521654)],
+    ["Semel Institute for Neuroscience and HumanBehavior", new Coord(34.06596987154504, -118.4448672866014)],
+    ["Slichter Hall", new Coord(34.06934527816948, -118.4404310270805)],
+    ["Sproul Hall", new Coord(34.07214633465558, -118.44958042892998)],
+    ["Strathmore Building", new Coord(34.06832776766664, -118.4452304951975)],
+    ["Student Activities Center", new Coord(34.07169768711251, -118.44412921728663)],
+    ["Terasaki Life Sciences Building", new Coord(34.06735914419834, -118.43988990433964)],
+    ["UCLA Lab School, Seeds Campus", new Coord(34.07537041450641, -118.44410268434461)],
+    ["Ueberroth Building", new Coord(34.06420631417785, -118.44689975776575)],
+    ["Vatche and Tamar Manoukian Medical Building", new Coord(34.06571249653149, -118.445824201944)],
+    ["Wendy and Leonard Goldberg Medical Building", new Coord(34.06468576168065, -118.44608585961541)],
+    ["West Medical", new Coord(34.0605666089195, -118.44778532706898)],
+    ["William Andrews Clark Memorial Library", new Coord(34.033745869528914, -118.31448379285351)],
+    ["Wooden Recreation and Sports Center", new Coord(34.07127162866979, -118.44570073946167)],
+    ["Young Hall", new Coord(34.06876052882566, -118.44152213130202)],
+    ["Young Research Library", new Coord(34.075075721540614, -118.44095101783246)]
+]);
+
+/**
+ * Lookup table for Location to Coordinate.
+ * 
+ * @global
+ * @constant {Map<string, Coord>}
+ * @readonly
+ * @todo Update description for relevant use-case (for website integration soon).
  * 
  * @see {@link Coord} for Coord object description.
  */
-const coords = new Map([
+const location_to_coords = new Map([
     ["700 Westwood Plaza", new Coord(34.06693695833717, -118.4448437749579)],
     ["1010 Westwood Center", new Coord(34.062367842236796, -118.44505990379362)],
     ["Ackerman Union", new Coord(34.07061783552888, -118.44420560194396)],
@@ -695,7 +834,7 @@ function initiateTimeDistance() {
     // Construct unique building coordinates by indexing into coordinate table
     let unique_buildings = [];
     for (let building of class_info.get("uniqueBuildings")){
-        let val = coords.get(building);
+        let val = location_to_coords.get(building);
         if(val != null) // only add if not null
             unique_buildings.push(val);
     }
