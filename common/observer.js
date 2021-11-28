@@ -102,6 +102,8 @@ function repopulate() {
             callParseCourseItem();
             callParseSearchItem();
             initiateEasterEgg();
+            findClassInst();
+            syncSchedule();
         }
     }, 500);
 }
