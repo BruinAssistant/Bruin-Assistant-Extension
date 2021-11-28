@@ -74,6 +74,7 @@ input:checked + .slider:before {
     display: inherit;
 }
 
+/* Copy and Map Buttons */
 .copy-props{
     width: 32px;
     height: 32px;
