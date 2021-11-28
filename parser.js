@@ -94,9 +94,14 @@ function parseCourseItem(courseItem, callbacks) {
 
 }
 
-// class search section
+/**
+ * Parse DOM element from "Search for Class and Add to Plan" into JSON. 
+ * 
+ * @param {HTMLCollection} searchItem A single DOM element from Seach class section. It contains multiple 
+ * lectures that may offer in a course
+ * @param {Function} callback Function to pass a single lecture information to create button and popup
+ */
 function parseSearchItem(searchItem, callback) {
-    // wait until class table is created:
     if (searchItem.getElementsByClassName("ClassSearchList search_results").item(0)) {
         let res = {};
         res['course-title-0'] = searchItem.getElementsByClassName("ClassSearchBox").item(0).value;
@@ -112,7 +117,9 @@ function parseSearchItem(searchItem, callback) {
     }
 }
 
-// For demo purposes
+/**
+ * Function that iterate through each .courseItem from class planner, then parse element and create button and popup
+ */
 function callParseCourseItem() {
     for (let courseItem of document.getElementsByClassName("courseItem")) {
         // work on injecting buttons
@@ -124,6 +131,10 @@ function callParseCourseItem() {
     }
 }
 
+/**
+ * Function that iterate through each .ClassSearchWidget from "Search for Class and Add to Plan" 
+ * then parse element and create button and popup
+ */
 function callParseSearchItem() {
     // for "Search for Class and Add to Plan"
     // use ClassSearchWidget since only the search box contains major name

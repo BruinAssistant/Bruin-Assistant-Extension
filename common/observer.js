@@ -98,14 +98,10 @@ function repopulate() {
         if (windowURL.includes('be.my.ucla.edu')) {
             populateGroupMeLinks();
             initiateTimeDistance();
-            initiateEasterEgg();
             resizeColumnWidths();
-            // findClassInst();
             callParseCourseItem();
             callParseSearchItem();
-        }
-        else if(windowURL.includes('sa.ucla.edu')){
-            // callParseCourseItem();
+            initiateEasterEgg();
         }
     }, 500);
 }

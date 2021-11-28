@@ -60,8 +60,6 @@ const best_ta = "Xiao, P.";
     // iterate through each course
     for (let course of courses) {
 
-        console.log(course);
-
         // get course table (holds header row, as well as all section rows)
         let course_table = course.getElementsByClassName('coursetable').item(0).getElementsByTagName('tbody');
 

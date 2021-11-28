@@ -254,6 +254,9 @@ function createMetricsTable(metrics, responseHTML, popup) {
  * @returns {void}
  */
 function createRadarChart(metrics, metrics_score, professorName, id, cousename, averageResponse) {
+  // Note: there is a bug that if the class exists on class planner, and we search for the same class 
+  // on "Search for Class", they will share the same id and create chart creation error.
+  // Not a huge bug at the moment, and due to time constraint, this is ignored for now
   let averageData = [];
   for (m of metrics) {
     averageData.push(averageResponse[m.toLowerCase()]);
