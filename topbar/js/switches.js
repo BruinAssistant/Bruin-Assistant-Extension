@@ -8,6 +8,9 @@ let mysteryModeToggleSwitchInput = mysteryModeToggleSwitch.querySelector('input[
 let unitsImperialToggleSwitch = document.getElementById("unitsImperialToggle");
 let unitsImperialToggleSwitchInput = unitsImperialToggleSwitch.querySelector('input[type="checkbox"]');
 
+let useBikingTimeToggleSwitch = document.getElementById("useBikingTimeToggle");
+let useBikingTimeToggleSwitchInput = useBikingTimeToggleSwitch.querySelector('input[type="checkbox"]');
+
 // init toggle switch to value stored in user's extension settings (found in Storage)
 chrome.storage.sync.get("dev_mode", ({dev_mode}) => {
     console.log("dev_mode: ");
@@ -25,6 +28,12 @@ chrome.storage.sync.get("units_imperial", ({units_imperial}) => {
     console.log("units_imperial: ");
     console.log(units_imperial);
     unitsImperialToggleSwitchInput.checked = units_imperial;
+});
+
+chrome.storage.sync.get("use_biking_time", ({use_biking_time}) => {
+    console.log("use_biking_time: ");
+    console.log(use_biking_time);
+    useBikingTimeToggleSwitchInput.checked = use_biking_time;
 });
 
 // When toggle switch is switched, set/unset Developer mode
@@ -86,6 +95,28 @@ function setUnitsImperialToggle(enable) {
     chrome.storage.sync.set({ "units_imperial" : enable }, function() {
         if (chrome.runtime.error) {
           console.log("Runtime error reached while attempting to set units to imperial.");
+        }
+    });
+}
+
+
+// When toggle switch is switched, set/unset distance/time estimates for biking, not walking
+useBikingTimeToggleSwitch.addEventListener("change", function () {
+    if (useBikingTimeToggleSwitchInput.checked) {
+        setUseBikingTimeToggle(true);
+        console.log("Use biking time enabled.");
+    }
+    else {
+        setUseBikingTimeToggle(false);
+        console.log("Use biking time disabled.");
+    }
+});
+
+function setUseBikingTimeToggle(enable) {
+    console.log("Setting use biking time enable: " + enable);
+    chrome.storage.sync.set({ "use_biking_time" : enable }, function() {
+        if (chrome.runtime.error) {
+          console.log("Runtime error reached while attempting to set use of biking time.");
         }
     });
 }
