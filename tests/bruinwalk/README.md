@@ -18,3 +18,31 @@
 
 ### Result:
 ![](./imgs/test1.png)
+
+
+## Test #2: Bruinwalk button for instructor whose review does not exist
+### Objective:
+    We would like to not create a popup for an instructor whose review does not exist on bruinwalk.com. Thus, after we parse instructor name and course, and after trying to match data from bruinwalk.com, we create N/A button instead.
+### Note:
+    This is a manual test instead of scripted since there are vanilla JS functions that does not support scripted test on Node.js
+### Input:
+    Course Name: COM-SCI-188
+    Instructor: Peng, N.
+### Output:
+    Injected N/A button
+### Result:
+![](./imgs/test2.PNG)
+
+
+## Test #3: Popup does not show grade distribution if it does not exist on bruinwalk
+### Objective:
+    If an instructor grade distribution from previous years is not published, we do not want to create a chart of it.
+### Note:
+    This is a manual test instead of scripted since there are vanilla JS functions that does not support scripted test on Node.js
+### Input:
+    Course Name: ANTHRO-169
+    Instructor: Brantingham, P.J.
+### Output:
+    Grade distribution div displays "Grade distribution is not available"
+### Result:
+![](./imgs/test3.PNG)

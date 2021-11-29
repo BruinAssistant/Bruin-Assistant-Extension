@@ -35,11 +35,14 @@ Bruin-Assistant-Extension
 ├── bruinwalkPopup.js
 ├── common
 │   ├── config.js
-│   ├── observer.js
+│   └── observer.js
+├── easter_egg.js
 ├── groupme.css
 ├── groupme.js
 ├── manifest.json
 ├── package.json
+├── package-lock.json
+├── parser.js
 ├── tests
 │   ├── README.md
 │   ├── groupme
@@ -59,8 +62,11 @@ Bruin-Assistant-Extension
 │   ├── bruinwalk
 │   │   ├── README.md
 │   │   ├── imgs
-│   │   │   └── test1.png
+│   │   │   ├── test1.png
+│   │   │   ├── test2.png
+│   │   │   └── test3.png
 │   │   └── test1.jss   
 │   └── mutation
-└── timedistance.js
+├── timedistance.js
+└── topbar
 ```
