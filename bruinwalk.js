@@ -35,6 +35,11 @@ function findClassPlannerInstructor(res) {
         abbreviateCourseName = classDict[res['major'].trim()] + '-' + res['course-number'];
     } else {
         let courseMajor = res['course-title-0'].split(": ")[1];
+        // NOTE: Study List page only has course major, not (LEC# : COURSE MAJOR)
+        // this conditional statement works with Study List page
+        if (courseMajor == null){
+            courseMajor = res['course-title-0'].trim();
+        }
         let courseNum = res['course-title-1'].split(" - ")[0];
         abbreviateCourseName = classDict[courseMajor] + '-' + courseNum;
     }
