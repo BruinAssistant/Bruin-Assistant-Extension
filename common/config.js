@@ -13,7 +13,7 @@
  * @constant {String}
  * @readonly
  */
-const BACKEND_URL = "https://class-planner-assistant-dev.herokuapp.com/";
+const BACKEND_URL = "https://class-planner-assistant.herokuapp.com/";
 
 
 /**
