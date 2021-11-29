@@ -14,7 +14,19 @@
         },
         {
           "matches": ["*://be.my.ucla.edu/*"],
-          "js": ["common/config.js", "common/observer.js", "parser.js", "groupme.js", "bruinwalk.js", "timedistance.js", "bruinwalkPopup.js", "chart.js", "easter_egg.js"],
+          "js": [
+            "common/config.js",
+            "common/observer.js",
+            "parser.js",
+            "groupme.js",
+            "bruinwalk.js",
+            "timedistance.js",
+            "bruinwalkPopup.js",
+            "scripts/schedule.js",
+            "scripts/classmates.js",
+            "chart.js",
+            "easter_egg.js"
+          ],
           "run_at": "document_end"
         }
     ],
