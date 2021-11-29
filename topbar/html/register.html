@@ -2,42 +2,40 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bruin Assistant Register</title>
-    <link rel="stylesheet" href="../css/popup.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bruin Assistant Register</title>
+  <link rel="stylesheet" href="../css/popup.css">
 </head>
 
 <body>
-  <div id="login-form-div" class="show">
-    <form method="POST" id="register-form" action="BACKEND_URL./register">
-      <div>
-          <label>Username:</label>
-          <input type="text" name="username"/>
+  <form method="POST" id="register-form" action="BACKEND_URL./register">
+    <div id="login-form-div">
+
+      <div class="email">
+        <label for="email">Username:</label>
+        <input type="text" name="username" />
       </div>
-      <div>
-          <label>UCLA Email:</label>
-          <input placeholder="*@g.ucla.edu" type="text" name="email"/>
+      <div class="email">
+        <label>UCLA Email:</label>
+        <input placeholder="*@g.ucla.edu" type="text" name="email" />
       </div>
-      <div>
-          <label>Password:</label>
-          <input type="password" name="password" placeholder="Type your password" id="password-input">
-          <br>
-          <span id="StrengthDisp"></span>
-          <br>
+      <div class="password">
+        <label>Password: <span id="StrengthDisp"></span></label>
+        <input type="password" name="password" id="password-input">
+        
       </div>
-      <div>
-          <input type="submit" value="Register" id="register-submit"/>
-      </div>
-    </form>
-    <a href="home.html">
-      <button>Back</button>
-    </a>
-  </div>
+        <input class="login" type="submit" value="Register" id="register-submit" />
+        <div class="footer"><span><a href="login.html">Log in</span><span>Forgot Password?</span></div>
+    </div>
+
+  </form>
 
   <script src="/common/config.js"></script>
   <script src="../js/register.js"></script>
 </body>
+
 </html>

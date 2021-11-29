@@ -11,30 +11,25 @@
 </head>
 
 <body>
-  <div>
     <form id='invite-form' action="BACKEND_URL./api/friends/invite" method="POST">
-      <div>
+      <div id="login-form-div">
+
+      <div class="email">
           <label>Friend's Username:</label>
           <input type="text" id="username-input" name="username"/>
       </div>
-      <div>
-          <input type="submit" value="Invite"/>
+          <input type="submit" value="Invite" class="login"/>
       </div>
     </form>
-  </div>
 
-  <div>
-    <div>
+    <div id="login-form-div">
       <label>Friends:</label>
       <ul id="friends-display"></ul>
       <button id="get-friends">Get Friends</button>
-    </div>
-    <div>
       <label>Invites:</label>
       <ul id="invites-display"></ul>
       <button id="get-invites">Get Invites</button>
     </div>
-  </div>
   <div>
     <label id="display"></label>
   </div>

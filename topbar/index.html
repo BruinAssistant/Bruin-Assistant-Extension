@@ -2,61 +2,72 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bruin Assistant Settings</title>
-    <link rel="stylesheet" href="css/popup.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bruin Assistant Settings</title>
+  <link rel="stylesheet" href="css/popup.css">
 </head>
 
 <body>
-  <iframe src="html/home.html"></iframe>
+  <iframe src="html/login.html" id="frame"></iframe>
+  <div class="settings-div">
 
-  <h2>3D Map:</h2>
-    <input type="image" src="../../assets/rounded-copy-icon.png" id="copy-btn" class="copy-props"/>
-    <a href="https://bruin-map.herokuapp.com/" target="_blank">
-      <img src="../../assets/marker-icon.jpg" class="marker-props" />
-    </a>
-  
-  <h2>Use Imperial Distance Units:</h2>
-    <div id="wrapper">
-      <img id="icon" src="../../assets/units.png"/>
-      <label id="unitsImperialToggle" class="switch">
+    <div class="setting-item">
+      <h2>3D Map:</h2>
+      <input type="image" src="../../assets/rounded-copy-icon.png" id="copy-btn" class="copy-props" />
+      <a href="https://bruin-map.herokuapp.com/" target="_blank">
+        <img src="../../assets/marker-icon.jpg" class="marker-props" />
+      </a>
+    </div>
+    <div class="setting-item">
+
+      <h2>Use Imperial Distance Units:</h2>
+      <div id="wrapper">
+        <img id="icon" src="../../assets/units.png" />
+        <label id="unitsImperialToggle" class="switch">
           <input type="checkbox" id="unitsImperialToggleSwitch">
           <span class="slider round"></span>
-      </label>
+        </label>
+      </div>
     </div>
-  
-  <h2>Use Biking Time for Estimates:</h2>
-    <div id="wrapper">
-      <img id="icon" src="../../assets/bike.png"/>
-      <label id="useBikingTimeToggle" class="switch">
+    <div class="setting-item">
+      <h2>Use Biking Time for Estimates:</h2>
+      <div id="wrapper">
+        <img id="icon" src="../../assets/bike.png" />
+        <label id="useBikingTimeToggle" class="switch">
           <input type="checkbox" id="useBikingTimeToggleSwitch">
           <span class="slider round"></span>
-      </label>
+        </label>
+      </div>
     </div>
-
-  <h2>Enable Mystery Mode:</h2>
-  <div id="wrapper">
-    <img id="icon" src="../../assets/mystery-egg.png"/>
-    <label id="mysteryModeToggle" class="switch">
-        <input type="checkbox" id="mysteryModeToggleSwitch">
-        <span class="slider round"></span>
-    </label>
-  </div>
-
-  <h2>Enable Time Distance Computations:</h2>
-  <div id="wrapper">
-    <img id="icon" src="../../assets/timer.png"/>
-    <label id="devModeToggle" class="switch">
-        <input type="checkbox" id="devModeToggleSwitch">
-        <span class="slider round"></span>
-    </label>
+    <div class="setting-item">
+      <h2>Enable Mystery Mode:</h2>
+      <div id="wrapper">
+        <img id="icon" src="../../assets/mystery-egg.png" />
+        <label id="mysteryModeToggle" class="switch">
+          <input type="checkbox" id="mysteryModeToggleSwitch">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
+    <div class="setting-item">
+      <h2>Enable Time Distance Computations:</h2>
+      <div id="wrapper">
+        <img id="icon" src="../../assets/timer.png" />
+        <label id="devModeToggle" class="switch">
+          <input type="checkbox" id="devModeToggleSwitch">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
   </div>
 
   <script src="/common/config.js"></script>
   <script src="js/switches.js"></script>
   <script src="js/map.js"></script>
 </body>
+
 </html>

@@ -2,33 +2,31 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bruin Assistant Login</title>
-    <link rel="stylesheet" href="../css/popup.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bruin Assistant Login</title>
+  <link rel="stylesheet" href="../css/popup.css">
 </head>
 
 <body>
-  <div id="login-form-div" class="show">
-    <form method="POST" id="login-form" action="BACKEND_URL./login">
-      <div>
-          <label>Username:</label>
-          <input type="text" name="username"/>
+  <form method="POST" id="login-form" action="BACKEND_URL./login">
+    <div id="login-form-div">
+
+      <div class="email">
+        <label>Username:</label>
+        <input type="text" name="username" />
       </div>
-      <div>
-          <label>Password:</label>
-          <input type="password" name="password">
+      <div class="password">
+        <label>Password:</label>
+        <input type="password" name="password">
       </div>
-      <div>
-        <input type="submit" value="Log In"/>
-      </div>
-    </form>
-    <a href="home.html">
-      <button>Back</button>
-    </a>
-  </div>
+      <input class="login" type="submit" value="Log In" />
+      <div class="footer"><span><a href="register.html">Register</span><span>Forgot Password?</span></div>
+    </div>
+  </form>
 
   <script src="/common/config.js"></script>
   <script src="../js/login.js"></script>

@@ -53,15 +53,15 @@
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
@@ -75,27 +75,144 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
 .show {
     display: inherit;
 }
 
-#login-form-div {
-    display: none;
-}
-
-#login-form-div.show {
-    display: inherit;
-}
-
 /* Copy and Map Buttons */
-.copy-props{
+.copy-props {
     width: 32px;
     height: 32px;
 }
 
-.marker-props{
+.marker-props {
     width: 30px;
     height: 30px;
     border: 1px solid #36454f;
     border-radius: 25%;
+}
+
+/* new login style */
+
+#frame {
+    height: 420px;
+}
+
+* {
+    font-family: ProximaNova, Verdana, sans-serif;
+}
+
+#login-form-div {
+    background: #f1f7fe;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+    box-shadow: 0 0 2em #e6e9f9;
+    gap: 2em;
+}
+
+#login-form-div .email {
+    background: white;
+    box-shadow: 0 0 2em #e6e9f9;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    border-radius: 20px;
+    color: #4d4d4d;
+}
+
+#login-form-div .email input {
+    outline: none;
+    border: none;
+}
+
+#login-form-div .email input::-moz-placeholder {
+    color: grey;
+    font-size: 0.9em;
+}
+
+#login-form-div .email input:-ms-input-placeholder {
+    color: grey;
+    font-size: 0.9em;
+}
+
+#login-form-div .email input::placeholder {
+    color: grey;
+    font-size: 0.9em;
+}
+
+#login-form-div .email ion-icon {
+    color: #4d4d4d;
+    margin-bottom: -0.2em;
+}
+
+#login-form-div .password {
+    background: white;
+    box-shadow: 0 0 2em #e6e9f9;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    border-radius: 20px;
+    color: #4d4d4d;
+}
+
+#login-form-div .password input {
+    outline: none;
+    border: none;
+}
+
+#login-form-div .password input::-moz-placeholder {
+    color: grey;
+    font-size: 0.9em;
+}
+
+#login-form-div .password input:-ms-input-placeholder {
+    color: grey;
+    font-size: 0.9em;
+}
+
+#login-form-div .password input::placeholder {
+    color: grey;
+    font-size: 0.9em;
+}
+
+#login-form-div .password ion-icon {
+    color: #4d4d4d;
+    margin-bottom: -0.2em;
+}
+
+#login-form-div .password .show-hide {
+    margin-right: -5em;
+}
+
+#login-form-div .login {
+    padding: 1em;
+    background: #3e4684;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+#login-form-div .footer {
+    display: flex;
+    font-size: 0.7em;
+    color: #5e5e5e;
+    gap: 50%;
+}
+
+#login-form-div .footer span {
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+body {
+    overflow-y: overlay !important;
 }
