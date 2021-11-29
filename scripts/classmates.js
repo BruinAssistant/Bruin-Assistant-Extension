@@ -41,9 +41,9 @@ function createDOM(classmates, countFirst) {
 // Query for the course with the given id and inject response into ele
 function queryAndInject(id, dom) {
   // Skip previous injections
-  if (dom.classmates_marked === true) {
-    console.log("Already updated this DOM element for course: " + id);
-    return;
+  if (dom.classList.contains("classmates_marked")) {
+      console.log("Already updated this DOM element for course: " + id);
+      return;
   }
   chrome.runtime.sendMessage({
       contentScriptQuery: "getdata",
@@ -51,16 +51,21 @@ function queryAndInject(id, dom) {
   }, function (response) {
       // console.log(response)
       if (response != undefined && response != "") {
-          console.log("Classmates for " + id + ": ", response);
+          if (dom.classList.contains("classmates_marked")) {
+              console.log("Already updated this DOM element for course: " + id);
+              return;
+          }
 
+          console.log("Classmates for " + id + ": ", response);
           let data = JSON.parse(response).msg;
           console.log(data);
           let enrolled = data["" + id].enrolled;
           let planned  = data["" + id].planned;
           let classmates = [...enrolled, ...planned];
           let ele = createDOM(classmates);
+          dom.appendChild(document.createElement('br'));
           dom.appendChild(ele);
-          dom.classmates_marked = true;
+          dom.classList.add("classmates_marked");
       }
   });
 }
