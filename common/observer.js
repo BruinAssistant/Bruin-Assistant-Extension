@@ -96,10 +96,9 @@ function repopulate() {
         removePrevInjections();
         const windowURL = `${window.location.href}`
         if (windowURL.includes('be.my.ucla.edu')) {
-            populateGroupMeLinks();
             initiateTimeDistance();
             resizeColumnWidths();
-            callParseCourseItem();
+            injectForCourseItems();
             callParseSearchItem();
             initiateEasterEgg();
             syncSchedule();

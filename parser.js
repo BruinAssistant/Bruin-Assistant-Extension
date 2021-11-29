@@ -118,14 +118,21 @@ function parseSearchItem(searchItem, callback) {
 }
 
 /**
- * Function that iterate through each .courseItem from class planner, then parse element and create button and popup
+ * Uses the parser module and injects extension DOM elements
  */
-function callParseCourseItem() {
+function injectForCourseItems() {
     for (let courseItem of document.getElementsByClassName("courseItem")) {
         // work on injecting buttons
         parseCourseItem(courseItem, {
             "forCourseTable": (res, courseTable) => {
+                // Populate Instructor Bwalk rating
                 findClassPlannerInstructor(res);
+            },
+            "forEachSection": (res, sectionInfo, tbody) => {
+                // Populate Groupme Button for each section
+                let sectionDOM = tbody.getElementsByClassName("section-header").item(0);
+                if (sectionDOM)
+                    populateForSection(sectionInfo.id, res["course-name"], sectionInfo.section, sectionDOM);
             }
         });
     }
