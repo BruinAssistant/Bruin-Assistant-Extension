@@ -1,5 +1,6 @@
 # Bruin Assistant
 
+<img src='/assets/bruin_assistant_logo_full_right.png' alt='Bruin Assistant Full Logo'>
 
 ## Debugging
 
