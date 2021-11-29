@@ -17,7 +17,7 @@ const observerWhiteListClassName = [
     "inst-rating-footer-div",
 ];
 
-const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "bruinwalk-btn", "div-classmates"]
+const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "bruinwalk-btn", "classmates"]
 
 /**
  * Checks whether the mutation is caused by extension injection, if so then do
