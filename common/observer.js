@@ -102,7 +102,6 @@ function repopulate() {
             callParseCourseItem();
             callParseSearchItem();
             initiateEasterEgg();
-            findClassInst();
             syncSchedule();
             showClassmates();
         }
