@@ -10,14 +10,14 @@ chrome.runtime.onInstalled.addListener(() => {
     console.log("Defaults set: developer setting (" + defaults["dev_mode"] + "), mystery setting (" + defaults["mystery_mode"] + "), imperial units (" + defaults["units_imperial"] + "), use biking time (" + defaults["use_biking_time"] + ")");
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {  
-    console.log("Sending request " + request)  
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log("Sending request " + request)
     if (request.contentScriptQuery == "getdata") {
         var url = request.url;
         fetch(url)
             .then(response => response.text())
             .then(response => sendResponse(response))
-            .catch()
+            .catch(err => console.log("Error in getdata request: ", err));
         return true;
     }
     if (request.contentScriptQuery == "postData") {
@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     if (request.contentScriptQuery == "getBruinwalkData") {
         if (request.url == ""){res => {
-            sendResponse(""); 
+            sendResponse("");
             return true;
         }
         }

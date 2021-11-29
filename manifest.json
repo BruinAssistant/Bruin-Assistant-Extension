@@ -23,6 +23,7 @@
             "timedistance.js",
             "bruinwalkPopup.js",
             "scripts/schedule.js",
+            "scripts/classmates.js",
             "chart.js",
             "easter_egg.js"
           ],

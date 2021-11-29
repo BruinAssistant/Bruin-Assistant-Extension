@@ -1,7 +1,7 @@
 /**
- * @file This file uses a MutationObserver to automatically refresh the 
+ * @file This file uses a MutationObserver to automatically refresh the
  * extension to remove old content and inject new DOM elements.
- * 
+ *
  * @author Johnson Zhou (Clumsyndicate)
  */
 
@@ -17,16 +17,16 @@ const observerWhiteListClassName = [
     "inst-rating-footer-div",
 ];
 
-const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "bruinwalk-btn"]
+const injectionClassNames = ["th-timedistance", "td-timedistance", "qr-popup", "bruinwalk-btn", "div-classmates"]
 
 /**
  * Checks whether the mutation is caused by extension injection, if so then do
  * not reload. If this is not prevented, we'll have an infinite loop of reloads.
- * 
- * @function 
- * 
- * @param {MutationRecord} mutation 
- * @param {*} callback 
+ *
+ * @function
+ *
+ * @param {MutationRecord} mutation
+ * @param {*} callback
  * @returns {void}
  */
 function validMutation(mutation, callback) {
@@ -50,9 +50,9 @@ function validMutation(mutation, callback) {
 }
 
 /**
- * Creates a mutation observers that listens for DOM mutations. 
- * 
- * @global 
+ * Creates a mutation observers that listens for DOM mutations.
+ *
+ * @global
  * @constant {MutationObserver}
  * @readonly
  */
@@ -72,21 +72,21 @@ const observer = new MutationObserver((mutationsList, observer) => {
 // const config = { subtree: true, childList: true };
 const config = { attributes: true };
 
-// Attaches the MutationObserver onto the 
+// Attaches the MutationObserver onto the
 observer.observe(document.getElementsByTagName('body')[0], config);
 
 /**
- * This is the callback for Mutation Observer that listens on class planner 
+ * This is the callback for Mutation Observer that listens on class planner
  * changes in the DOM.
- * 
- * @function 
- * 
- * @param {*} mutationsList 
- * @param {*} observer 
- * 
+ *
+ * @function
+ *
+ * @param {*} mutationsList
+ * @param {*} observer
+ *
  * @returns {void}
  */
-// 
+//
 function repopulate() {
     // run the script if it detects a class search page
     // Need to remove previous injections to avoid duplicates
@@ -104,6 +104,7 @@ function repopulate() {
             initiateEasterEgg();
             findClassInst();
             syncSchedule();
+            showClassmates();
         }
     }, 500);
 }
@@ -112,10 +113,10 @@ repopulate();
 
 /**
  * Removes previous injections to prepare to repopulate injections.
- * 
+ *
  * @function
  * @returns {void}
- * 
+ *
  * @see {@link injectionClassNames} for removing previous injections.
  * @see {@link repopulate} to find use case.
  */
@@ -134,9 +135,9 @@ function removeElementsWithClassName(className) {
 
 /**
  * Resize the column width of the course table to make things look nicer.
- * 
+ *
  * This function is invoked whenever the extension injections happen.
- * 
+ *
  * @function
  * @returns {void}
  */
