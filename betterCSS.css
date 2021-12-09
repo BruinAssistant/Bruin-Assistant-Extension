@@ -1,0 +1,6 @@
+/* injected stylesheets */
+
+/* Makes class list dropdown much taller */
+.ui-menu {
+    height: 800px !important;
+}

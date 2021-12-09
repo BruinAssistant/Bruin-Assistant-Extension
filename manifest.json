@@ -9,7 +9,7 @@
     "content_scripts": [
         {
           "matches": ["*://be.my.ucla.edu/*"],
-          "css": ["groupme.css", "bruinwalk.css"],
+          "css": ["groupme.css", "bruinwalk.css", "betterCSS.css"],
           "run_at": "document_end"
         },
         {
@@ -25,7 +25,8 @@
             "scripts/schedule.js",
             "scripts/classmates.js",
             "chart.js",
-            "easter_egg.js"
+            "easter_egg.js",
+            "betterCSS.js"
           ],
           "run_at": "document_end"
         }
